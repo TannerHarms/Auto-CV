@@ -1,0 +1,42 @@
+name: Build Obsidian Plugin
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        working-directory: obsidian-plugin
+        run: npm install
+
+      - name: Lint
+        working-directory: obsidian-plugin
+        run: npm run lint
+        continue-on-error: true
+
+      - name: Build plugin
+        working-directory: obsidian-plugin
+        run: npm run build
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: auto-cv-obsidian
+          path: |
+            obsidian-plugin/main.js
+            obsidian-plugin/manifest.json
+            obsidian-plugin/styles.css
+          if-no-files-found: warn

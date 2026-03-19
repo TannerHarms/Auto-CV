@@ -1,0 +1,18 @@
+<# Projects section #>
+\section{<< section.title | escape_latex >>}
+
+<% for entry in section.project_entries %>
+<% if not loop.first %>\vspace{<< style.spacing.entry_gap >>}<% endif %>
+\cvproject{<< entry.name | escape_latex >><% if entry.url %> (\href{<< entry.url >>}{link})<% endif %>}{<< entry.technologies | join(', ') | escape_latex >>}{<< entry.dates.display | escape_latex if entry.dates else '' >>}
+<% if entry.description %>
+<< entry.description | md_latex >>
+<% endif %>
+<% if entry.highlights %>
+\begin{itemize}
+<% for h in entry.highlights %>
+  \item << h | md_latex >>
+<% endfor %>
+\end{itemize}
+<% endif %>
+
+<% endfor %>

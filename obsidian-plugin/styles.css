@@ -2,6 +2,7 @@
  * Styles for Auto CV plugin modals and UI.
  */
 
+/* Modal Containers */
 .modal-button-container {
   display: flex;
   gap: 10px;
@@ -17,46 +18,69 @@
   border-radius: 4px;
   cursor: pointer;
   font-size: 14px;
+  transition: all 0.2s ease;
 }
 
 .modal-button-container button:hover {
   background-color: var(--background-secondary-alt);
+  transform: translateY(-1px);
 }
 
 .modal-button-container button.mod-cta {
   background-color: var(--interactive-accent);
   color: var(--text-on-accent);
   border-color: var(--interactive-accent);
+  font-weight: 600;
 }
 
 .modal-button-container button.mod-cta:hover {
   background-color: var(--interactive-accent-hover);
 }
 
+.modal-button-container button.mod-default:hover {
+  background-color: var(--background-tertiary);
+}
+
+/* Checkboxes */
 .checkbox-label {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 8px 0;
+  padding: 10px;
   cursor: pointer;
   margin-bottom: 8px;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+}
+
+.checkbox-label:hover {
+  background-color: var(--background-secondary);
 }
 
 .checkbox-label input[type='checkbox'] {
   cursor: pointer;
   width: 18px;
   height: 18px;
+  accent-color: var(--interactive-accent);
 }
 
+.format-checkboxes {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 10px 0;
+}
+
+/* Progress and Spinners */
 .progress-spinner {
   display: inline-block;
-  width: 20px;
-  height: 20px;
-  border: 3px solid rgba(0, 0, 0, 0.1);
+  width: 24px;
+  height: 24px;
+  border: 3px solid var(--background-tertiary);
   border-radius: 50%;
   border-top-color: var(--interactive-accent);
-  animation: spin 0.8s circular linear infinite;
-  margin-left: 10px;
+  animation: spin 0.8s linear infinite;
+  margin-top: 10px;
 }
 
 @keyframes spin {
@@ -65,6 +89,41 @@
   }
 }
 
+.auto-cv-progress-modal .modal-close-button {
+  display: none;
+}
+
+.progress-message {
+  color: var(--text-muted);
+  font-size: 14px;
+  margin: 15px 0;
+}
+
+/* Info and Warning Text */
+.info-text {
+  background-color: var(--background-secondary);
+  border-left: 3px solid var(--interactive-accent);
+  padding: 12px;
+  border-radius: 4px;
+  font-size: 13px;
+  color: var(--text-normal);
+  margin: 15px 0;
+}
+
+.warning-text {
+  color: #d97706;
+  font-size: 12px;
+  font-weight: 500;
+  margin: 10px 0;
+}
+
+.modal-info {
+  margin-top: 20px;
+  padding-top: 15px;
+  border-top: 1px solid var(--divider-color);
+}
+
+/* Settings */
 .setting-item {
   border-bottom: 1px solid var(--divider-color);
   padding: 12px 0;
@@ -77,6 +136,40 @@
 }
 
 .setting-item-control button {
-  padding: 4px 12px;
+  padding: 6px 12px;
   font-size: 12px;
+}
+
+.setting-item-description {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+/* Modal Sizing */
+.modal:has(.auto-cv-progress-modal) {
+  backdrop-filter: blur(4px);
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .progress-spinner {
+    animation: none;
+    border-top-color: var(--interactive-accent);
+    opacity: 0.7;
+  }
+  
+  .modal-button-container button:hover {
+    transform: none;
+  }
+}
+
+/* Dark mode awareness */
+.theme-dark {
+  --warning-color: #fbbf24;
+  --success-color: #10b981;
+}
+
+.theme-light {
+  --warning-color: #f59e0b;
+  --success-color: #059669;
 }
