@@ -1,0 +1,39 @@
+# Creative — Vibrant coral and teal, bold sans-serif, card layout.
+# Ideal for designers, marketers, and creative professionals.
+preset: creative
+
+colors:
+  primary: "#E85D4E"
+  secondary: "#4ECDC4"
+  accent: "#FF6B6B"
+  text: "#2C3E50"
+  heading: "#E85D4E"
+  background: "#FAFAFA"
+  link: "#4ECDC4"
+  border: "#E0E0E0"
+
+fonts:
+  heading: "Trebuchet MS"
+  body: "Segoe UI"
+  mono: "Fira Code"
+  size_base: "10.5pt"
+  size_heading: "14pt"
+  size_name: "28pt"
+  size_small: "8.5pt"
+
+spacing:
+  page_margin: "0.7in"
+  section_gap: "14pt"
+  entry_gap: "8pt"
+  line_height: "1.35"
+
+latex:
+  document_class: article
+  font_package: helvet
+  use_icons: true
+
+html:
+  layout: cards
+  include_photo: true
+  responsive: true
+  print_friendly: true

@@ -1,0 +1,118 @@
+<# modern.sty — Clean sans-serif with colored left sidebar bars on section headings #>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{resume}[2026/01/01 Auto Resume — Modern]
+
+% --- Geometry ---
+\RequirePackage[<< style.latex.paper_size >>, margin=<< style.spacing.page_margin >>]{geometry}
+
+% --- Fonts ---
+\RequirePackage[T1]{fontenc}
+\RequirePackage[utf8]{inputenc}
+\RequirePackage{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+\RequirePackage{microtype}
+
+% --- Colors ---
+\RequirePackage[dvipsnames]{xcolor}
+\definecolor{primary}{HTML}{<< style.colors.primary | replace('#', '') >>}
+\definecolor{secondary}{HTML}{<< style.colors.secondary | replace('#', '') >>}
+\definecolor{accent}{HTML}{<< style.colors.accent | replace('#', '') >>}
+\definecolor{linkcolor}{HTML}{<< style.colors.link | replace('#', '') >>}
+\definecolor{headingcolor}{HTML}{<< style.colors.heading | replace('#', '') >>}
+\definecolor{textcolor}{HTML}{<< style.colors.text | replace('#', '') >>}
+\definecolor{lightbg}{HTML}{F5F5F5}
+
+% --- Hyperlinks ---
+\RequirePackage[colorlinks=true, urlcolor=linkcolor, linkcolor=linkcolor]{hyperref}
+
+% --- Spacing ---
+\RequirePackage{enumitem}
+\setlist[itemize]{nosep, left=0pt .. 1.5em, label={\color{accent}\textbullet}}
+\RequirePackage{parskip}
+\RequirePackage{titlesec}
+
+% --- Section: colored left bar + uppercase heading ---
+\titleformat{\section}
+  {\large\bfseries\sffamily\color{headingcolor}\MakeUppercase}
+  {}
+  {0pt}
+  {\noindent\textcolor{primary}{\rule[-2pt]{3pt}{14pt}}\hspace{8pt}}
+  []
+\titlespacing{\section}{0pt}{<< style.spacing.section_gap >>}{4pt}
+
+% ====================== STANDARD COMMAND INTERFACE ======================
+
+\newcommand{\cvname}[1]{%
+  {\fontsize{28}{32}\selectfont\bfseries\sffamily\color{primary} #1}%
+}
+\newcommand{\cvtitle}[1]{%
+  {\large\sffamily\color{accent} #1}%
+}
+\newcommand{\cvcontact}[1]{%
+  {\small\sffamily\color{secondary} #1}%
+}
+
+\newcommand{\cventry}[4]{%
+  \vspace{<< style.spacing.entry_gap >>}%
+  {\bfseries\color{headingcolor} #1}%
+  \hfill{\small\color{secondary} #3}\par%
+  \vspace{1pt}%
+  {\color{accent} #2}%
+  \ifx&#4&\else\hfill{\small\color{secondary} #4}\fi%
+  \vspace{2pt}\par%
+}
+
+\newcommand{\cvedentry}[4]{%
+  \vspace{<< style.spacing.entry_gap >>}%
+  {\bfseries\color{headingcolor} #1}%
+  \hfill{\small\color{secondary} #3}\par%
+  \vspace{1pt}%
+  {\color{accent} #2}%
+  \ifx&#4&\else\hfill{\small\color{secondary} #4}\fi%
+  \vspace{2pt}\par%
+}
+
+\newcommand{\cvskillcat}[2]{%
+  {\bfseries\color{accent} #1}\hspace{6pt}#2\\[3pt]%
+}
+
+\newcommand{\cvproject}[3]{%
+  \vspace{<< style.spacing.entry_gap >>}%
+  {\bfseries\color{headingcolor} #1}%
+  \ifx&#3&\else\hfill{\small\color{secondary} #3}\fi\par%
+  \ifx&#2&\else{\small\color{secondary}\textit{#2}}\fi%
+  \vspace{2pt}\par%
+}
+
+\newcommand{\cvcert}[3]{%
+  \vspace{<< style.spacing.entry_gap >>}%
+  {\bfseries #1}\ifx&#2&\else{ --- \color{accent}\textit{#2}}\fi%
+  \ifx&#3&\else\hfill{\small\color{secondary} #3}\fi\\[-2pt]%
+}
+
+\newcommand{\cvpub}[4]{%
+  \vspace{<< style.spacing.entry_gap >>}%
+  {\bfseries #1}\ifx&#4&\else\hfill{\small\color{secondary} #4}\fi\par%
+  \ifx&#3&\else{\small #3}\fi%
+  \ifx&#2&\else{\\\small\itshape\color{accent} #2}\fi%
+  \vspace{2pt}\par%
+}
+
+\newcommand{\cvaward}[4]{%
+  \vspace{<< style.spacing.entry_gap >>}%
+  {\bfseries #1}\ifx&#4&\else\hfill{\small\color{secondary} #4}\fi\par%
+  \ifx&#2&\else{\color{accent}\textit{#2}}\fi%
+  \ifx&#3&\else\hfill{\small\color{secondary} #3}\fi%
+  \vspace{2pt}\par%
+}
+
+\newcommand{\cvsummary}[1]{%
+  #1%
+}
+
+<% for pkg in style.latex.extra_packages %>
+\RequirePackage{<< pkg >>}
+<% endfor %>
+<< style.latex.extra_preamble >>
+
+\color{textcolor}

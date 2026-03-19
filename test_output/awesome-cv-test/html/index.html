@@ -1,0 +1,1049 @@
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dr. Elena Vasquez — Condensed Matter Physics</title>
+  
+  <meta name="description" content="Postdoctoral researcher specialising in topological materials and quantum transport.">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;1,100;1,300;1,400&family=Source+Sans+3:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      
+      --color-primary: #00A388;
+      
+      --color-secondary: #5D5D5D;
+      
+      --color-accent: #00A388;
+      
+      --color-text: #333333;
+      
+      --color-heading: #00A388;
+      
+      --color-background: #FFFFFF;
+      
+      --color-link: #0395DE;
+      
+      --color-border: #999999;
+      
+      --font-heading: Roboto;
+      
+      --font-body: Source Sans Pro;
+      
+      --font-mono: Source Code Pro;
+      
+      --font-size-base: 11pt;
+      
+      --font-size-heading: 16pt;
+      
+      --font-size-name: 32pt;
+      
+      --font-size-small: 10pt;
+      
+      --font-size-bullet: 10pt;
+      
+      --spacing-page-margin: 0.65in;
+      
+      --spacing-section-gap: 8pt;
+      
+      --spacing-entry-gap: 4pt;
+      
+      --spacing-line-height: 1.05;
+      
+      --spacing-header-to-content: 6pt;
+      
+      --spacing-skill-label-width: 1.5cm;
+      
+      --spacing-bullet-before: -4.0mm;
+      
+      --spacing-bullet-after: 0mm;
+      
+      --spacing-bullet-marker: dash;
+      
+      --acv-header-font: 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+      --acv-body-font: 'Source Sans 3', 'Source Sans Pro', 'Helvetica Neue', Arial, sans-serif;
+      --acv-darktext: #414141;
+      --acv-text: #333333;
+      --acv-graytext: #5D5D5D;
+      --acv-lighttext: #999999;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--acv-body-font);
+      font-size: 9pt;
+      font-weight: 400;
+      line-height: 1.4;
+      color: var(--acv-text);
+      background: var(--color-background, #FFFFFF);
+    }
+
+    .page {
+      max-width: 8.5in;
+      margin: 0 auto;
+      padding: 1.5cm 2.0cm 2.0cm;
+    }
+
+    a { color: var(--color-link, #0395DE); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* =====================================================================
+       Header — centered, Roboto, matches awesome-cv.cls
+       ===================================================================== */
+    .resume-header {
+      text-align: center;
+      margin-bottom: 6mm;
+    }
+    .resume-name {
+      font-family: var(--acv-header-font);
+      font-size: 32pt;
+      line-height: 1;
+      color: var(--acv-text);
+      margin-bottom: 0.4mm;
+    }
+    .resume-name .first-name {
+      font-weight: 300;
+    }
+    .resume-name .last-name {
+      font-weight: 700;
+    }
+    .resume-title {
+      font-family: var(--acv-body-font);
+      font-size: 7.6pt;
+      font-variant: small-caps;
+      letter-spacing: 0.5pt;
+      color: var(--color-primary, #CC5500);
+      margin-bottom: 0.4mm;
+    }
+    .resume-address {
+      font-family: var(--acv-header-font);
+      font-size: 8pt;
+      font-style: italic;
+      color: var(--acv-lighttext);
+      margin-bottom: -0.5mm;
+    }
+    .resume-contact {
+      font-family: var(--acv-header-font);
+      font-size: 6.8pt;
+      color: var(--acv-text);
+      margin-top: 1mm;
+    }
+    .resume-contact a { color: var(--acv-text); }
+    .resume-contact a:hover { color: var(--color-primary, #CC5500); }
+    .resume-contact .sep {
+      display: inline-block;
+      margin: 0 0.4em;
+      color: var(--acv-lighttext);
+    }
+
+    /* =====================================================================
+       Sections — awesome-cv style: colored title + gray rule
+       ===================================================================== */
+    .resume-section {
+      margin-top: var(--spacing-section-gap, 10pt);
+      margin-bottom: 0;
+    }
+    .section-title {
+      font-family: var(--acv-body-font);
+      font-size: 16pt;
+      font-weight: 700;
+      color: var(--color-primary, #CC5500);
+      border-bottom: none;
+      padding-bottom: 0;
+      margin-bottom: 2.5mm;
+      display: flex;
+      align-items: center;
+      gap: 0;
+    }
+    .section-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--acv-graytext);
+      margin-left: 6px;
+    }
+
+    /* =====================================================================
+       Entries — two-row table layout matching awesome-cv.cls
+       ===================================================================== */
+    .entry { margin-bottom: var(--spacing-entry-gap, 4pt); }
+    .entry-header { margin-bottom: 0; }
+    .entry-title-line {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+    .entry-title {
+      font-family: var(--acv-body-font);
+      font-size: 10pt;
+      font-weight: 700;
+      color: var(--acv-darktext);
+      margin: 0;
+    }
+    .entry-dates {
+      font-family: var(--acv-body-font);
+      font-size: 8pt;
+      font-weight: 300;
+      font-style: italic;
+      color: var(--acv-graytext);
+      white-space: nowrap;
+    }
+    .entry-subtitle-line {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+    .entry-org {
+      font-family: var(--acv-body-font);
+      font-size: 8pt;
+      font-variant: small-caps;
+      font-style: normal;
+      color: var(--acv-graytext);
+    }
+    .entry-location {
+      font-family: var(--acv-body-font);
+      font-size: 9pt;
+      font-weight: 300;
+      font-style: italic;
+      color: var(--color-primary, #CC5500);
+    }
+    .entry-tech {
+      font-size: 8pt;
+      font-variant: small-caps;
+      color: var(--acv-graytext);
+    }
+    .entry-description {
+      font-size: var(--font-size-bullet, 8.5pt);
+      font-weight: 300;
+      color: var(--acv-text);
+      margin: var(--spacing-header-to-content, 1.5mm) 0;
+    }
+    .entry-highlights {
+      margin: 0.5mm 0 var(--spacing-entry-gap, 4pt) 2ex;
+      padding: 0;
+      list-style-type: disc;
+    }
+    .entry-highlights li {
+      font-size: var(--font-size-bullet, 8.5pt);
+      font-weight: 300;
+      color: var(--acv-text);
+      margin-bottom: 0;
+      line-height: 1.4;
+    }
+
+    /* =====================================================================
+       Education — GPA inline
+       ===================================================================== */
+    .entry-gpa {
+      font-size: var(--font-size-bullet, 8.5pt);
+      font-weight: 300;
+      color: var(--acv-text);
+      margin: var(--spacing-header-to-content, 1.5mm) 0 0 2ex;
+    }
+    .entry-coursework {
+      font-size: var(--font-size-bullet, 8.5pt);
+      font-weight: 300;
+      color: var(--acv-text);
+      margin: var(--spacing-header-to-content, 1.5mm) 0 0 2ex;
+    }
+
+    /* =====================================================================
+       Skills — label | value layout matching \cvskillcat
+       ===================================================================== */
+    .skills-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+    .skill-category {
+      display: flex;
+      gap: 1em;
+      font-size: 9pt;
+      line-height: 1.6;
+    }
+    .skill-category strong {
+      font-family: var(--acv-body-font);
+      font-size: 10pt;
+      font-weight: 700;
+      color: var(--acv-darktext);
+      min-width: var(--spacing-skill-label-width, 4.5cm);
+      text-align: right;
+      flex-shrink: 0;
+    }
+    .skill-category .skill-list {
+      color: var(--acv-text);
+    }
+
+    /* =====================================================================
+       Publications — citation style
+       ===================================================================== */
+    .pub-entry { margin-bottom: 2mm; }
+    .entry-authors {
+      font-size: 8pt;
+      font-variant: small-caps;
+      color: var(--acv-graytext);
+    }
+    .entry-venue {
+      font-size: 9pt;
+      font-weight: 300;
+      font-style: italic;
+      color: var(--acv-graytext);
+    }
+
+    /* =====================================================================
+       Awards — honor-style layout
+       ===================================================================== */
+    .award-entry .entry-title-line {
+      display: flex;
+    }
+    .award-entry .entry-title {
+      font-size: 9pt;
+      font-weight: 700;
+      color: var(--acv-darktext);
+    }
+    .award-entry .entry-dates {
+      font-size: 9pt;
+      font-weight: 400;
+      font-style: normal;
+      color: var(--acv-graytext);
+      min-width: 2cm;
+    }
+    .award-entry .entry-org {
+      font-size: 9pt;
+      font-weight: 400;
+      font-variant: normal;
+      color: var(--acv-graytext);
+    }
+
+    /* =====================================================================
+       Summary — paragraph style
+       ===================================================================== */
+    .summary-content {
+      font-size: 9pt;
+      font-weight: 300;
+      color: var(--acv-text);
+      margin-top: -1mm;
+    }
+    .summary-content p {
+      margin-bottom: 2mm;
+    }
+
+    /* =====================================================================
+       Certifications
+       ===================================================================== */
+    .cert-entry {
+      font-size: 9pt;
+      margin-bottom: 1.5mm;
+    }
+
+    /* =====================================================================
+       Footer
+       ===================================================================== */
+    .resume-footer {
+      margin-top: 6mm;
+      padding-top: 3mm;
+      font-family: var(--acv-body-font);
+      font-size: 8pt;
+      font-variant: small-caps;
+      color: var(--acv-lighttext);
+      display: flex;
+      justify-content: space-between;
+    }
+
+    /* =====================================================================
+       Nav (for multi-page)
+       ===================================================================== */
+    .resume-nav {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      margin-bottom: 4mm;
+      padding: 2mm 0;
+      border-bottom: 0.5px solid var(--acv-lighttext);
+      font-family: var(--acv-header-font);
+      font-size: 8pt;
+    }
+    .nav-link { color: var(--acv-graytext); }
+    .nav-link.active { font-weight: 700; color: var(--color-primary, #CC5500); }
+
+    /* =====================================================================
+       Print stylesheet
+       ===================================================================== */
+    @media print {
+      .page {
+        margin: 0;
+        padding: 1.5cm 2.0cm 2.0cm;
+        max-width: 100%;
+      }
+      .resume-nav { display: none; }
+      a { color: inherit; }
+    }
+  </style>
+  
+</head>
+<body>
+  <div class="page">
+    
+
+
+
+    <header class="resume-header">
+      
+      <h1 class="resume-name"><span class="first-name">Dr. Elena</span> <span class="last-name">Vasquez</span></h1>
+      
+      <p class="resume-title">Postdoctoral Research Fellow — Condensed Matter Physics</p>
+      
+      
+      <p class="resume-address">Cambridge, MA</p>
+      
+      <div class="resume-contact"><a href="mailto:e.vasquez@example.edu">e.vasquez@example.edu</a><span class="sep">|</span>+1-617-555-0237<span class="sep">|</span><a href="https://linkedin.com/in/elena-vasquez-phd">linkedin.com/in/elena-vasquez-phd</a><span class="sep">|</span><a href="https://github.com/evasquez-physics">github.com/evasquez-physics</a><span class="sep">|</span><a href="https://evasquez.physics.mit.edu">evasquez.physics.mit.edu</a>
+      </div>
+    </header>
+
+    <main>
+      
+      
+<section class="resume-section" id="section-summary">
+  <h2 class="section-title">Research Interests</h2>
+
+  
+    
+<div class="summary-content">
+  <p>Theoretical and computational condensed matter physics with focus on topological phases, quantum transport in low-dimensional systems, and non-equilibrium dynamics. Expertise in density functional theory (DFT), tight-binding models, and tensor network methods. Seeking faculty positions to establish an independent research programme bridging quantum materials theory and experiment.</p>
+</div>
+
+  
+</section>
+
+      
+      
+<section class="resume-section" id="section-experience">
+  <h2 class="section-title">Research Experience</h2>
+
+  
+    
+
+<div class="entry experience-entry">
+  <div class="entry-header">
+    <div class="entry-title-line">
+      <h3 class="entry-title">Postdoctoral Research Fellow</h3>
+      
+      <span class="entry-dates">2022-09 – present</span>
+      
+    </div>
+    <div class="entry-subtitle-line">
+      <span class="entry-org">Massachusetts Institute of Technology, Department of Physics</span>
+      
+      <span class="entry-location">Cambridge, MA</span>
+      
+    </div>
+  </div>
+  
+  
+  <ul class="entry-highlights">
+    
+    <li>Developing first-principles framework for predicting topological invariants in disordered systems</li>
+    
+    <li>Published 4 first-author papers in Physical Review Letters and Physical Review B</li>
+    
+    <li>Mentoring 2 graduate students on computational methods for quantum transport</li>
+    
+    <li>Secured $85K NSF supplemental grant for high-performance computing resources</li>
+    
+    <li>Presented invited talks at APS March Meeting (2023, 2024) and Gordon Research Conference</li>
+    
+  </ul>
+  
+</div>
+
+<div class="entry experience-entry">
+  <div class="entry-header">
+    <div class="entry-title-line">
+      <h3 class="entry-title">Graduate Research Assistant</h3>
+      
+      <span class="entry-dates">2017-09 – 2022-08</span>
+      
+    </div>
+    <div class="entry-subtitle-line">
+      <span class="entry-org">Stanford University, SLAC National Accelerator Laboratory</span>
+      
+      <span class="entry-location">Stanford, CA</span>
+      
+    </div>
+  </div>
+  
+  
+  <ul class="entry-highlights">
+    
+    <li>Completed PhD thesis: &#34;Topological Phase Transitions in Driven Quantum Systems&#34;</li>
+    
+    <li>Developed novel tensor network algorithm reducing computation time by 10x for 2D systems</li>
+    
+    <li>Performed tight-binding and DFT calculations on high-performance computing clusters</li>
+    
+    <li>Published 6 peer-reviewed papers (3 first-author) with 180+ total citations</li>
+    
+    <li>Organised weekly condensed matter seminar series for 2 years</li>
+    
+  </ul>
+  
+</div>
+
+<div class="entry experience-entry">
+  <div class="entry-header">
+    <div class="entry-title-line">
+      <h3 class="entry-title">Undergraduate Research Assistant</h3>
+      
+      <span class="entry-dates">2015-06 – 2017-05</span>
+      
+    </div>
+    <div class="entry-subtitle-line">
+      <span class="entry-org">University of Colorado Boulder, JILA</span>
+      
+      <span class="entry-location">Boulder, CO</span>
+      
+    </div>
+  </div>
+  
+  
+  <ul class="entry-highlights">
+    
+    <li>Simulated ultracold atomic systems using QuTiP and custom Fortran codes</li>
+    
+    <li>Co-authored paper in Physical Review A on Floquet engineering of optical lattices</li>
+    
+    <li>Awarded departmental Outstanding Undergraduate Research Prize</li>
+    
+  </ul>
+  
+</div>
+
+
+  
+</section>
+
+      
+      
+<section class="resume-section" id="section-education">
+  <h2 class="section-title">Education</h2>
+
+  
+    
+
+<div class="entry education-entry">
+  <div class="entry-header">
+    <div class="entry-title-line">
+      <h3 class="entry-title">Ph.D. Physics</h3>
+      
+      <span class="entry-dates">2017-09 – 2022-08</span>
+      
+    </div>
+    <div class="entry-subtitle-line">
+      <span class="entry-org">Stanford University</span>
+      
+      <span class="entry-location">Stanford, CA</span>
+      
+    </div>
+  </div>
+  
+  
+  <ul class="entry-highlights">
+    
+    <li>Thesis: &#34;Topological Phase Transitions in Driven Quantum Systems&#34;</li>
+    
+    <li>Advisor: Prof. Srinivas Raghu</li>
+    
+    <li>Stanford Graduate Fellowship (2017–2020)</li>
+    
+  </ul>
+  
+  
+</div>
+
+<div class="entry education-entry">
+  <div class="entry-header">
+    <div class="entry-title-line">
+      <h3 class="entry-title">B.S. Physics, Minor in Mathematics</h3>
+      
+      <span class="entry-dates">2013-08 – 2017-05</span>
+      
+    </div>
+    <div class="entry-subtitle-line">
+      <span class="entry-org">University of Colorado Boulder</span>
+      
+      <span class="entry-location">Boulder, CO</span>
+      
+    </div>
+  </div>
+  
+  <p class="entry-gpa">GPA: 3.95</p>
+  
+  
+  <ul class="entry-highlights">
+    
+    <li>Summa Cum Laude</li>
+    
+    <li>Goldwater Scholar (2016)</li>
+    
+    <li>Dean&#39;s List all semesters</li>
+    
+  </ul>
+  
+  
+</div>
+
+
+  
+</section>
+
+      
+      
+<section class="resume-section" id="section-publications">
+  <h2 class="section-title">Selected Publications</h2>
+
+  
+    
+
+<div class="entry pub-entry">
+  <div class="entry-header">
+    <div class="entry-title-line">
+      <h3 class="entry-title">Disorder-Induced Topological Transitions in Monolayer Transition Metal Dichalcogenides</h3>
+      <span class="entry-dates">2023</span>
+    </div>
+    
+    <div class="entry-authors">E. Vasquez, J. Park, S. Raghu</div>
+    
+    
+    <div class="entry-venue"><em>Physical Review Letters 131, 056401</em></div>
+    
+  </div>
+</div>
+
+<div class="entry pub-entry">
+  <div class="entry-header">
+    <div class="entry-title-line">
+      <h3 class="entry-title">Efficient Tensor Network Methods for Two-Dimensional Topological Phases</h3>
+      <span class="entry-dates">2023</span>
+    </div>
+    
+    <div class="entry-authors">E. Vasquez, S. Raghu</div>
+    
+    
+    <div class="entry-venue"><em>Physical Review B 107, 115132</em></div>
+    
+  </div>
+</div>
+
+<div class="entry pub-entry">
+  <div class="entry-header">
+    <div class="entry-title-line">
+      <h3 class="entry-title">Floquet Engineering of Anomalous Hall Effect in Graphene Superlattices</h3>
+      <span class="entry-dates">2022</span>
+    </div>
+    
+    <div class="entry-authors">E. Vasquez, M. Chen, J. Park, S. Raghu</div>
+    
+    
+    <div class="entry-venue"><em>Physical Review Letters 128, 176404</em></div>
+    
+  </div>
+</div>
+
+<div class="entry pub-entry">
+  <div class="entry-header">
+    <div class="entry-title-line">
+      <h3 class="entry-title">Non-Equilibrium Phase Diagram of Driven Kitaev Chains</h3>
+      <span class="entry-dates">2021</span>
+    </div>
+    
+    <div class="entry-authors">E. Vasquez, S. Raghu</div>
+    
+    
+    <div class="entry-venue"><em>Physical Review B 104, 235140</em></div>
+    
+  </div>
+</div>
+
+<div class="entry pub-entry">
+  <div class="entry-header">
+    <div class="entry-title-line">
+      <h3 class="entry-title">Floquet Topological Phases in Shaken Optical Lattices</h3>
+      <span class="entry-dates">2019</span>
+    </div>
+    
+    <div class="entry-authors">E. Vasquez, R. Thompson, A. Rey</div>
+    
+    
+    <div class="entry-venue"><em>Physical Review A 99, 043624</em></div>
+    
+  </div>
+</div>
+
+
+  
+</section>
+
+      
+      
+<section class="resume-section" id="section-skills">
+  <h2 class="section-title">Technical Skills</h2>
+
+  
+    
+<div class="skills-grid">
+  
+  <div class="skill-category">
+    <strong>Programming</strong>
+    <span class="skill-list">Python, Julia, Fortran, C++, MATLAB, Bash</span>
+  </div>
+  
+  <div class="skill-category">
+    <strong>Computational Methods</strong>
+    <span class="skill-list">Density Functional Theory (VASP, Quantum ESPRESSO), Tight-Binding Models, DMRG, Tensor Networks</span>
+  </div>
+  
+  <div class="skill-category">
+    <strong>Scientific Computing</strong>
+    <span class="skill-list">MPI, OpenMP, SLURM, Jupyter, NumPy, SciPy, QuTiP, ITensor</span>
+  </div>
+  
+  <div class="skill-category">
+    <strong>Writing &amp; Presentation</strong>
+    <span class="skill-list">LaTeX, Matplotlib, Inkscape, Beamer, Overleaf</span>
+  </div>
+  
+</div>
+
+  
+</section>
+
+      
+      
+<section class="resume-section" id="section-projects">
+  <h2 class="section-title">Research Software</h2>
+
+  
+    
+
+<div class="entry project-entry">
+  <div class="entry-header">
+    <div class="entry-title-line">
+      <h3 class="entry-title">
+        TopoNet
+      </h3>
+      
+    </div>
+    
+    <div class="entry-tech">Python · Julia · MPI · HDF5</div>
+    
+  </div>
+  
+  
+  <ul class="entry-highlights">
+    
+    <li>Implements Bott index and Chern marker algorithms for 2D and 3D systems</li>
+    
+    <li>Scales to 10⁶-site lattices via distributed MPI parallelism</li>
+    
+    <li>120+ GitHub stars; adopted by 3 external research groups</li>
+    
+  </ul>
+  
+</div>
+
+<div class="entry project-entry">
+  <div class="entry-header">
+    <div class="entry-title-line">
+      <h3 class="entry-title">
+        Floquet-DMRG
+      </h3>
+      
+      <span class="entry-dates">2019-09 – 2022-05</span>
+      
+    </div>
+    
+    <div class="entry-tech">Julia · ITensor · SLURM</div>
+    
+  </div>
+  
+  
+  <ul class="entry-highlights">
+    
+    <li>Novel time-periodic MPS compression scheme reducing bond dimension by 40%</li>
+    
+    <li>Benchmarked against exact diagonalisation on Kitaev chain models</li>
+    
+    <li>Released as open-source supplement to PRB publication</li>
+    
+  </ul>
+  
+</div>
+
+
+  
+</section>
+
+      
+      
+<section class="resume-section" id="section-awards">
+  <h2 class="section-title">Honours &amp; Awards</h2>
+
+  
+    
+
+
+<div class="entry award-entry award-expressive">
+  <div class="entry-header">
+    <div class="entry-title-line">
+      <h3 class="entry-title">NSF Postdoctoral Research Fellowship</h3>
+      <span class="entry-dates">2022</span>
+    </div>
+    <div class="entry-subtitle-line">
+      <span class="entry-org">National Science Foundation</span>
+      <span class="entry-location">Arlington, VA</span>
+    </div>
+  </div>
+  
+  
+  <ul class="entry-highlights">
+    
+    <li>Competitive fellowship supporting independent postdoctoral research in condensed matter theory</li>
+    
+    <li>Funded 2-year appointment at MIT with full salary and $85K research budget</li>
+    
+  </ul>
+  
+</div>
+
+<div class="entry award-entry award-expressive">
+  <div class="entry-header">
+    <div class="entry-title-line">
+      <h3 class="entry-title">Stanford Graduate Fellowship</h3>
+      <span class="entry-dates">2017</span>
+    </div>
+    <div class="entry-subtitle-line">
+      <span class="entry-org">Stanford University</span>
+      <span class="entry-location">Stanford, CA</span>
+    </div>
+  </div>
+  
+  
+  <ul class="entry-highlights">
+    
+    <li>Three-year merit-based fellowship covering full tuition and stipend</li>
+    
+    <li>Awarded to top 10% of incoming PhD cohort in the School of Humanities &amp; Sciences</li>
+    
+  </ul>
+  
+</div>
+
+<div class="entry award-entry award-expressive">
+  <div class="entry-header">
+    <div class="entry-title-line">
+      <h3 class="entry-title">Barry M. Goldwater Scholarship</h3>
+      <span class="entry-dates">2016</span>
+    </div>
+    <div class="entry-subtitle-line">
+      <span class="entry-org">Barry Goldwater Scholarship Foundation</span>
+      <span class="entry-location">Washington, DC</span>
+    </div>
+  </div>
+  
+  
+  <ul class="entry-highlights">
+    
+    <li>National scholarship for outstanding undergraduates in STEM research</li>
+    
+  </ul>
+  
+</div>
+
+<div class="entry award-entry award-expressive">
+  <div class="entry-header">
+    <div class="entry-title-line">
+      <h3 class="entry-title">Outstanding Undergraduate Research Prize</h3>
+      <span class="entry-dates">2017</span>
+    </div>
+    <div class="entry-subtitle-line">
+      <span class="entry-org">University of Colorado Boulder, Dept. of Physics</span>
+      <span class="entry-location">Boulder, CO</span>
+    </div>
+  </div>
+  
+  
+  <ul class="entry-highlights">
+    
+    <li>Departmental award for senior thesis on Floquet engineering of optical lattices</li>
+    
+  </ul>
+  
+</div>
+
+
+
+  
+</section>
+
+      
+      
+<section class="resume-section" id="section-certifications">
+  <h2 class="section-title">Certifications &amp; Training</h2>
+
+  
+    
+
+<div class="entry cert-entry">
+  <strong>Responsible Conduct of Research</strong>
+   — MIT Office of Research
+  <span class="entry-dates">2023</span>
+  
+</div>
+
+<div class="entry cert-entry">
+  <strong>High-Performance Computing Workshop</strong>
+   — XSEDE / ACCESS
+  <span class="entry-dates">2021</span>
+  
+</div>
+
+<div class="entry cert-entry">
+  <strong>Advanced Quantum Information Science</strong>
+   — Kavli Institute for Theoretical Physics
+  <span class="entry-dates">2020</span>
+  
+</div>
+
+
+  
+</section>
+
+      
+      
+<section class="resume-section" id="section-languages">
+  <h2 class="section-title">Languages</h2>
+
+  
+    
+<div class="custom-content">
+  <ul>
+<li><strong>English</strong> — Native</li>
+<li><strong>Spanish</strong> — Native</li>
+<li><strong>French</strong> — Intermediate (B2)</li>
+<li><strong>German</strong> — Basic (A2)</li>
+</ul>
+</div>
+
+  
+</section>
+
+      
+      
+<section class="resume-section" id="section-service">
+  <h2 class="section-title">Professional Service</h2>
+
+  
+    
+
+<div class="entry experience-entry">
+  <div class="entry-header">
+    <div class="entry-title-line">
+      <h3 class="entry-title">Peer Reviewer</h3>
+      
+      <span class="entry-dates">2022-01 – present</span>
+      
+    </div>
+    <div class="entry-subtitle-line">
+      <span class="entry-org">American Physical Society (PRL, PRB)</span>
+      
+      <span class="entry-location">Remote</span>
+      
+    </div>
+  </div>
+  
+  
+  <ul class="entry-highlights">
+    
+    <li>Reviewed 12+ manuscripts for Physical Review Letters and Physical Review B</li>
+    
+  </ul>
+  
+</div>
+
+<div class="entry experience-entry">
+  <div class="entry-header">
+    <div class="entry-title-line">
+      <h3 class="entry-title">Graduate Admissions Committee Member</h3>
+      
+      <span class="entry-dates">2020-09 – 2022-05</span>
+      
+    </div>
+    <div class="entry-subtitle-line">
+      <span class="entry-org">Stanford University, Dept. of Physics</span>
+      
+      <span class="entry-location">Stanford, CA</span>
+      
+    </div>
+  </div>
+  
+  
+  <ul class="entry-highlights">
+    
+    <li>Evaluated 150+ applications per cycle; advocated for holistic review criteria</li>
+    
+  </ul>
+  
+</div>
+
+<div class="entry experience-entry">
+  <div class="entry-header">
+    <div class="entry-title-line">
+      <h3 class="entry-title">Science Outreach Volunteer</h3>
+      
+      <span class="entry-dates">2023-01 – present</span>
+      
+    </div>
+    <div class="entry-subtitle-line">
+      <span class="entry-org">MIT Science Policy Initiative</span>
+      
+      <span class="entry-location">Cambridge, MA</span>
+      
+    </div>
+  </div>
+  
+  
+  <ul class="entry-highlights">
+    
+    <li>Led physics demonstrations at local high schools reaching 500+ students</li>
+    
+    <li>Organised &#34;Physics for Everyone&#34; public lecture series</li>
+    
+  </ul>
+  
+</div>
+
+
+  
+</section>
+
+      
+    </main>
+
+    <footer class="resume-footer">
+      <span></span>
+      <span>Dr. Elena Vasquez</span>
+      <span></span>
+    </footer>
+  </div>
+
+  
+</body>
+</html>

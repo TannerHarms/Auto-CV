@@ -1,0 +1,233 @@
+{# Section partial — dispatches to the right section renderer #}
+{% macro render_section(section, style) %}
+<section class="resume-section" id="section-{{ section.id }}">
+  <h2 class="section-title">{{ section.title }}</h2>
+
+  {% if section.section_type.value == "summary" %}
+    {{ render_summary(section) }}
+  {% elif section.section_type.value == "experience" %}
+    {{ render_experience(section) }}
+  {% elif section.section_type.value == "education" %}
+    {{ render_education(section) }}
+  {% elif section.section_type.value == "skills" %}
+    {{ render_skills(section) }}
+  {% elif section.section_type.value == "projects" %}
+    {{ render_projects(section) }}
+  {% elif section.section_type.value == "certifications" %}
+    {{ render_certifications(section) }}
+  {% elif section.section_type.value == "publications" %}
+    {{ render_publications(section) }}
+  {% elif section.section_type.value == "awards" %}
+    {{ render_awards(section) }}
+  {% elif section.section_type.value == "volunteer" %}
+    {{ render_experience(section) }}
+  {% else %}
+    {{ render_custom(section) }}
+  {% endif %}
+</section>
+{% endmacro %}
+
+{% macro render_summary(section) %}
+<div class="summary-content">
+  {{ section.raw_content | markdown | safe }}
+</div>
+{% endmacro %}
+
+{% macro render_experience(section) %}
+{% for entry in section.experience_entries %}
+<div class="entry experience-entry">
+  <div class="entry-header">
+    <div class="entry-title-line">
+      <h3 class="entry-title">{{ entry.title }}</h3>
+      {% if entry.dates %}
+      <span class="entry-dates">{{ entry.dates.display }}</span>
+      {% endif %}
+    </div>
+    <div class="entry-subtitle-line">
+      <span class="entry-org">{{ entry.organization }}</span>
+      {% if entry.location %}
+      <span class="entry-location">{{ entry.location }}</span>
+      {% endif %}
+    </div>
+  </div>
+  {% if entry.description %}
+  <p class="entry-description">{{ entry.description }}</p>
+  {% endif %}
+  {% if entry.highlights %}
+  <ul class="entry-highlights">
+    {% for h in entry.highlights %}
+    <li>{{ h }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+</div>
+{% endfor %}
+{% endmacro %}
+
+{% macro render_education(section) %}
+{% for entry in section.education_entries %}
+<div class="entry education-entry">
+  <div class="entry-header">
+    <div class="entry-title-line">
+      <h3 class="entry-title">{{ entry.degree }}</h3>
+      {% if entry.dates %}
+      <span class="entry-dates">{{ entry.dates.display }}</span>
+      {% endif %}
+    </div>
+    <div class="entry-subtitle-line">
+      <span class="entry-org">{{ entry.institution }}</span>
+      {% if entry.location %}
+      <span class="entry-location">{{ entry.location }}</span>
+      {% endif %}
+    </div>
+  </div>
+  {% if entry.gpa %}
+  <p class="entry-gpa">GPA: {{ entry.gpa }}</p>
+  {% endif %}
+  {% if entry.highlights %}
+  <ul class="entry-highlights">
+    {% for h in entry.highlights %}
+    <li>{{ h }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+  {% if entry.coursework %}
+  <p class="entry-coursework"><em>Coursework:</em> {{ entry.coursework | join(', ') }}</p>
+  {% endif %}
+</div>
+{% endfor %}
+{% endmacro %}
+
+{% macro render_skills(section) %}
+<div class="skills-grid">
+  {% for cat in section.skill_categories %}
+  <div class="skill-category">
+    <strong>{{ cat.name }}</strong>
+    <span class="skill-list">{{ cat.skills | join(', ') }}</span>
+  </div>
+  {% endfor %}
+</div>
+{% endmacro %}
+
+{% macro render_projects(section) %}
+{% for entry in section.project_entries %}
+<div class="entry project-entry">
+  <div class="entry-header">
+    <div class="entry-title-line">
+      <h3 class="entry-title">
+        {% if entry.url %}<a href="{{ entry.url }}">{{ entry.name }}</a>{% else %}{{ entry.name }}{% endif %}
+      </h3>
+      {% if entry.dates %}
+      <span class="entry-dates">{{ entry.dates.display }}</span>
+      {% endif %}
+    </div>
+    {% if entry.technologies %}
+    <div class="entry-tech">{{ entry.technologies | join(' · ') }}</div>
+    {% endif %}
+  </div>
+  {% if entry.description %}
+  <p class="entry-description">{{ entry.description }}</p>
+  {% endif %}
+  {% if entry.highlights %}
+  <ul class="entry-highlights">
+    {% for h in entry.highlights %}
+    <li>{{ h }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+</div>
+{% endfor %}
+{% endmacro %}
+
+{% macro render_certifications(section) %}
+{% for entry in section.certification_entries %}
+<div class="entry cert-entry">
+  <strong>{{ entry.name }}</strong>
+  {% if entry.issuer %} — {{ entry.issuer }}{% endif %}
+  {% if entry.date %}<span class="entry-dates">{{ entry.date }}</span>{% endif %}
+  {% if entry.url %}<br><a href="{{ entry.url }}">View credential</a>{% endif %}
+</div>
+{% endfor %}
+{% endmacro %}
+
+{% macro render_custom(section) %}
+<div class="custom-content">
+  {{ section.raw_content | markdown | safe }}
+</div>
+{% endmacro %}
+
+{% macro render_publications(section) %}
+{% for entry in section.publication_entries %}
+<div class="entry pub-entry">
+  <div class="entry-header">
+    <div class="entry-title-line">
+      <h3 class="entry-title">{% if entry.url %}<a href="{{ entry.url }}">{{ entry.title }}</a>{% else %}{{ entry.title }}{% endif %}</h3>
+      {% if entry.date %}<span class="entry-dates">{{ entry.date }}</span>{% endif %}
+    </div>
+    {% if entry.authors %}
+    <div class="entry-authors">{{ entry.authors | join(', ') }}</div>
+    {% endif %}
+    {% if entry.venue %}
+    <div class="entry-venue"><em>{{ entry.venue }}</em></div>
+    {% endif %}
+  </div>
+</div>
+{% endfor %}
+{% endmacro %}
+
+{% macro render_awards(section) %}
+{% if section.display == 'compact' %}
+{% for entry in section.award_entries %}
+<div class="entry award-entry award-compact">
+  <div class="entry-header">
+    <div class="entry-title-line">
+      <h3 class="entry-title">{{ entry.title }}{% if entry.issuer %}, {{ entry.issuer }}{% endif %}</h3>
+      {% if entry.date %}<span class="entry-dates">{{ entry.date }}</span>{% endif %}
+    </div>
+  </div>
+</div>
+{% endfor %}
+{% elif section.display == 'expressive' %}
+{% for entry in section.award_entries %}
+<div class="entry award-entry award-expressive">
+  <div class="entry-header">
+    <div class="entry-title-line">
+      <h3 class="entry-title">{{ entry.title }}</h3>
+      {% if entry.date %}<span class="entry-dates">{{ entry.date }}</span>{% endif %}
+    </div>
+    <div class="entry-subtitle-line">
+      {% if entry.issuer %}<span class="entry-org">{{ entry.issuer }}</span>{% endif %}
+      {% if entry.location %}<span class="entry-location">{{ entry.location }}</span>{% endif %}
+    </div>
+  </div>
+  {% if entry.description %}
+  <p class="entry-description">{{ entry.description }}</p>
+  {% endif %}
+  {% if entry.highlights %}
+  <ul class="entry-highlights">
+    {% for h in entry.highlights %}
+    <li>{{ h }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+</div>
+{% endfor %}
+{% else %}
+{% for entry in section.award_entries %}
+<div class="entry award-entry">
+  <div class="entry-header">
+    <div class="entry-title-line">
+      <h3 class="entry-title">{{ entry.title }}</h3>
+      {% if entry.date %}<span class="entry-dates">{{ entry.date }}</span>{% endif %}
+    </div>
+    {% if entry.issuer %}
+    <div class="entry-org">{{ entry.issuer }}</div>
+    {% endif %}
+    {% if entry.description %}
+    <p class="entry-description">{{ entry.description }}</p>
+    {% endif %}
+  </div>
+</div>
+{% endfor %}
+{% endif %}
+{% endmacro %}

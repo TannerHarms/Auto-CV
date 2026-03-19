@@ -1,0 +1,103 @@
+{# Awesome-CV layout — extra page template #}
+{% from "partials/nav.html.j2" import render_nav %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ page.title }} — {{ resume.config.name }}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;1,100;1,300;1,400&family=Source+Sans+3:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      {% for key, val in css_vars.items() %}
+      {{ key }}: {{ val }};
+      {% endfor %}
+      --acv-header-font: 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+      --acv-body-font: 'Source Sans 3', 'Source Sans Pro', 'Helvetica Neue', Arial, sans-serif;
+      --acv-text: #333333;
+      --acv-graytext: #5D5D5D;
+      --acv-lighttext: #999999;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--acv-body-font);
+      font-size: 9pt;
+      font-weight: 400;
+      line-height: 1.4;
+      color: var(--acv-text);
+      background: #f5f5f5;
+    }
+    .page {
+      max-width: 8.5in;
+      margin: 0.5in auto;
+      padding: 1.5cm 2.0cm 2.0cm;
+      background: #fff;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.10);
+    }
+    a { color: var(--color-link, #0395DE); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .page-title {
+      font-family: var(--acv-body-font);
+      font-size: 16pt;
+      font-weight: 700;
+      color: var(--color-primary, #CC5500);
+      display: flex;
+      align-items: center;
+      margin-bottom: 4mm;
+    }
+    .page-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--acv-graytext);
+      margin-left: 6px;
+    }
+    .page-content {
+      font-size: 9pt;
+      font-weight: 300;
+      line-height: 1.5;
+    }
+    .page-content h1, .page-content h2, .page-content h3 {
+      font-family: var(--acv-body-font);
+      color: var(--color-primary, #CC5500);
+    }
+
+    .resume-nav {
+      display: flex; gap: 1rem; justify-content: center;
+      margin-bottom: 4mm; padding: 2mm 0;
+      border-bottom: 0.5px solid var(--acv-lighttext);
+      font-family: var(--acv-header-font);
+      font-size: 8pt;
+    }
+    .nav-link { color: var(--acv-graytext); }
+    .nav-link.active { font-weight: 700; color: var(--color-primary, #CC5500); }
+
+    @media print {
+      body { background: #fff; }
+      .page { box-shadow: none; margin: 0; padding: 1.5cm 2.0cm; max-width: 100%; }
+      .resume-nav { display: none; }
+      a { color: inherit; }
+    }
+  </style>
+  {% if custom_css %}
+  <style>{{ custom_css | safe }}</style>
+  {% endif %}
+</head>
+<body>
+  <div class="page">
+    {{ render_nav(resume, pages, has_pages) }}
+    <h1 class="page-title">{{ page.title }}</h1>
+    <div class="page-content">
+      {{ page.content | safe }}
+    </div>
+  </div>
+  {% if custom_js %}
+  <script>{{ custom_js | safe }}</script>
+  {% endif %}
+</body>
+</html>

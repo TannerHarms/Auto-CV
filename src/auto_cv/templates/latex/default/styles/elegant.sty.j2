@@ -1,0 +1,125 @@
+<# elegant.sty — Refined professional: decorative lines above+below headings, Palatino #>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{resume}[2026/01/01 Auto Resume — Elegant]
+
+% --- Geometry ---
+\RequirePackage[<< style.latex.paper_size >>, margin=<< style.spacing.page_margin >>]{geometry}
+
+% --- Fonts ---
+\RequirePackage[T1]{fontenc}
+\RequirePackage[utf8]{inputenc}
+\RequirePackage{mathpazo}
+\RequirePackage{microtype}
+
+% --- Colors ---
+\RequirePackage[dvipsnames]{xcolor}
+\definecolor{primary}{HTML}{<< style.colors.primary | replace('#', '') >>}
+\definecolor{secondary}{HTML}{<< style.colors.secondary | replace('#', '') >>}
+\definecolor{accent}{HTML}{<< style.colors.accent | replace('#', '') >>}
+\definecolor{linkcolor}{HTML}{<< style.colors.link | replace('#', '') >>}
+\definecolor{headingcolor}{HTML}{<< style.colors.heading | replace('#', '') >>}
+\definecolor{textcolor}{HTML}{<< style.colors.text | replace('#', '') >>}
+
+% --- Hyperlinks ---
+\RequirePackage[colorlinks=true, urlcolor=linkcolor, linkcolor=linkcolor]{hyperref}
+
+% --- Spacing ---
+\RequirePackage{enumitem}
+\setlist[itemize]{nosep, left=0pt .. 1.5em, label={\color{accent}\textendash}}
+\RequirePackage{parskip}
+\RequirePackage{titlesec}
+
+% --- Section: centered text with thin decorative lines above and below ---
+\titleformat{\section}
+  {\centering\normalsize\scshape\bfseries\color{headingcolor}}
+  {}
+  {0pt}
+  {\vspace{-2pt}{\color{accent}\hrule height 0.3pt}\vspace{6pt}}
+  [\vspace{4pt}{\color{accent}\hrule height 0.3pt}\vspace{2pt}]
+\titlespacing{\section}{0pt}{<< style.spacing.section_gap >>}{6pt}
+
+% ====================== STANDARD COMMAND INTERFACE ======================
+
+\newcommand{\cvname}[1]{%
+  {\centering\fontsize{24}{28}\selectfont\scshape\color{primary} #1\par}%
+}
+\newcommand{\cvtitle}[1]{%
+  {\centering\normalsize\itshape\color{accent} #1\par}%
+}
+\newcommand{\cvcontact}[1]{%
+  {\centering\small\color{secondary} #1\par}%
+}
+
+\newcommand{\cventry}[4]{%
+  \vspace{<< style.spacing.entry_gap >>}%
+  \noindent\hspace{2pt}\textcolor{accent}{\vrule width 1.5pt}\hspace{8pt}%
+  \begin{minipage}[t]{\dimexpr\textwidth-14pt\relax}%
+    {\bfseries\color{headingcolor} #1}%
+    \hfill{\small\color{secondary} #3}\par%
+    \vspace{1pt}%
+    {\itshape\color{accent} #2}%
+    \ifx&#4&\else\hfill{\small\color{secondary} #4}\fi%
+    \vspace{2pt}\par%
+  \end{minipage}\par%
+}
+
+\newcommand{\cvedentry}[4]{%
+  \vspace{<< style.spacing.entry_gap >>}%
+  \noindent\hspace{2pt}\textcolor{accent}{\vrule width 1.5pt}\hspace{8pt}%
+  \begin{minipage}[t]{\dimexpr\textwidth-14pt\relax}%
+    {\bfseries\color{headingcolor} #1}%
+    \hfill{\small\color{secondary} #3}\par%
+    \vspace{1pt}%
+    {\itshape\color{accent} #2}%
+    \ifx&#4&\else\hfill{\small\color{secondary} #4}\fi%
+    \vspace{2pt}\par%
+  \end{minipage}\par%
+}
+
+\newcommand{\cvskillcat}[2]{%
+  {\bfseries\itshape\color{accent} #1}\hspace{8pt}{#2}\\[3pt]%
+}
+
+\newcommand{\cvproject}[3]{%
+  \vspace{<< style.spacing.entry_gap >>}%
+  \noindent\hspace{2pt}\textcolor{accent}{\vrule width 1.5pt}\hspace{8pt}%
+  \begin{minipage}[t]{\dimexpr\textwidth-14pt\relax}%
+    {\bfseries\color{headingcolor} #1}%
+    \ifx&#3&\else\hfill{\small\color{secondary} #3}\fi\par%
+    \ifx&#2&\else{\small\itshape\color{secondary}#2}\fi%
+    \vspace{2pt}\par%
+  \end{minipage}\par%
+}
+
+\newcommand{\cvcert}[3]{%
+  \vspace{<< style.spacing.entry_gap >>}%
+  {\bfseries #1}\ifx&#2&\else{ --- \itshape\color{accent}#2}\fi%
+  \ifx&#3&\else\hfill{\small\color{secondary} #3}\fi\\[-2pt]%
+}
+
+\newcommand{\cvpub}[4]{%
+  \vspace{<< style.spacing.entry_gap >>}%
+  {\bfseries #1}\ifx&#4&\else\hfill{\small\color{secondary} #4}\fi\par%
+  \ifx&#3&\else{\small #3}\fi%
+  \ifx&#2&\else{\\\small\itshape\color{accent} #2}\fi%
+  \vspace{2pt}\par%
+}
+
+\newcommand{\cvaward}[4]{%
+  \vspace{<< style.spacing.entry_gap >>}%
+  {\bfseries #1}\ifx&#4&\else\hfill{\small\color{secondary} #4}\fi\par%
+  \ifx&#2&\else{\itshape\color{accent}#2}\fi%
+  \ifx&#3&\else\hfill{\small\color{secondary} #3}\fi%
+  \vspace{2pt}\par%
+}
+
+\newcommand{\cvsummary}[1]{%
+  {\itshape\color{textcolor} #1}%
+}
+
+<% for pkg in style.latex.extra_packages %>
+\RequirePackage{<< pkg >>}
+<% endfor %>
+<< style.latex.extra_preamble >>
+
+\color{textcolor}

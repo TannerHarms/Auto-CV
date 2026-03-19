@@ -1,0 +1,16 @@
+# Style preset. Options: classic, modern, minimal, or ./presets/custom.yml
+preset: modern
+
+# Override preset values:
+colors:
+  primary: "#1B3A4B"
+  accent: "#3D85C6"
+
+fonts:
+  heading: Helvetica
+  body: "Source Sans Pro"
+
+html:
+  layout: top-header
+  include_photo: true
+  include_nav: true

@@ -1,0 +1,177 @@
+{# Cards layout — each section in a distinct card, grid-based #}
+{% from "partials/sections.html.j2" import render_section %}
+{% from "partials/nav.html.j2" import render_nav %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ resume.config.html_meta.get('title', resume.config.name + ' — Resume') }}</title>
+  {% if resume.config.html_meta.get('description') %}
+  <meta name="description" content="{{ resume.config.html_meta['description'] }}">
+  {% endif %}
+  <style>
+    :root {
+      {% for key, val in css_vars.items() %}
+      {{ key }}: {{ val }};
+      {% endfor %}
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font-body), Georgia, serif;
+      font-size: var(--font-size-base);
+      line-height: var(--spacing-line-height);
+      color: var(--color-text);
+      background: #eee;
+      margin: 0;
+    }
+
+    a { color: var(--color-link); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* --- Header bar --- */
+    .cards-header {
+      background: var(--color-primary);
+      color: #fff;
+      padding: 2rem 2rem 1.5rem;
+      text-align: center;
+    }
+    .cards-header .resume-photo {
+      width: 110px; height: 110px;
+      border-radius: 50%; object-fit: cover;
+      border: 3px solid rgba(255,255,255,0.3);
+      margin-bottom: 0.75rem;
+    }
+    .cards-header h1 {
+      font-family: var(--font-heading);
+      font-size: 1.8rem;
+      margin-bottom: 0.25rem;
+    }
+    .cards-header .subtitle {
+      font-size: 1rem;
+      opacity: 0.85;
+      margin-bottom: 0.75rem;
+    }
+    .cards-header .contact-row {
+      display: flex; gap: 1.25rem;
+      flex-wrap: wrap; justify-content: center;
+      font-size: 0.9rem;
+    }
+    .cards-header .contact-row a { color: #ddd; }
+    .cards-header .contact-row a:hover { color: #fff; }
+
+    /* --- Nav --- */
+    .resume-nav {
+      display: flex; gap: 1rem; justify-content: center;
+      padding: 0.75rem 0;
+      background: var(--color-background);
+      border-bottom: 1px solid var(--color-border);
+    }
+    .nav-link { font-size: 0.9rem; color: var(--color-link); }
+    .nav-link.active { font-weight: 700; color: var(--color-primary); }
+
+    /* --- Cards grid --- */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
+      gap: 1.5rem;
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 0 1.5rem 3rem;
+    }
+    .card {
+      background: var(--color-background);
+      border-radius: 6px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+      padding: 1.5rem;
+      transition: box-shadow 0.2s;
+    }
+    .card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+
+    /* --- Section content inside cards --- */
+    .resume-section { margin-bottom: 0; }
+    .section-title {
+      font-family: var(--font-heading);
+      font-size: var(--font-size-heading);
+      color: var(--color-heading);
+      border-bottom: 2px solid var(--color-primary);
+      padding-bottom: 4px;
+      margin-bottom: 0.75rem;
+    }
+    .entry { margin-bottom: var(--spacing-entry-gap); }
+    .entry-title-line { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; }
+    .entry-title { font-size: 1rem; color: var(--color-heading); margin: 0; }
+    .entry-dates { font-size: var(--font-size-small); color: var(--color-secondary); }
+    .entry-subtitle-line { display: flex; justify-content: space-between; flex-wrap: wrap; }
+    .entry-org { color: var(--color-accent); font-style: italic; }
+    .entry-location { font-size: var(--font-size-small); color: var(--color-secondary); }
+    .entry-tech { font-size: var(--font-size-small); color: var(--color-secondary); font-style: italic; }
+    .entry-highlights { margin: 0.25rem 0 0 1.5rem; padding: 0; }
+    .entry-highlights li { margin-bottom: 2px; }
+    .skills-grid { display: flex; flex-direction: column; gap: 0.25rem; }
+    .skill-category strong::after { content: ':'; }
+    .skill-category .skill-list { margin-left: 0.3em; }
+    .skill-pills { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+    .skill-pill {
+      background: var(--color-primary);
+      color: #fff;
+      font-size: 0.8rem;
+      padding: 2px 10px;
+      border-radius: 12px;
+    }
+
+    /* --- Responsive --- */
+    @media (max-width: 500px) {
+      .cards-grid { grid-template-columns: 1fr; padding: 0 0.75rem 2rem; }
+    }
+
+    /* --- Print --- */
+    @media print {
+      body { background: #fff; }
+      .cards-grid { display: block; }
+      .card { box-shadow: none; page-break-inside: avoid; margin-bottom: 1rem; }
+      .cards-header { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .resume-nav { display: none; }
+    }
+  </style>
+  {% if custom_css %}
+  <style>{{ custom_css | safe }}</style>
+  {% endif %}
+</head>
+<body>
+
+  <header class="cards-header">
+    {% if style.html.include_photo and resume.config.photo %}
+    <img src="assets/{{ resume.config.photo }}" alt="Photo" class="resume-photo">
+    {% endif %}
+    <h1>{{ resume.config.name }}</h1>
+    {% if resume.config.title %}
+    <div class="subtitle">{{ resume.config.title }}</div>
+    {% endif %}
+    <div class="contact-row">
+      {% if resume.config.contact.email %}<span>{{ resume.config.contact.email }}</span>{% endif %}
+      {% if resume.config.contact.phone %}<span>{{ resume.config.contact.phone }}</span>{% endif %}
+      {% if resume.config.contact.location %}<span>{{ resume.config.contact.location }}</span>{% endif %}
+      {% if resume.config.contact.linkedin %}<a href="https://linkedin.com/in/{{ resume.config.contact.linkedin }}">LinkedIn</a>{% endif %}
+      {% if resume.config.contact.github %}<a href="https://github.com/{{ resume.config.contact.github }}">GitHub</a>{% endif %}
+      {% if resume.config.contact.website %}<a href="{{ resume.config.contact.website }}">{{ resume.config.contact.website }}</a>{% endif %}
+    </div>
+  </header>
+
+  {{ render_nav(resume, pages, has_pages) }}
+
+  <div class="cards-grid">
+    {% for section in sections %}
+    <div class="card">
+      {{ render_section(section, style) }}
+    </div>
+    {% endfor %}
+  </div>
+
+  {% if custom_js %}
+  <script>{{ custom_js | safe }}</script>
+  {% endif %}
+</body>
+</html>

@@ -1,0 +1,113 @@
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{resume}[2026/01/01 Auto Resume — Executive]
+
+% --- Geometry ---
+\RequirePackage[letterpaper, margin=0.9in]{geometry}
+
+% --- Fonts ---
+\RequirePackage[T1]{fontenc}
+\RequirePackage{mathpazo}
+\RequirePackage{microtype}
+
+% --- Colors ---
+\RequirePackage[dvipsnames]{xcolor}
+\definecolor{primary}{HTML}{1B2A4A}
+\definecolor{secondary}{HTML}{6B7B8D}
+\definecolor{accent}{HTML}{B8860B}
+\definecolor{linkcolor}{HTML}{1B2A4A}
+\definecolor{headingcolor}{HTML}{1B2A4A}
+\definecolor{textcolor}{HTML}{2D2D2D}
+
+% --- Hyperlinks ---
+\RequirePackage[colorlinks=true, urlcolor=linkcolor, linkcolor=linkcolor]{hyperref}
+
+% --- Spacing ---
+\RequirePackage{enumitem}
+\setlist[itemize]{nosep, left=0pt .. 1.5em, label={\color{accent}$\diamond$}}
+\RequirePackage{parskip}
+\RequirePackage{titlesec}
+
+% --- Section: small caps + double rule (thin above, thick below) ---
+\titleformat{\section}
+  {\vspace{2pt}\color{accent}\hrule height 0.4pt\vspace{4pt}\large\scshape\bfseries\color{headingcolor}}
+  {}
+  {0pt}
+  {}
+  [\vspace{2pt}{\color{accent}\hrule height 1.2pt}\vspace{4pt}]
+\titlespacing{\section}{0pt}{16pt}{6pt}
+
+% ====================== STANDARD COMMAND INTERFACE ======================
+
+\newcommand{\cvname}[1]{%
+  {\fontsize{26}{30}\selectfont\bfseries\scshape\color{primary} #1}%
+}
+\newcommand{\cvtitle}[1]{%
+  {\large\itshape\color{accent} #1}%
+}
+\newcommand{\cvcontact}[1]{%
+  {\small\color{secondary} #1}%
+}
+
+\newcommand{\cventry}[4]{%
+  \vspace{10pt}%
+  {\bfseries\color{headingcolor} #1}%
+  \hfill{\small\scshape\color{secondary} #3}\par%
+  \vspace{1pt}%
+  {\itshape\color{accent} #2}%
+  \ifx&#4&\else\hfill{\small\color{secondary} #4}\fi%
+  \vspace{3pt}\par%
+}
+
+\newcommand{\cvedentry}[4]{%
+  \vspace{10pt}%
+  {\bfseries\color{headingcolor} #1}%
+  \hfill{\small\scshape\color{secondary} #3}\par%
+  \vspace{1pt}%
+  {\itshape\color{accent} #2}%
+  \ifx&#4&\else\hfill{\small\color{secondary} #4}\fi%
+  \vspace{3pt}\par%
+}
+
+\newcommand{\cvskillcat}[2]{%
+  {\bfseries\scshape\color{accent} #1}\hspace{8pt}{#2}\\[4pt]%
+}
+
+\newcommand{\cvproject}[3]{%
+  \vspace{10pt}%
+  {\bfseries\color{headingcolor} #1}%
+  \ifx&#3&\else\hfill{\small\scshape\color{secondary} #3}\fi\par%
+  \ifx&#2&\else{\small\itshape\color{secondary}#2}\fi%
+  \vspace{2pt}\par%
+}
+
+\newcommand{\cvcert}[3]{%
+  \vspace{10pt}%
+  {\bfseries #1}\ifx&#2&\else{ --- \itshape\color{accent}#2}\fi%
+  \ifx&#3&\else\hfill{\small\scshape\color{secondary} #3}\fi\\[-2pt]%
+}
+
+\newcommand{\cvpub}[4]{%
+  \vspace{10pt}%
+  {\bfseries #1}\ifx&#4&\else\hfill{\small\scshape\color{secondary} #4}\fi\par%
+  \ifx&#3&\else{\small #3}\fi%
+  \ifx&#2&\else{\\\small\itshape\color{accent} #2}\fi%
+  \vspace{2pt}\par%
+}
+
+\newcommand{\cvaward}[4]{%
+  \vspace{10pt}%
+  {\bfseries #1}\ifx&#4&\else\hfill{\small\scshape\color{secondary} #4}\fi\par%
+  \ifx&#2&\else{\itshape\color{accent}#2}\fi%
+  \ifx&#3&\else\hfill{\small\color{secondary} #3}\fi%
+  \vspace{2pt}\par%
+}
+
+\newcommand{\cvsummary}[1]{%
+  {\itshape #1}%
+}
+
+
+
+
+\color{textcolor}

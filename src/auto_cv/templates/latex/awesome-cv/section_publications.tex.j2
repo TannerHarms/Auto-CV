@@ -1,0 +1,14 @@
+<# Publications section — awesome-cv format #>
+\cvsection{<< section.title | escape_latex >>}
+
+\begin{cventries}
+
+<% for entry in section.publication_entries %>
+\cventryshort
+{<< entry.title | escape_latex >>}
+{<< (entry.authors or '') | escape_latex >>}
+{<< (entry.venue or '') | escape_latex >>}
+{<< entry.date | escape_latex if entry.date else '' >>}
+
+<% endfor %>
+\end{cventries}

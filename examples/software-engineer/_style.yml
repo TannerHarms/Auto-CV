@@ -1,0 +1,15 @@
+# Modern preset with sidebar layout — great for technical roles
+preset: modern
+
+colors:
+  primary: "#1565C0"
+  accent: "#00BCD4"
+
+fonts:
+  heading: Helvetica
+  body: "Segoe UI"
+
+html:
+  layout: sidebar
+  include_photo: true
+  include_nav: false

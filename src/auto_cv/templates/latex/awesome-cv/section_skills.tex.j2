@@ -1,0 +1,12 @@
+<# Skills section — awesome-cv format #>
+\cvsection{<< section.title | escape_latex >>}
+
+\begin{cvskills}
+
+<% for cat in section.skill_categories %>
+\cvskill
+{<< cat.name | escape_latex >>}
+{<< cat.skills | join(', ') | escape_latex >>}
+<% endfor %>
+
+\end{cvskills}

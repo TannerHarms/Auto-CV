@@ -1,0 +1,37 @@
+# Awesome-CV preset — XeLaTeX with awesome-cv visual style and emerald accent
+preset: awesome-cv
+
+# Switch to emerald accent for a more academic feel
+colors:
+  primary: "#00A388"
+  accent: "#00A388"
+  heading: "#00A388"
+
+fonts:
+  heading: "Roboto"
+  body: "Source Sans Pro"
+  mono: "Source Code Pro"
+  size_base: "11pt"
+  size_heading: "16pt"
+  size_name: "32pt"
+  size_small: "10pt"
+  size_bullet: "10pt"
+
+spacing:
+  page_margin: "0.65in"
+  section_gap: "10pt"
+  entry_gap: "6pt"
+  line_height: "1.1"
+  header_to_content: "3pt"
+  skill_label_width: "4.5cm"
+  bullet_list_topsep: "-1.5mm"
+  bullet_after: "1.5mm"
+  bullet_marker: "dash"
+
+# Point to the font directory containing Roboto + Source Sans Pro
+latex:
+  font_dir: "D:/OneDrive/Personal/Work Related/Resume and CV/Resume_Generator/Versions/2024 - PhD/fonts"
+
+html:
+  layout: awesome-cv
+  include_photo: false

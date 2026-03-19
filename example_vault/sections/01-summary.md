@@ -1,0 +1,10 @@
+---
+type: summary
+---
+# Summary
+
+Full-stack software engineer with 7+ years of experience designing, building, and
+shipping web applications at scale. Deep expertise in Python and TypeScript
+ecosystems with a proven track record of leading cross-functional teams, improving
+developer productivity, and delivering user-facing products used by millions.
+Passionate about clean architecture, DevOps automation, and open-source contribution.

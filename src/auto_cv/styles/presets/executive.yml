@@ -1,0 +1,38 @@
+# Executive — Deep navy and gold, serif fonts, generous spacing.
+# Ideal for senior leadership, C-suite, and MBA profiles.
+preset: executive
+
+colors:
+  primary: "#1B2A4A"
+  secondary: "#6B7B8D"
+  accent: "#C9963B"
+  text: "#2D2D2D"
+  heading: "#1B2A4A"
+  background: "#FFFFF8"
+  link: "#1B2A4A"
+  border: "#C9963B"
+
+fonts:
+  heading: Georgia
+  body: "Palatino Linotype"
+  mono: "Courier New"
+  size_base: "11pt"
+  size_heading: "14pt"
+  size_name: "26pt"
+  size_small: "9pt"
+
+spacing:
+  page_margin: "0.85in"
+  section_gap: "14pt"
+  entry_gap: "10pt"
+  line_height: "1.35"
+
+latex:
+  document_class: article
+  font_package: mathpazo
+  use_icons: false
+
+html:
+  layout: top-header
+  responsive: true
+  print_friendly: true

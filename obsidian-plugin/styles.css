@@ -1,0 +1,82 @@
+/**
+ * Styles for Auto CV plugin modals and UI.
+ */
+
+.modal-button-container {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+  justify-content: flex-end;
+}
+
+.modal-button-container button {
+  padding: 10px 20px;
+  border: 1px solid var(--button-border-color);
+  background-color: var(--background-secondary);
+  color: var(--text-normal);
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.modal-button-container button:hover {
+  background-color: var(--background-secondary-alt);
+}
+
+.modal-button-container button.mod-cta {
+  background-color: var(--interactive-accent);
+  color: var(--text-on-accent);
+  border-color: var(--interactive-accent);
+}
+
+.modal-button-container button.mod-cta:hover {
+  background-color: var(--interactive-accent-hover);
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 0;
+  cursor: pointer;
+  margin-bottom: 8px;
+}
+
+.checkbox-label input[type='checkbox'] {
+  cursor: pointer;
+  width: 18px;
+  height: 18px;
+}
+
+.progress-spinner {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+  border-top-color: var(--interactive-accent);
+  animation: spin 0.8s circular linear infinite;
+  margin-left: 10px;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.setting-item {
+  border-bottom: 1px solid var(--divider-color);
+  padding: 12px 0;
+}
+
+.setting-item-control {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.setting-item-control button {
+  padding: 4px 12px;
+  font-size: 12px;
+}

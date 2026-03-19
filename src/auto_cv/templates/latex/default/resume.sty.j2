@@ -1,0 +1,105 @@
+<# resume.sty — Generated style file for Auto Resume #>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{resume}[2026/01/01 Auto Resume Style]
+
+% --- Geometry ---
+\RequirePackage[<< style.latex.paper_size >>, margin=<< style.spacing.page_margin >>]{geometry}
+
+% --- Fonts ---
+\RequirePackage[T1]{fontenc}
+\RequirePackage{<< style.latex.font_package >>}
+\renewcommand{\familydefault}{\sfdefault}
+
+% --- Colors ---
+\RequirePackage[dvipsnames]{xcolor}
+\definecolor{primary}{HTML}{<< style.colors.primary | replace('#', '') >>}
+\definecolor{secondary}{HTML}{<< style.colors.secondary | replace('#', '') >>}
+\definecolor{accent}{HTML}{<< style.colors.accent | replace('#', '') >>}
+\definecolor{linkcolor}{HTML}{<< style.colors.link | replace('#', '') >>}
+\definecolor{headingcolor}{HTML}{<< style.colors.heading | replace('#', '') >>}
+\definecolor{textcolor}{HTML}{<< style.colors.text | replace('#', '') >>}
+
+% --- Hyperlinks ---
+\RequirePackage[colorlinks=true, urlcolor=linkcolor, linkcolor=linkcolor]{hyperref}
+
+% --- Spacing ---
+\RequirePackage{enumitem}
+\setlist[itemize]{nosep, left=0pt .. 1.5em}
+\RequirePackage{parskip}
+\RequirePackage{titlesec}
+
+% --- Section formatting ---
+\titleformat{\section}
+  {\Large\bfseries\color{headingcolor}}
+  {}
+  {0pt}
+  {}
+  [\vspace{-6pt}\textcolor{primary}{\rule{\linewidth}{0.4pt}}]
+
+\titlespacing{\section}{0pt}{<< style.spacing.section_gap >>}{4pt}
+
+% --- Custom commands ---
+\newcommand{\cvname}[1]{%
+  {\fontsize{24}{28}\selectfont\bfseries\color{primary} #1}%
+  \vspace{2pt}%
+}
+
+\newcommand{\cvtitle}[1]{%
+  {\large\color{secondary} #1}%
+  \vspace{4pt}%
+}
+
+\newcommand{\cvcontact}[1]{%
+  {\small\color{textcolor} #1}%
+  \vspace{4pt}%
+}
+
+\newcommand{\cventry}[4]{%
+  % #1=title, #2=org, #3=dates, #4=location
+  \vspace{<< style.spacing.entry_gap >>}%
+  {\bfseries\color{headingcolor} #1}%
+  \hfill{\small\color{secondary} #3}%
+  \\%
+  {\color{accent} #2}%
+  <% if style.latex.use_icons %>%
+  \hfill{\small\color{secondary} #4}%
+  <% else %>%
+  \ifx&#4&\else\hfill{\small\color{secondary} #4}\fi%
+  <% endif %>%
+  \vspace{2pt}%
+}
+
+\newcommand{\cvedentry}[4]{%
+  % #1=degree, #2=institution, #3=dates, #4=location
+  \vspace{<< style.spacing.entry_gap >>}%
+  {\bfseries\color{headingcolor} #1}%
+  \hfill{\small\color{secondary} #3}%
+  \\%
+  {\color{accent} #2}%
+  \ifx&#4&\else\hfill{\small\color{secondary} #4}\fi%
+  \vspace{2pt}%
+}
+
+\newcommand{\cvskillcat}[2]{%
+  % #1=category name, #2=skills
+  {\bfseries #1:} #2\\[2pt]%
+}
+
+\newcommand{\cvproject}[3]{%
+  % #1=name, #2=technologies, #3=dates
+  \vspace{<< style.spacing.entry_gap >>}%
+  {\bfseries\color{headingcolor} #1}%
+  \ifx&#3&\else\hfill{\small\color{secondary} #3}\fi%
+  \\%
+  \ifx&#2&\else{\small\color{secondary}\textit{#2}}\fi%
+  \vspace{2pt}%
+}
+
+<% for pkg in style.latex.extra_packages %>
+\RequirePackage{<< pkg >>}
+<% endfor %>
+
+<< style.latex.extra_preamble >>
+
+% --- Global text color ---
+\color{textcolor}

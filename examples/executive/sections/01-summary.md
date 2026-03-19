@@ -1,0 +1,8 @@
+---
+type: summary
+order: 1
+---
+
+# Executive Summary
+
+Transformational operations leader with 18 years of experience driving strategic growth, operational excellence, and large-scale organisational change at Fortune 500 companies. Proven ability to lead cross-functional teams of 200+, manage P&L responsibility exceeding $500M, and deliver measurable improvements in efficiency, revenue, and customer satisfaction. Board-level communicator with deep expertise in supply chain optimisation, digital transformation, and M&A integration.

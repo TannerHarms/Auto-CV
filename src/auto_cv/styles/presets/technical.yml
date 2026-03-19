@@ -1,0 +1,39 @@
+# Technical — Dark slate with green accents, monospace touches.
+# Ideal for software engineers, DevOps, and technical roles.
+preset: technical
+
+colors:
+  primary: "#0D1B2A"
+  secondary: "#1B4332"
+  accent: "#40916C"
+  text: "#1B1B1B"
+  heading: "#0D1B2A"
+  background: "#F8F9FA"
+  link: "#40916C"
+  border: "#415A77"
+
+fonts:
+  heading: "Helvetica"
+  body: "Helvetica"
+  mono: "Fira Code"
+  size_base: "10pt"
+  size_heading: "12pt"
+  size_name: "24pt"
+  size_small: "8pt"
+
+spacing:
+  page_margin: "0.6in"
+  section_gap: "10pt"
+  entry_gap: "6pt"
+  line_height: "1.25"
+
+latex:
+  document_class: article
+  font_package: helvet
+  use_icons: true
+
+html:
+  layout: sidebar
+  responsive: true
+  print_friendly: true
+  include_nav: true

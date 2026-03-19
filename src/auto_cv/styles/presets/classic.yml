@@ -1,0 +1,40 @@
+# Classic preset — traditional serif, conservative colors
+preset: classic
+colors:
+  primary: "#2C3E50"
+  secondary: "#7F8C8D"
+  accent: "#2C3E50"
+  text: "#333333"
+  heading: "#2C3E50"
+  background: "#FFFFFF"
+  link: "#2C3E50"
+  border: "#BDC3C7"
+
+fonts:
+  heading: "Georgia"
+  body: "Georgia"
+  mono: "Courier New"
+  size_base: "11pt"
+  size_heading: "13pt"
+  size_name: "22pt"
+  size_small: "9pt"
+
+spacing:
+  page_margin: "0.75in"
+  section_gap: "12pt"
+  entry_gap: "8pt"
+  line_height: "1.3"
+
+latex:
+  document_class: "article"
+  paper_size: "letterpaper"
+  font_package: "mathpazo"
+
+docx:
+  page_width_inches: 8.5
+  page_height_inches: 11.0
+
+html:
+  layout: "top-header"
+  responsive: true
+  print_friendly: true

@@ -1,0 +1,38 @@
+# Elegant — Muted burgundy and warm cream, refined Palatino type.
+# Ideal for consulting, finance, law, and polished professional profiles.
+preset: elegant
+
+colors:
+  primary: "#6B2737"
+  secondary: "#8C7B6B"
+  accent: "#A0522D"
+  text: "#3C3C3C"
+  heading: "#6B2737"
+  background: "#FDF8F4"
+  link: "#6B2737"
+  border: "#D4C5B9"
+
+fonts:
+  heading: "Palatino Linotype"
+  body: "Palatino Linotype"
+  mono: "Courier New"
+  size_base: "11pt"
+  size_heading: "13pt"
+  size_name: "24pt"
+  size_small: "9pt"
+
+spacing:
+  page_margin: "0.8in"
+  section_gap: "12pt"
+  entry_gap: "8pt"
+  line_height: "1.35"
+
+latex:
+  document_class: article
+  font_package: mathpazo
+  use_icons: false
+
+html:
+  layout: top-header
+  responsive: true
+  print_friendly: true

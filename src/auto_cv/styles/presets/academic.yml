@@ -1,0 +1,41 @@
+# Academic — Traditional dense layout with Computer Modern feel.
+# Ideal for researchers, professors, and academic CVs.
+preset: academic
+
+colors:
+  primary: "#333333"
+  secondary: "#555555"
+  accent: "#8B0000"
+  text: "#222222"
+  heading: "#333333"
+  background: "#FFFFFF"
+  link: "#8B0000"
+  border: "#999999"
+
+fonts:
+  heading: "Times New Roman"
+  body: "Times New Roman"
+  mono: "Courier New"
+  size_base: "11pt"
+  size_heading: "12pt"
+  size_name: "18pt"
+  size_small: "9pt"
+
+spacing:
+  page_margin: "1in"
+  section_gap: "10pt"
+  entry_gap: "6pt"
+  line_height: "1.2"
+
+latex:
+  document_class: article
+  font_package: times
+  use_icons: false
+  extra_packages:
+    - natbib
+    - url
+
+html:
+  layout: latex-mirror
+  responsive: true
+  print_friendly: true

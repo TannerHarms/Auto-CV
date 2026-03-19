@@ -1,0 +1,19 @@
+# Technical preset — dark slate, green accents, sidebar layout
+preset: technical
+
+# Customise to a data-science-friendly blue-green palette
+colors:
+  primary: "#0A2342"
+  secondary: "#2CA58D"
+  accent: "#84BC9C"
+  link: "#2CA58D"
+
+fonts:
+  heading: Helvetica
+  body: "Segoe UI"
+  mono: "Fira Code"
+
+html:
+  layout: sidebar
+  include_photo: true
+  include_nav: false

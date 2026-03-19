@@ -1,0 +1,23 @@
+node_modules
+.DS_Store
+main.js
+*.js
+*.js.map
+
+# Obsidian
+.obsidian/plugins/auto-resume-obsidian/
+dist/
+
+# Environment
+.env
+.env.local
+
+# IDE
+.idea
+.vscode
+*.swp
+*.swo
+*~
+
+# Build outputs
+.eslintcache

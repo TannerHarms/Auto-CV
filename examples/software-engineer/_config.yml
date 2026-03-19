@@ -1,0 +1,22 @@
+name: Alex Chen
+title: Senior Software Engineer
+photo: headshot.svg
+contact:
+  email: alex.chen@example.com
+  phone: "+1-415-555-0142"
+  location: San Francisco, CA
+  linkedin: alexchen-dev
+  github: achen-dev
+  website: https://alexchen.dev
+
+section_order:
+  - summary
+  - experience
+  - skills
+  - projects
+  - education
+  - certifications
+
+html_meta:
+  title: "Alex Chen — Senior Software Engineer"
+  description: "Backend-focused engineer with 6 years building distributed systems."

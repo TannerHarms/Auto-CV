@@ -1,0 +1,15 @@
+# Executive preset — deep navy, gold accents, serif typography
+preset: executive
+
+# Custom gold border with warm ivory background
+colors:
+  accent: "#B8860B"
+  background: "#FFFFF5"
+
+spacing:
+  page_margin: "0.9in"
+  section_gap: "16pt"
+
+html:
+  layout: top-header
+  include_photo: false

@@ -1,0 +1,85 @@
+{# Latex-mirror layout — extra page template #}
+{% from "partials/nav.html.j2" import render_nav %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ page.title }} — {{ resume.config.name }}</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600;0,700;1,400&display=swap');
+
+    :root {
+      {% for key, val in css_vars.items() %}
+      {{ key }}: {{ val }};
+      {% endfor %}
+      --latex-font: 'EB Garamond', 'Palatino Linotype', Palatino, Georgia, serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--latex-font);
+      font-size: 11pt;
+      line-height: 1.35;
+      color: #000;
+      background: #f8f8f8;
+    }
+
+    .page {
+      max-width: 8.5in;
+      margin: 0.5in auto;
+      padding: 0.75in 0.85in;
+      background: #fff;
+      box-shadow: 0 1px 8px rgba(0,0,0,0.12);
+    }
+
+    a { color: var(--color-link, #2C3E50); }
+    a:hover { text-decoration: underline; }
+
+    .resume-nav {
+      display: flex; gap: 1rem; justify-content: center;
+      margin-bottom: 12pt; padding: 4pt 0;
+      border-bottom: 0.4pt solid #ccc;
+      font-size: 9pt;
+    }
+    .nav-link { color: #444; }
+    .nav-link.active { font-weight: 700; color: #000; }
+
+    .page-title {
+      font-size: 14pt;
+      font-weight: 700;
+      color: #000;
+      border-bottom: 0.6pt solid #000;
+      padding-bottom: 2pt;
+      margin-bottom: 10pt;
+    }
+
+    .page-content img { max-width: 100%; }
+    .page-content h1, .page-content h2, .page-content h3 { color: #000; margin: 10pt 0 5pt; }
+    .page-content p { margin-bottom: 6pt; text-align: justify; }
+
+    @media print {
+      body { background: #fff; }
+      .page { box-shadow: none; margin: 0; padding: 0.5in; }
+      .resume-nav { display: none; }
+    }
+  </style>
+  {% if custom_css %}
+  <style>{{ custom_css | safe }}</style>
+  {% endif %}
+</head>
+<body>
+  <div class="page">
+    {{ render_nav(resume, pages, has_pages, active_id=page.id) }}
+    <h1 class="page-title">{{ page.title }}</h1>
+    <div class="page-content">
+      {{ page.raw_content | markdown | safe }}
+    </div>
+  </div>
+
+  {% if custom_js %}
+  <script>{{ custom_js | safe }}</script>
+  {% endif %}
+</body>
+</html>

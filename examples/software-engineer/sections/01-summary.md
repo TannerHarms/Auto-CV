@@ -1,0 +1,8 @@
+---
+type: summary
+order: 1
+---
+
+# Summary
+
+Backend-focused software engineer with 6 years of experience designing and scaling distributed systems. Deep expertise in Go and Python, with a track record of building fault-tolerant services that handle millions of requests per day. Passionate about clean API design, observability, and mentoring engineers.

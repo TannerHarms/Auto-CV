@@ -1,0 +1,71 @@
+{# Multi-page layout — vault page template #}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ page.title }} — {{ resume.config.name }}</title>
+  <style>
+    :root {
+      {% for key, val in css_vars.items() %}
+      {{ key }}: {{ val }};
+      {% endfor %}
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font-body), Georgia, serif;
+      font-size: var(--font-size-base);
+      line-height: var(--spacing-line-height);
+      color: var(--color-text);
+      background: var(--color-background);
+      max-width: 900px;
+      margin: 0 auto;
+      padding: var(--spacing-page-margin);
+    }
+
+    a { color: var(--color-link); }
+    a:hover { text-decoration: underline; }
+
+    .back-link {
+      display: inline-block;
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+      color: var(--color-secondary);
+    }
+
+    .page-title {
+      font-family: var(--font-heading);
+      font-size: 1.5rem;
+      color: var(--color-heading);
+      border-bottom: 2px solid var(--color-primary);
+      padding-bottom: 4px;
+      margin-bottom: 1rem;
+    }
+
+    .page-content img { max-width: 100%; }
+    .page-content h1, .page-content h2, .page-content h3 { color: var(--color-heading); margin: 1rem 0 0.5rem; }
+    .page-content p { margin-bottom: 0.75rem; }
+
+    @media print {
+      body { max-width: 100%; padding: 0.5in; }
+      .back-link { display: none; }
+    }
+  </style>
+  {% if custom_css %}
+  <style>{{ custom_css | safe }}</style>
+  {% endif %}
+</head>
+<body>
+  <a href="index.html" class="back-link">&larr; Back to Resume</a>
+  <h1 class="page-title">{{ page.title }}</h1>
+  <div class="page-content">
+    {{ page.raw_content | markdown | safe }}
+  </div>
+
+  {% if custom_js %}
+  <script>{{ custom_js | safe }}</script>
+  {% endif %}
+</body>
+</html>

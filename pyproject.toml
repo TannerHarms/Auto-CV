@@ -1,0 +1,46 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "auto-cv"
+version = "0.1.0"
+description = "Build CVs and resumes from Obsidian-style markdown vaults. Outputs LaTeX/PDF, DOCX, and HTML."
+requires-python = ">=3.10"
+license = {text = "MIT"}
+dependencies = [
+    "pydantic>=2.0",
+    "pyyaml>=6.0",
+    "python-frontmatter>=1.0",
+    "jinja2>=3.1",
+    "python-docx>=1.1",
+    "markdown>=3.5",
+    "typer>=0.9",
+    "rich>=13.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "pytest-cov>=4.0",
+    "ruff>=0.1",
+]
+agents = [
+    "openai>=1.0",
+]
+web = [
+    "fastapi>=0.100",
+    "uvicorn>=0.23",
+]
+
+[project.scripts]
+auto-cv = "auto_cv.cli:app"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff]
+line-length = 100
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

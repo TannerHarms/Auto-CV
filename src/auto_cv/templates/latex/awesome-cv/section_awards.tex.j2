@@ -1,0 +1,14 @@
+<# Awards section — awesome-cv format #>
+\cvsection{<< section.title | escape_latex >>}
+
+\begin{cvhonors}
+
+<% for entry in section.award_entries %>
+\cvhonor
+{<< entry.title | escape_latex >>}
+{<< (entry.organization or '') | escape_latex >>}
+{<< (entry.location or '') | escape_latex >>}
+{<< entry.date | escape_latex if entry.date else '' >>}
+<% endfor %>
+
+\end{cvhonors}

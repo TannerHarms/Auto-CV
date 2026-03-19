@@ -1,0 +1,45 @@
+{# Sidebar layout — extra page #}
+{% from "partials/nav.html.j2" import render_nav %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ page.title }} — {{ resume.config.name }}</title>
+  <style>
+    :root {
+      {% for key, val in css_vars.items() %}
+      {{ key }}: {{ val }};
+      {% endfor %}
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: var(--font-body); font-size: var(--font-size-base);
+      line-height: var(--spacing-line-height); color: var(--color-text);
+      background: #f5f5f5; margin: 0;
+    }
+    a { color: var(--color-link); }
+    .page-wrapper {
+      max-width: 850px; margin: 2rem auto; background: var(--color-background);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1); padding: 2rem;
+    }
+    .resume-nav { display: flex; gap: 1rem; margin-bottom: 1.5rem; padding: 0.5rem 0; border-bottom: 1px solid var(--color-border); }
+    .nav-link { font-size: 0.9rem; color: var(--color-link); }
+    .nav-link.active { font-weight: 700; color: var(--color-primary); }
+    .page-title { font-family: var(--font-heading); font-size: 1.5rem; color: var(--color-heading); border-bottom: 2px solid var(--color-primary); padding-bottom: 4px; margin-bottom: 1rem; }
+    .page-content img { max-width: 100%; }
+    @media print { body { background: #fff; } .page-wrapper { box-shadow: none; } .resume-nav { display: none; } }
+  </style>
+  {% if custom_css %}
+  <style>{{ custom_css | safe }}</style>
+  {% endif %}
+</head>
+<body>
+  <div class="page-wrapper">
+    {{ render_nav(resume, pages, has_pages, active_id=page.id) }}
+    <h1 class="page-title">{{ page.title }}</h1>
+    <div class="page-content">{{ page.raw_content | markdown | safe }}</div>
+  </div>
+  {% if custom_js %}<script>{{ custom_js | safe }}</script>{% endif %}
+</body>
+</html>

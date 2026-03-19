@@ -1,0 +1,16 @@
+# Elegant preset — refined Palatino type, warm burgundy tones
+preset: elegant
+
+# Soften the burgundy to a deep plum for a youthful-yet-polished look
+colors:
+  primary: "#5C3D6E"
+  accent: "#8E6DAF"
+  heading: "#5C3D6E"
+  link: "#5C3D6E"
+
+fonts:
+  body: "Palatino Linotype"
+
+html:
+  layout: top-header
+  include_photo: false

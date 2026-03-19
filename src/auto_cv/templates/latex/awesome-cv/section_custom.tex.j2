@@ -1,0 +1,8 @@
+<# Custom section — awesome-cv format #>
+\cvsection{<< section.title | escape_latex >>}
+
+<% if section.content %>
+\begin{cvparagraph}
+<< section.content | md_latex >>
+\end{cvparagraph}
+<% endif %>

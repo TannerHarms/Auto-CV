@@ -1,0 +1,75 @@
+<# main.tex — awesome-cv document entry point #>
+\documentclass[<< style.fonts.size_base >>, << style.latex.paper_size >>]{awesome-cv}
+
+\geometry{left=2cm, top=1.5cm, right=2cm, bottom=2cm, footskip=.5cm}
+
+<% if font_dir %>
+\fontdir[<< font_dir >>/]
+<% else %>
+\fontdir[fonts/]
+<% endif %>
+
+% Color theme
+<% if style.colors.primary == "#CC5500" %>
+\colorlet{awesome}{awesome-orange}
+<% elif style.colors.primary == "#00A388" %>
+\colorlet{awesome}{awesome-emerald}
+<% elif style.colors.primary == "#0395DE" %>
+\colorlet{awesome}{awesome-skyblue}
+<% elif style.colors.primary == "#DC3522" %>
+\colorlet{awesome}{awesome-red}
+<% elif style.colors.primary == "#EF4089" %>
+\colorlet{awesome}{awesome-pink}
+<% elif style.colors.primary == "#27AE60" %>
+\colorlet{awesome}{awesome-nephritis}
+<% elif style.colors.primary == "#95A5A6" %>
+\colorlet{awesome}{awesome-concrete}
+<% elif style.colors.primary == "#131A28" %>
+\colorlet{awesome}{awesome-darknight}
+<% else %>
+\definecolor{awesome}{HTML}{<< style.colors.primary | replace('#', '') >>}
+<% endif %>
+
+\renewcommand{\acvHeaderSocialSep}{\quad\textbar\quad}
+
+% --- Personal Information ---
+<% set name_parts = resume.config.name.rsplit(' ', 1) %>
+\name{<< name_parts[0] | escape_latex >>}{<< name_parts[-1] | escape_latex if name_parts | length > 1 else '' >>}
+<% if resume.config.contact.location %>
+\address{<< resume.config.contact.location | escape_latex >>}
+<% endif %>
+<% if resume.config.contact.phone %>
+\mobile{<< resume.config.contact.phone | escape_latex >>}
+<% endif %>
+<% if resume.config.contact.email %>
+\email{<< resume.config.contact.email >>}
+<% endif %>
+<% if resume.config.contact.website %>
+\homepage{<< resume.config.contact.website | replace('https://', '') | replace('http://', '') >>}
+<% endif %>
+<% if resume.config.contact.github %>
+\github{<< resume.config.contact.github >>}
+<% endif %>
+<% if resume.config.contact.linkedin %>
+\linkedin{<< resume.config.contact.linkedin >>}
+<% endif %>
+
+<% if resume.config.title %>
+\position{<< resume.config.title | escape_latex >>}
+<% endif %>
+
+<% if resume.config.metadata.get('quote') %>
+\quote{<< resume.config.metadata['quote'] | escape_latex >>}
+<% endif %>
+
+\makecvfooter{\today}{<< resume.config.name | escape_latex >>~~~\cdotp~~~R\'{e}sum\'{e}}{\thepage}
+
+\begin{document}
+
+\makecvheader
+
+<% for fname in section_filenames %>
+\input{sections/<< fname | replace('.tex', '') >>}
+<% endfor %>
+
+\end{document}

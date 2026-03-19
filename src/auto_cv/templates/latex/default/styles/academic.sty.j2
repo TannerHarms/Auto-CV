@@ -1,0 +1,112 @@
+<# academic.sty — Dense, compact CV for academia: Computer Modern, minimal decoration #>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{resume}[2026/01/01 Auto Resume — Academic]
+
+% --- Geometry ---
+\RequirePackage[<< style.latex.paper_size >>, margin=<< style.spacing.page_margin >>]{geometry}
+
+% --- Fonts: Computer Modern (LaTeX default) ---
+\RequirePackage[T1]{fontenc}
+\RequirePackage[utf8]{inputenc}
+\RequirePackage{lmodern}
+\RequirePackage{microtype}
+
+% --- Colors ---
+\RequirePackage[dvipsnames]{xcolor}
+\definecolor{primary}{HTML}{<< style.colors.primary | replace('#', '') >>}
+\definecolor{secondary}{HTML}{<< style.colors.secondary | replace('#', '') >>}
+\definecolor{accent}{HTML}{<< style.colors.accent | replace('#', '') >>}
+\definecolor{linkcolor}{HTML}{<< style.colors.link | replace('#', '') >>}
+\definecolor{headingcolor}{HTML}{<< style.colors.heading | replace('#', '') >>}
+\definecolor{textcolor}{HTML}{<< style.colors.text | replace('#', '') >>}
+
+% --- Hyperlinks ---
+\RequirePackage[colorlinks=true, urlcolor=linkcolor, linkcolor=linkcolor]{hyperref}
+
+% --- Spacing ---
+\RequirePackage{enumitem}
+\setlist[itemize]{nosep, left=0pt .. 1.2em, label={\small\textbullet}}
+\RequirePackage{parskip}
+\setlength{\parskip}{0pt}
+\RequirePackage{titlesec}
+
+% --- Section: bold, left-aligned, simple underline (classic academic CV) ---
+\titleformat{\section}
+  {\large\bfseries\color{headingcolor}}
+  {}
+  {0pt}
+  {\MakeUppercase}
+  [\vspace{-4pt}{\color{primary}\hrule height 0.8pt}\vspace{2pt}]
+\titlespacing{\section}{0pt}{<< style.spacing.section_gap >>}{3pt}
+
+% ====================== STANDARD COMMAND INTERFACE ======================
+
+\newcommand{\cvname}[1]{%
+  {\fontsize{20}{24}\selectfont\bfseries #1}%
+}
+\newcommand{\cvtitle}[1]{%
+  {\normalsize\itshape\color{secondary} #1}%
+}
+\newcommand{\cvcontact}[1]{%
+  {\footnotesize #1}%
+}
+
+\newcommand{\cventry}[4]{%
+  \vspace{<< style.spacing.entry_gap >>}%
+  {\bfseries #1}%
+  \ifx&#2&\else{, #2}\fi%
+  \ifx&#4&\else{, #4}\fi%
+  \hfill{\small #3}\par%
+}
+
+\newcommand{\cvedentry}[4]{%
+  \vspace{<< style.spacing.entry_gap >>}%
+  {\bfseries #1}%
+  \ifx&#2&\else{, #2}\fi%
+  \ifx&#4&\else{, #4}\fi%
+  \hfill{\small #3}\par%
+}
+
+\newcommand{\cvskillcat}[2]{%
+  {\bfseries #1:} #2\\[2pt]%
+}
+
+\newcommand{\cvproject}[3]{%
+  \vspace{<< style.spacing.entry_gap >>}%
+  {\bfseries #1}%
+  \ifx&#3&\else\hfill{\small #3}\fi\par%
+  \ifx&#2&\else{\footnotesize\itshape #2}\fi%
+  \vspace{1pt}\par%
+}
+
+\newcommand{\cvcert}[3]{%
+  \vspace{2pt}%
+  {\bfseries #1}\ifx&#2&\else{, #2}\fi%
+  \ifx&#3&\else\hfill{\small #3}\fi\\[-2pt]%
+}
+
+% Publication: citation-like format
+\newcommand{\cvpub}[4]{%
+  \vspace{2pt}%
+  \ifx&#3&\else{#3. }\fi%
+  ``#1.''\ifx&#2&\else{ \textit{#2}}\fi%
+  \ifx&#4&\else{, #4}\fi.\par%
+}
+
+\newcommand{\cvaward}[4]{%
+  \vspace{2pt}%
+  {\bfseries #1}\ifx&#2&\else{, #2}\fi%
+  \ifx&#3&\else\hfill{\small #3}\fi%
+  \ifx&#4&\else{\\\small #4}\fi\par%
+}
+
+\newcommand{\cvsummary}[1]{%
+  {\small #1}%
+}
+
+<% for pkg in style.latex.extra_packages %>
+\RequirePackage{<< pkg >>}
+<% endfor %>
+<< style.latex.extra_preamble >>
+
+\color{textcolor}

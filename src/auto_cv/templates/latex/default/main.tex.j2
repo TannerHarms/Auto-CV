@@ -1,0 +1,50 @@
+<# main.tex — Document entry point #>
+\documentclass[<< style.fonts.size_base >>, << style.latex.paper_size >>]{<< style.latex.document_class >>}
+\usepackage{resume}
+
+\begin{document}
+\pagestyle{empty}
+
+% --- Header ---
+<% set name_parts = resume.config.name.split() -%>
+<% if name_parts | length > 1 -%>
+<% set first_name = name_parts[:-1] | join(' ') -%>
+<% set last_name = name_parts[-1] -%>
+<% else -%>
+<% set first_name = '' -%>
+<% set last_name = resume.config.name -%>
+<% endif -%>
+\begin{center}
+  \cvname{<< first_name | escape_latex >>}{<< last_name | escape_latex >>}<% if resume.config.title %>\\[\acvHeaderAfterNameSkip]
+  \cvtitle{<< resume.config.title | escape_latex >>}<% endif %><% if resume.config.contact.location %>\\[\acvHeaderAfterPositionSkip]
+  \cvaddress{<< resume.config.contact.location | escape_latex >>}<% endif %>\\[\acvHeaderAfterAddressSkip]
+  \cvcontact{%
+<% set contact_parts = [] -%>
+<% if resume.config.contact.email -%>
+<% set _ = contact_parts.append("\\href{mailto:" + resume.config.contact.email + "}{" + resume.config.contact.email + "}") -%>
+<% endif -%>
+<% if resume.config.contact.phone -%>
+<% set _ = contact_parts.append(resume.config.contact.phone) -%>
+<% endif -%>
+<% if resume.config.contact.linkedin -%>
+<% set _ = contact_parts.append("\\href{https://linkedin.com/in/" + resume.config.contact.linkedin + "}{linkedin.com/in/" + resume.config.contact.linkedin + "}") -%>
+<% endif -%>
+<% if resume.config.contact.github -%>
+<% set _ = contact_parts.append("\\href{https://github.com/" + resume.config.contact.github + "}{github.com/" + resume.config.contact.github + "}") -%>
+<% endif -%>
+<% if resume.config.contact.website -%>
+<% set display_url = resume.config.contact.website | replace("https://", "") | replace("http://", "") -%>
+<% set _ = contact_parts.append("\\href{" + resume.config.contact.website + "}{" + display_url + "}") -%>
+<% endif -%>
+<< contact_parts | join(' \\acvHeaderSocialSep ') >>%
+  }
+\end{center}
+
+\vspace{4pt}
+
+% --- Sections ---
+<% for fname in section_filenames %>
+\input{sections/<< fname | replace('.tex', '') >>}
+<% endfor %>
+
+\end{document}

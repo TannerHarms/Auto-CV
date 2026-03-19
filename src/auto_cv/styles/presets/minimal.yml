@@ -1,0 +1,40 @@
+# Minimal preset — maximum whitespace, understated
+preset: minimal
+colors:
+  primary: "#111111"
+  secondary: "#666666"
+  accent: "#111111"
+  text: "#222222"
+  heading: "#111111"
+  background: "#FFFFFF"
+  link: "#444444"
+  border: "#DDDDDD"
+
+fonts:
+  heading: "Helvetica"
+  body: "Helvetica"
+  mono: "Menlo"
+  size_base: "10pt"
+  size_heading: "12pt"
+  size_name: "20pt"
+  size_small: "8pt"
+
+spacing:
+  page_margin: "1in"
+  section_gap: "14pt"
+  entry_gap: "10pt"
+  line_height: "1.4"
+
+latex:
+  document_class: "article"
+  paper_size: "letterpaper"
+  font_package: "helvet"
+
+docx:
+  page_width_inches: 8.5
+  page_height_inches: 11.0
+
+html:
+  layout: "top-header"
+  responsive: true
+  print_friendly: true

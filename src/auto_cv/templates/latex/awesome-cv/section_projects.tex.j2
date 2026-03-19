@@ -1,0 +1,21 @@
+<# Projects section — awesome-cv format #>
+\cvsection{<< section.title | escape_latex >>}
+
+\begin{cventries}
+
+<% for entry in section.project_entries %>
+\cventry
+{<< entry.title | escape_latex >>}
+{<< (entry.technologies | join(', ') | escape_latex) if entry.technologies else '' >>}
+{<< (entry.url or '') | escape_latex >>}
+{<< entry.dates.display | escape_latex if entry.dates else '' >>}
+{<% if entry.highlights %>
+\begin{cvitems}
+<% for h in entry.highlights %>
+\item {<< h | md_latex >>}
+<% endfor %>
+\end{cvitems}
+<% endif %>}
+
+<% endfor %>
+\end{cventries}

@@ -1,0 +1,10 @@
+<# Publications section #>
+\section{<< section.title | escape_latex >>}
+
+<% for entry in section.publication_entries %>
+\cvpub{<< entry.title | escape_latex >>}{<< entry.venue | escape_latex if entry.venue else '' >>}{<< entry.authors | join(', ') | escape_latex if entry.authors else '' >>}{<< entry.date | escape_latex if entry.date else '' >>}
+<% if entry.url %>
+\href{<< entry.url >>}{[link]}
+<% endif %>
+
+<% endfor %>

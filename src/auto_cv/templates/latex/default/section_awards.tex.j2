@@ -1,0 +1,30 @@
+<# Awards section — supports display: (default), compact, expressive #>
+\section{<< section.title | escape_latex >>}
+
+<% if section.display == 'compact' %>
+<# Compact: just title + date, one line per award #>
+<% for entry in section.award_entries %>
+\cvawardcompact{<< entry.title | escape_latex >><% if entry.issuer %>, << entry.issuer | escape_latex >><% endif %>}{<< entry.date | escape_latex if entry.date else '' >>}
+<% endfor %>
+<% elif section.display == 'expressive' %>
+<# Expressive: full cventry layout with title, issuer, date, location + bullets #>
+<% for entry in section.award_entries %>
+\cvawardexpressive{<< entry.title | escape_latex >>}{<< entry.issuer | escape_latex if entry.issuer else '' >>}{<< entry.date | escape_latex if entry.date else '' >>}{<< entry.location | escape_latex if entry.location else '' >>}
+<% if entry.description or entry.highlights %>
+\begin{itemize}
+<% if entry.description -%>
+  \item << entry.description | md_latex >>
+<% endif -%>
+<% for h in entry.highlights | default([]) %>
+  \item << h | md_latex >>
+<% endfor %>
+\end{itemize}
+<% endif %>
+<% endfor %>
+<% else %>
+<# Default: honor-style (date | title, issuer | ) #>
+<% for entry in section.award_entries %>
+\cvaward{<< entry.title | escape_latex >>}{<< entry.issuer | escape_latex if entry.issuer else '' >>}{<< entry.date | escape_latex if entry.date else '' >>}{<< entry.description | md_latex if entry.description else '' >>}
+
+<% endfor %>
+<% endif %>

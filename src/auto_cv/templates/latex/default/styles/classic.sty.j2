@@ -1,0 +1,126 @@
+<# classic.sty — Traditional serif style with horizontal rules #>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{resume}[2026/01/01 Auto Resume — Classic]
+
+% --- Geometry ---
+\RequirePackage[<< style.latex.paper_size >>, margin=<< style.spacing.page_margin >>]{geometry}
+
+% --- Fonts ---
+\RequirePackage[T1]{fontenc}
+\RequirePackage[utf8]{inputenc}
+\RequirePackage{mathpazo}  % Palatino
+\RequirePackage{microtype}
+
+% --- Colors ---
+\RequirePackage[dvipsnames]{xcolor}
+\definecolor{primary}{HTML}{<< style.colors.primary | replace('#', '') >>}
+\definecolor{secondary}{HTML}{<< style.colors.secondary | replace('#', '') >>}
+\definecolor{accent}{HTML}{<< style.colors.accent | replace('#', '') >>}
+\definecolor{linkcolor}{HTML}{<< style.colors.link | replace('#', '') >>}
+\definecolor{headingcolor}{HTML}{<< style.colors.heading | replace('#', '') >>}
+\definecolor{textcolor}{HTML}{<< style.colors.text | replace('#', '') >>}
+
+% --- Hyperlinks ---
+\RequirePackage[colorlinks=true, urlcolor=linkcolor, linkcolor=linkcolor]{hyperref}
+
+% --- Spacing ---
+\RequirePackage{enumitem}
+\setlist[itemize]{nosep, left=0pt .. 1.5em, label=\textbullet}
+\RequirePackage{parskip}
+\RequirePackage{titlesec}
+
+% --- Section: bold heading + full-width rule underneath ---
+\titleformat{\section}
+  {\Large\bfseries\color{headingcolor}}
+  {}
+  {0pt}
+  {}
+  [\vspace{-6pt}\textcolor{primary}{\rule{\linewidth}{0.6pt}}]
+\titlespacing{\section}{0pt}{<< style.spacing.section_gap >>}{6pt}
+
+% ====================== STANDARD COMMAND INTERFACE ======================
+
+% --- Header commands ---
+\newcommand{\cvname}[1]{%
+  {\fontsize{24}{28}\selectfont\bfseries\color{primary} #1}%
+  \vspace{2pt}%
+}
+\newcommand{\cvtitle}[1]{%
+  {\large\color{secondary}\textit{#1}}%
+  \vspace{4pt}%
+}
+\newcommand{\cvcontact}[1]{%
+  {\small\color{textcolor} #1}%
+  \vspace{4pt}%
+}
+
+% --- Experience / general entry ---
+\newcommand{\cventry}[4]{%
+  \vspace{<< style.spacing.entry_gap >>}%
+  {\bfseries\color{headingcolor} #1}%
+  \hfill{\small\color{secondary} #3}\\%
+  {\itshape\color{accent} #2}%
+  \ifx&#4&\else\hfill{\small\color{secondary} #4}\fi%
+  \vspace{2pt}%
+}
+
+% --- Education entry ---
+\newcommand{\cvedentry}[4]{%
+  \vspace{<< style.spacing.entry_gap >>}%
+  {\bfseries\color{headingcolor} #1}%
+  \hfill{\small\color{secondary} #3}\\%
+  {\itshape\color{accent} #2}%
+  \ifx&#4&\else\hfill{\small\color{secondary} #4}\fi%
+  \vspace{2pt}%
+}
+
+% --- Skills ---
+\newcommand{\cvskillcat}[2]{%
+  {\bfseries #1:} #2\\[2pt]%
+}
+
+% --- Projects ---
+\newcommand{\cvproject}[3]{%
+  \vspace{<< style.spacing.entry_gap >>}%
+  {\bfseries\color{headingcolor} #1}%
+  \ifx&#3&\else\hfill{\small\color{secondary} #3}\fi\\%
+  \ifx&#2&\else{\small\itshape\color{secondary} #2}\fi%
+  \vspace{2pt}%
+}
+
+% --- Certifications ---
+\newcommand{\cvcert}[3]{%
+  \vspace{<< style.spacing.entry_gap >>}%
+  {\bfseries #1}\ifx&#2&\else{ --- \textit{#2}}\fi%
+  \ifx&#3&\else\hfill{\small\color{secondary} #3}\fi\\[-2pt]%
+}
+
+% --- Publications ---
+\newcommand{\cvpub}[4]{%
+  \vspace{<< style.spacing.entry_gap >>}%
+  {\bfseries #1}\ifx&#4&\else\hfill{\small\color{secondary} #4}\fi\\%
+  \ifx&#3&\else{\small #3}\fi%
+  \ifx&#2&\else{\\\small\itshape #2}\fi%
+  \vspace{2pt}%
+}
+
+% --- Awards ---
+\newcommand{\cvaward}[4]{%
+  \vspace{<< style.spacing.entry_gap >>}%
+  {\bfseries #1}\ifx&#4&\else\hfill{\small\color{secondary} #4}\fi\\%
+  \ifx&#2&\else{\itshape\color{accent} #2}\fi%
+  \ifx&#3&\else\hfill{\small\color{secondary} #3}\fi%
+  \vspace{2pt}%
+}
+
+% --- Summary ---
+\newcommand{\cvsummary}[1]{%
+  \textit{#1}%
+}
+
+<% for pkg in style.latex.extra_packages %>
+\RequirePackage{<< pkg >>}
+<% endfor %>
+<< style.latex.extra_preamble >>
+
+\color{textcolor}

@@ -1,0 +1,17 @@
+<# Volunteer / service section — reuses experience entry layout #>
+\section{<< section.title | escape_latex >>}
+
+<% for entry in section.experience_entries %>
+\cventry{<< entry.title | escape_latex >>}{<< entry.organization | escape_latex >>}{<< entry.dates.display | escape_latex if entry.dates else '' >>}{<< entry.location | escape_latex if entry.location else '' >>}
+<% if entry.description %>
+<< entry.description | md_latex >>
+<% endif %>
+<% if entry.highlights %>
+\begin{itemize}
+<% for h in entry.highlights %>
+  \item << h | md_latex >>
+<% endfor %>
+\end{itemize}
+<% endif %>
+
+<% endfor %>

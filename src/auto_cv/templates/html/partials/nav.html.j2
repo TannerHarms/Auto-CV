@@ -1,0 +1,11 @@
+{# Navigation partial — used when pages exist #}
+{% macro render_nav(resume, pages, has_pages, active_id=None) %}
+{% if has_pages %}
+<nav class="resume-nav">
+  <a href="index.html" class="nav-link {% if active_id is none %}active{% endif %}">Resume</a>
+  {% for page in pages %}
+  <a href="{{ page.id }}.html" class="nav-link {% if active_id == page.id %}active{% endif %}">{{ page.title }}</a>
+  {% endfor %}
+</nav>
+{% endif %}
+{% endmacro %}

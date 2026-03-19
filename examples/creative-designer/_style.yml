@@ -1,0 +1,20 @@
+# Creative preset — Vibrant card-based layout, great for portfolios
+preset: creative
+
+# Warm coral + teal palette with a purple accent twist
+colors:
+  primary: "#D84315"
+  secondary: "#00897B"
+  accent: "#7B1FA2"
+  heading: "#D84315"
+  link: "#00897B"
+
+fonts:
+  heading: "Trebuchet MS"
+  body: "Segoe UI"
+
+html:
+  layout: cards
+  include_photo: true
+  responsive: true
+  print_friendly: true

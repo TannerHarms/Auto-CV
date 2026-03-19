@@ -1,0 +1,42 @@
+# Modern preset — clean sans-serif, color accents
+preset: modern
+colors:
+  primary: "#1A237E"
+  secondary: "#546E7A"
+  accent: "#0288D1"
+  text: "#212121"
+  heading: "#1A237E"
+  background: "#FFFFFF"
+  link: "#0288D1"
+  border: "#E0E0E0"
+
+fonts:
+  heading: "Helvetica"
+  body: "Helvetica"
+  mono: "Fira Code"
+  size_base: "10.5pt"
+  size_heading: "13pt"
+  size_name: "26pt"
+  size_small: "8.5pt"
+
+spacing:
+  page_margin: "0.6in"
+  section_gap: "10pt"
+  entry_gap: "6pt"
+  line_height: "1.35"
+
+latex:
+  document_class: "article"
+  paper_size: "letterpaper"
+  font_package: "helvet"
+  use_icons: true
+
+docx:
+  page_width_inches: 8.5
+  page_height_inches: 11.0
+
+html:
+  layout: "sidebar"
+  responsive: true
+  print_friendly: true
+  include_nav: true

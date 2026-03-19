@@ -1,0 +1,406 @@
+{# Awesome-CV layout — HTML reproduction of the Awesome-CV LaTeX class (posquit0) #}
+{# Uses Roboto (header) + Source Sans Pro (body) via Google Fonts, matching colors/spacing #}
+{% from "partials/sections.html.j2" import render_section %}
+{% from "partials/nav.html.j2" import render_nav %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ resume.config.html_meta.get('title', resume.config.name + ' — Resume') }}</title>
+  {% if resume.config.html_meta.get('description') %}
+  <meta name="description" content="{{ resume.config.html_meta['description'] }}">
+  {% endif %}
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;1,100;1,300;1,400&family=Source+Sans+3:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      {% for key, val in css_vars.items() %}
+      {{ key }}: {{ val }};
+      {% endfor %}
+      --acv-header-font: 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+      --acv-body-font: 'Source Sans 3', 'Source Sans Pro', 'Helvetica Neue', Arial, sans-serif;
+      --acv-darktext: #414141;
+      --acv-text: #333333;
+      --acv-graytext: #5D5D5D;
+      --acv-lighttext: #999999;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--acv-body-font);
+      font-size: 9pt;
+      font-weight: 400;
+      line-height: 1.4;
+      color: var(--acv-text);
+      background: var(--color-background, #FFFFFF);
+    }
+
+    .page {
+      max-width: 8.5in;
+      margin: 0 auto;
+      padding: 1.5cm 2.0cm 2.0cm;
+    }
+
+    a { color: var(--color-link, #0395DE); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* =====================================================================
+       Header — centered, Roboto, matches awesome-cv.cls
+       ===================================================================== */
+    .resume-header {
+      text-align: center;
+      margin-bottom: 6mm;
+    }
+    .resume-name {
+      font-family: var(--acv-header-font);
+      font-size: 32pt;
+      line-height: 1;
+      color: var(--acv-text);
+      margin-bottom: 0.4mm;
+    }
+    .resume-name .first-name {
+      font-weight: 300;
+    }
+    .resume-name .last-name {
+      font-weight: 700;
+    }
+    .resume-title {
+      font-family: var(--acv-body-font);
+      font-size: 7.6pt;
+      font-variant: small-caps;
+      letter-spacing: 0.5pt;
+      color: var(--color-primary, #CC5500);
+      margin-bottom: 0.4mm;
+    }
+    .resume-address {
+      font-family: var(--acv-header-font);
+      font-size: 8pt;
+      font-style: italic;
+      color: var(--acv-lighttext);
+      margin-bottom: -0.5mm;
+    }
+    .resume-contact {
+      font-family: var(--acv-header-font);
+      font-size: 6.8pt;
+      color: var(--acv-text);
+      margin-top: 1mm;
+    }
+    .resume-contact a { color: var(--acv-text); }
+    .resume-contact a:hover { color: var(--color-primary, #CC5500); }
+    .resume-contact .sep {
+      display: inline-block;
+      margin: 0 0.4em;
+      color: var(--acv-lighttext);
+    }
+
+    /* =====================================================================
+       Sections — awesome-cv style: colored title + gray rule
+       ===================================================================== */
+    .resume-section {
+      margin-top: var(--spacing-section-gap, 10pt);
+      margin-bottom: 0;
+    }
+    .section-title {
+      font-family: var(--acv-body-font);
+      font-size: 16pt;
+      font-weight: 700;
+      color: var(--color-primary, #CC5500);
+      border-bottom: none;
+      padding-bottom: 0;
+      margin-bottom: 2.5mm;
+      display: flex;
+      align-items: center;
+      gap: 0;
+    }
+    .section-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--acv-graytext);
+      margin-left: 6px;
+    }
+
+    /* =====================================================================
+       Entries — two-row table layout matching awesome-cv.cls
+       ===================================================================== */
+    .entry { margin-bottom: var(--spacing-entry-gap, 4pt); }
+    .entry-header { margin-bottom: 0; }
+    .entry-title-line {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+    .entry-title {
+      font-family: var(--acv-body-font);
+      font-size: 10pt;
+      font-weight: 700;
+      color: var(--acv-darktext);
+      margin: 0;
+    }
+    .entry-dates {
+      font-family: var(--acv-body-font);
+      font-size: 8pt;
+      font-weight: 300;
+      font-style: italic;
+      color: var(--acv-graytext);
+      white-space: nowrap;
+    }
+    .entry-subtitle-line {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+    .entry-org {
+      font-family: var(--acv-body-font);
+      font-size: 8pt;
+      font-variant: small-caps;
+      font-style: normal;
+      color: var(--acv-graytext);
+    }
+    .entry-location {
+      font-family: var(--acv-body-font);
+      font-size: 9pt;
+      font-weight: 300;
+      font-style: italic;
+      color: var(--color-primary, #CC5500);
+    }
+    .entry-tech {
+      font-size: 8pt;
+      font-variant: small-caps;
+      color: var(--acv-graytext);
+    }
+    .entry-description {
+      font-size: var(--font-size-bullet, 8.5pt);
+      font-weight: 300;
+      color: var(--acv-text);
+      margin: var(--spacing-header-to-content, 1.5mm) 0;
+    }
+    .entry-highlights {
+      margin: 0.5mm 0 var(--spacing-entry-gap, 4pt) 2ex;
+      padding: 0;
+      list-style-type: disc;
+    }
+    .entry-highlights li {
+      font-size: var(--font-size-bullet, 8.5pt);
+      font-weight: 300;
+      color: var(--acv-text);
+      margin-bottom: 0;
+      line-height: 1.4;
+    }
+
+    /* =====================================================================
+       Education — GPA inline
+       ===================================================================== */
+    .entry-gpa {
+      font-size: var(--font-size-bullet, 8.5pt);
+      font-weight: 300;
+      color: var(--acv-text);
+      margin: var(--spacing-header-to-content, 1.5mm) 0 0 2ex;
+    }
+    .entry-coursework {
+      font-size: var(--font-size-bullet, 8.5pt);
+      font-weight: 300;
+      color: var(--acv-text);
+      margin: var(--spacing-header-to-content, 1.5mm) 0 0 2ex;
+    }
+
+    /* =====================================================================
+       Skills — label | value layout matching \cvskillcat
+       ===================================================================== */
+    .skills-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+    .skill-category {
+      display: flex;
+      gap: 1em;
+      font-size: 9pt;
+      line-height: 1.6;
+    }
+    .skill-category strong {
+      font-family: var(--acv-body-font);
+      font-size: 10pt;
+      font-weight: 700;
+      color: var(--acv-darktext);
+      min-width: var(--spacing-skill-label-width, 4.5cm);
+      text-align: right;
+      flex-shrink: 0;
+    }
+    .skill-category .skill-list {
+      color: var(--acv-text);
+    }
+
+    /* =====================================================================
+       Publications — citation style
+       ===================================================================== */
+    .pub-entry { margin-bottom: 2mm; }
+    .entry-authors {
+      font-size: 8pt;
+      font-variant: small-caps;
+      color: var(--acv-graytext);
+    }
+    .entry-venue {
+      font-size: 9pt;
+      font-weight: 300;
+      font-style: italic;
+      color: var(--acv-graytext);
+    }
+
+    /* =====================================================================
+       Awards — honor-style layout
+       ===================================================================== */
+    .award-entry .entry-title-line {
+      display: flex;
+    }
+    .award-entry .entry-title {
+      font-size: 9pt;
+      font-weight: 700;
+      color: var(--acv-darktext);
+    }
+    .award-entry .entry-dates {
+      font-size: 9pt;
+      font-weight: 400;
+      font-style: normal;
+      color: var(--acv-graytext);
+      min-width: 2cm;
+    }
+    .award-entry .entry-org {
+      font-size: 9pt;
+      font-weight: 400;
+      font-variant: normal;
+      color: var(--acv-graytext);
+    }
+
+    /* =====================================================================
+       Summary — paragraph style
+       ===================================================================== */
+    .summary-content {
+      font-size: 9pt;
+      font-weight: 300;
+      color: var(--acv-text);
+      margin-top: -1mm;
+    }
+    .summary-content p {
+      margin-bottom: 2mm;
+    }
+
+    /* =====================================================================
+       Certifications
+       ===================================================================== */
+    .cert-entry {
+      font-size: 9pt;
+      margin-bottom: 1.5mm;
+    }
+
+    /* =====================================================================
+       Footer
+       ===================================================================== */
+    .resume-footer {
+      margin-top: 6mm;
+      padding-top: 3mm;
+      font-family: var(--acv-body-font);
+      font-size: 8pt;
+      font-variant: small-caps;
+      color: var(--acv-lighttext);
+      display: flex;
+      justify-content: space-between;
+    }
+
+    /* =====================================================================
+       Nav (for multi-page)
+       ===================================================================== */
+    .resume-nav {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      margin-bottom: 4mm;
+      padding: 2mm 0;
+      border-bottom: 0.5px solid var(--acv-lighttext);
+      font-family: var(--acv-header-font);
+      font-size: 8pt;
+    }
+    .nav-link { color: var(--acv-graytext); }
+    .nav-link.active { font-weight: 700; color: var(--color-primary, #CC5500); }
+
+    /* =====================================================================
+       Print stylesheet
+       ===================================================================== */
+    @media print {
+      .page {
+        margin: 0;
+        padding: 1.5cm 2.0cm 2.0cm;
+        max-width: 100%;
+      }
+      .resume-nav { display: none; }
+      a { color: inherit; }
+    }
+  </style>
+  {% if custom_css %}
+  <style>{{ custom_css | safe }}</style>
+  {% endif %}
+</head>
+<body>
+  <div class="page">
+    {{ render_nav(resume, pages, has_pages) }}
+
+    <header class="resume-header">
+      {% if style.html.include_photo and resume.config.photo %}
+      <img src="assets/{{ resume.config.photo }}" alt="Photo" style="width:100px;height:100px;border-radius:50%;object-fit:cover;margin:0 auto 8px;display:block;">
+      {% endif %}
+      <h1 class="resume-name">
+        {%- set name_parts = resume.config.name.split() -%}
+        {%- if name_parts | length > 1 -%}
+          <span class="first-name">{{ name_parts[:-1] | join(' ') }}</span> <span class="last-name">{{ name_parts[-1] }}</span>
+        {%- else -%}
+          <span class="last-name">{{ resume.config.name }}</span>
+        {%- endif -%}
+      </h1>
+      {% if resume.config.title %}
+      <p class="resume-title">{{ resume.config.title }}</p>
+      {% endif %}
+      {% if resume.config.contact.location %}
+      <p class="resume-address">{{ resume.config.contact.location }}</p>
+      {% endif %}
+      <div class="resume-contact">
+        {%- set items = [] -%}
+        {%- if resume.config.contact.email -%}
+          {%- set _ = items.append('<a href="mailto:' + resume.config.contact.email + '">' + resume.config.contact.email + '</a>') -%}
+        {%- endif -%}
+        {%- if resume.config.contact.phone -%}
+          {%- set _ = items.append(resume.config.contact.phone) -%}
+        {%- endif -%}
+        {%- if resume.config.contact.linkedin -%}
+          {%- set _ = items.append('<a href="https://linkedin.com/in/' + resume.config.contact.linkedin + '">linkedin.com/in/' + resume.config.contact.linkedin + '</a>') -%}
+        {%- endif -%}
+        {%- if resume.config.contact.github -%}
+          {%- set _ = items.append('<a href="https://github.com/' + resume.config.contact.github + '">github.com/' + resume.config.contact.github + '</a>') -%}
+        {%- endif -%}
+        {%- if resume.config.contact.website -%}
+          {%- set _ = items.append('<a href="' + resume.config.contact.website + '">' + resume.config.contact.website | replace('https://', '') | replace('http://', '') + '</a>') -%}
+        {%- endif -%}
+        {{ items | join('<span class="sep">|</span>') | safe }}
+      </div>
+    </header>
+
+    <main>
+      {% for section in sections %}
+      {{ render_section(section, style) }}
+      {% endfor %}
+    </main>
+
+    <footer class="resume-footer">
+      <span></span>
+      <span>{{ resume.config.name }}</span>
+      <span></span>
+    </footer>
+  </div>
+
+  {% if custom_js %}
+  <script>{{ custom_js | safe }}</script>
+  {% endif %}
+</body>
+</html>

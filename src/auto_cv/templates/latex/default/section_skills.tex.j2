@@ -1,0 +1,10 @@
+<# Skills section — single table for aligned rows #>
+\section{<< section.title | escape_latex >>}
+
+\setlength\tabcolsep{1ex}%
+\setlength{\extrarowheight}{0pt}%
+\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}} >{\raggedleft\arraybackslash}p{\skillcatlabelwidth} p{\dimexpr\textwidth-\skillcatlabelwidth-4ex\relax}}%
+<% for cat in section.skill_categories -%>
+  \skilltypestyle{<< cat.name | escape_latex >>} & \skillsetstyle{<< cat.skills | join(', ') | escape_latex >>} \\
+<% endfor -%>
+\end{tabular*}%

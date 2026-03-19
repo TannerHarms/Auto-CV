@@ -1,0 +1,51 @@
+# Awesome-CV preset — replicates Awesome-CV look using the default template framework.
+# Supports XeLaTeX with Roboto/Source Sans Pro fonts, or pdflatex with Helvetica fallback.
+# Set latex.font_dir in your _style.yml to point to a directory with Roboto/*.ttf + SourceSansPro/*.otf.
+preset: awesome-cv
+
+colors:
+  primary: "#CC5500"      # awesome-orange
+  secondary: "#5D5D5D"    # gray
+  accent: "#CC5500"       # awesome-orange
+  text: "#333333"         # darkgray
+  heading: "#CC5500"
+  background: "#FFFFFF"
+  link: "#0395DE"         # awesome-skyblue
+  border: "#999999"       # lightgray
+
+fonts:
+  heading: "Roboto"
+  body: "Source Sans Pro"
+  mono: "Source Code Pro"
+  size_base: "11pt"
+  size_heading: "16pt"
+  size_name: "32pt"
+  size_small: "8pt"
+  size_bullet: "8.5pt"
+
+spacing:
+  page_margin: "0.75in"
+  section_gap: "10pt"
+  entry_gap: "4pt"
+  line_height: "1.2"
+  header_to_content: "1.5mm"
+  skill_label_width: "4.5cm"
+  bullet_before: "-2.0mm"
+  bullet_after: "0mm"
+  bullet_marker: "bullet"
+
+latex:
+  template_set: default
+  engine: xelatex
+  document_class: article
+  paper_size: letterpaper
+  font_package: helvet
+  font_dir: ""
+  use_icons: false
+
+docx:
+  page_width_inches: 8.5
+  page_height_inches: 11.0
+
+html:
+  layout: awesome-cv

@@ -1,0 +1,116 @@
+<# minimal.sty — Ultra-clean, maximum whitespace, thin hairlines #>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{resume}[2026/01/01 Auto Resume — Minimal]
+
+% --- Geometry ---
+\RequirePackage[<< style.latex.paper_size >>, margin=<< style.spacing.page_margin >>]{geometry}
+
+% --- Fonts ---
+\RequirePackage[T1]{fontenc}
+\RequirePackage[utf8]{inputenc}
+\RequirePackage{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+\RequirePackage[scaled=0.90]{FiraMono}
+\RequirePackage{microtype}
+
+% --- Colors ---
+\RequirePackage[dvipsnames]{xcolor}
+\definecolor{primary}{HTML}{<< style.colors.primary | replace('#', '') >>}
+\definecolor{secondary}{HTML}{<< style.colors.secondary | replace('#', '') >>}
+\definecolor{accent}{HTML}{<< style.colors.accent | replace('#', '') >>}
+\definecolor{linkcolor}{HTML}{<< style.colors.link | replace('#', '') >>}
+\definecolor{headingcolor}{HTML}{<< style.colors.heading | replace('#', '') >>}
+\definecolor{textcolor}{HTML}{<< style.colors.text | replace('#', '') >>}
+
+% --- Hyperlinks ---
+\RequirePackage[colorlinks=true, urlcolor=linkcolor, linkcolor=linkcolor]{hyperref}
+
+% --- Spacing ---
+\RequirePackage{enumitem}
+\setlist[itemize]{nosep, left=0pt .. 1.2em, label={\color{accent}{\small\textendash}}}
+\RequirePackage{parskip}
+\RequirePackage{titlesec}
+
+% --- Section: small caps + thin hairline ---
+\titleformat{\section}
+  {\normalsize\scshape\color{headingcolor}}
+  {}
+  {0pt}
+  {}
+  [\vspace{-4pt}{\color{accent}\hrule height 0.3pt}\vspace{2pt}]
+\titlespacing{\section}{0pt}{<< style.spacing.section_gap >>}{4pt}
+
+% ====================== STANDARD COMMAND INTERFACE ======================
+
+\newcommand{\cvname}[1]{%
+  {\fontsize{22}{26}\selectfont\scshape\color{headingcolor} #1}%
+}
+\newcommand{\cvtitle}[1]{%
+  {\normalsize\color{secondary} #1}%
+}
+\newcommand{\cvcontact}[1]{%
+  {\footnotesize\color{secondary} #1}%
+}
+
+\newcommand{\cventry}[4]{%
+  \vspace{<< style.spacing.entry_gap >>}%
+  {\bfseries #1}%
+  \hfill{\footnotesize\color{secondary} #3}\par%
+  {\small\color{secondary} #2}%
+  \ifx&#4&\else{\hfill\footnotesize\color{secondary} #4}\fi%
+  \vspace{2pt}\par%
+}
+
+\newcommand{\cvedentry}[4]{%
+  \vspace{<< style.spacing.entry_gap >>}%
+  {\bfseries #1}%
+  \hfill{\footnotesize\color{secondary} #3}\par%
+  {\small\color{secondary} #2}%
+  \ifx&#4&\else{\hfill\footnotesize\color{secondary} #4}\fi%
+  \vspace{2pt}\par%
+}
+
+\newcommand{\cvskillcat}[2]{%
+  {\bfseries\color{headingcolor} #1 \hspace{4pt}}{\color{textcolor}#2}\\[2pt]%
+}
+
+\newcommand{\cvproject}[3]{%
+  \vspace{<< style.spacing.entry_gap >>}%
+  {\bfseries #1}%
+  \ifx&#3&\else\hfill{\footnotesize\color{secondary} #3}\fi\par%
+  \ifx&#2&\else{\footnotesize\color{secondary}#2}\fi%
+  \vspace{2pt}\par%
+}
+
+\newcommand{\cvcert}[3]{%
+  \vspace{<< style.spacing.entry_gap >>}%
+  {\bfseries #1}\ifx&#2&\else{\hspace{6pt}\color{secondary}#2}\fi%
+  \ifx&#3&\else\hfill{\footnotesize\color{secondary} #3}\fi\\[-2pt]%
+}
+
+\newcommand{\cvpub}[4]{%
+  \vspace{<< style.spacing.entry_gap >>}%
+  {\bfseries #1}\ifx&#4&\else\hfill{\footnotesize\color{secondary} #4}\fi\par%
+  \ifx&#3&\else{\footnotesize #3}\fi%
+  \ifx&#2&\else{\\\footnotesize\itshape\color{secondary} #2}\fi%
+  \vspace{2pt}\par%
+}
+
+\newcommand{\cvaward}[4]{%
+  \vspace{<< style.spacing.entry_gap >>}%
+  {\bfseries #1}\ifx&#4&\else\hfill{\footnotesize\color{secondary} #4}\fi\par%
+  \ifx&#2&\else{\small\color{secondary}#2}\fi%
+  \ifx&#3&\else\hfill{\footnotesize\color{secondary} #3}\fi%
+  \vspace{2pt}\par%
+}
+
+\newcommand{\cvsummary}[1]{%
+  {\color{textcolor}\small #1}%
+}
+
+<% for pkg in style.latex.extra_packages %>
+\RequirePackage{<< pkg >>}
+<% endfor %>
+<< style.latex.extra_preamble >>
+
+\color{textcolor}

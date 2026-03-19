@@ -1,0 +1,10 @@
+<# Certifications section #>
+\section{<< section.title | escape_latex >>}
+
+<% for entry in section.certification_entries %>
+\cvcert{<< entry.name | escape_latex >>}{<< entry.issuer | escape_latex if entry.issuer else '' >>}{<< entry.date | escape_latex if entry.date else '' >>}
+<% if entry.url %>
+\href{<< entry.url >>}{View credential}
+<% endif %>
+
+<% endfor %>

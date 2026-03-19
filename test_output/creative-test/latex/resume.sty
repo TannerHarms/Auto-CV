@@ -1,0 +1,115 @@
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{resume}[2026/01/01 Auto Resume — Creative]
+
+% --- Geometry ---
+\RequirePackage[letterpaper, margin=0.7in]{geometry}
+
+% --- Fonts ---
+\RequirePackage[T1]{fontenc}
+\RequirePackage{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+\RequirePackage{microtype}
+
+% --- Colors ---
+\RequirePackage[dvipsnames]{xcolor}
+\definecolor{primary}{HTML}{D84315}
+\definecolor{secondary}{HTML}{00897B}
+\definecolor{accent}{HTML}{7B1FA2}
+\definecolor{linkcolor}{HTML}{00897B}
+\definecolor{headingcolor}{HTML}{D84315}
+\definecolor{textcolor}{HTML}{2C3E50}
+\definecolor{lightaccent}{HTML}{7B1FA2}
+
+% --- Hyperlinks ---
+\RequirePackage[colorlinks=true, urlcolor=linkcolor, linkcolor=linkcolor]{hyperref}
+
+% --- Spacing ---
+\RequirePackage{enumitem}
+\setlist[itemize]{nosep, left=0pt .. 1.5em, label={\color{accent}\textbullet}}
+\RequirePackage{parskip}
+\RequirePackage{titlesec}
+
+% --- Section: colored banner box across full width ---
+\titleformat{\section}
+  {\large\bfseries\sffamily}
+  {}
+  {0pt}
+  {\colorbox{primary}{\parbox{\dimexpr\textwidth-2\fboxsep\relax}{\strut\color{white}\MakeUppercase{#1}}}\vspace{2pt}}
+  []
+\titlespacing{\section}{0pt}{14pt}{6pt}
+
+% ====================== STANDARD COMMAND INTERFACE ======================
+
+\newcommand{\cvname}[1]{%
+  {\fontsize{36}{40}\selectfont\bfseries\sffamily\color{primary} #1}%
+}
+\newcommand{\cvtitle}[1]{%
+  {\Large\sffamily\color{accent} #1}%
+}
+\newcommand{\cvcontact}[1]{%
+  {\small\sffamily\color{secondary} #1}%
+}
+
+\newcommand{\cventry}[4]{%
+  \vspace{8pt}%
+  {\bfseries\color{accent} #1}%
+  \hfill{\small\color{secondary} #3}\par%
+  \vspace{1pt}%
+  {\bfseries\color{headingcolor} #2}%
+  \ifx&#4&\else\hfill{\small\color{secondary} #4}\fi%
+  \vspace{3pt}\par%
+}
+
+\newcommand{\cvedentry}[4]{%
+  \vspace{8pt}%
+  {\bfseries\color{accent} #1}%
+  \hfill{\small\color{secondary} #3}\par%
+  \vspace{1pt}%
+  {\bfseries\color{headingcolor} #2}%
+  \ifx&#4&\else\hfill{\small\color{secondary} #4}\fi%
+  \vspace{3pt}\par%
+}
+
+\newcommand{\cvskillcat}[2]{%
+  \textcolor{accent}{\bfseries #1}\hspace{6pt}{#2}\\[4pt]%
+}
+
+\newcommand{\cvproject}[3]{%
+  \vspace{8pt}%
+  {\bfseries\color{accent} #1}%
+  \ifx&#3&\else\hfill{\small\color{secondary} #3}\fi\par%
+  \ifx&#2&\else{\small\color{secondary}\textit{#2}}\fi%
+  \vspace{2pt}\par%
+}
+
+\newcommand{\cvcert}[3]{%
+  \vspace{8pt}%
+  {\bfseries\color{accent} #1}\ifx&#2&\else{\hspace{6pt}\color{headingcolor}#2}\fi%
+  \ifx&#3&\else\hfill{\small\color{secondary} #3}\fi\\[-2pt]%
+}
+
+\newcommand{\cvpub}[4]{%
+  \vspace{8pt}%
+  {\bfseries\color{accent} #1}\ifx&#4&\else\hfill{\small\color{secondary} #4}\fi\par%
+  \ifx&#3&\else{\small #3}\fi%
+  \ifx&#2&\else{\\\small\itshape\color{secondary} #2}\fi%
+  \vspace{2pt}\par%
+}
+
+\newcommand{\cvaward}[4]{%
+  \vspace{8pt}%
+  {\bfseries\color{accent} #1}\ifx&#4&\else\hfill{\small\color{secondary} #4}\fi\par%
+  \ifx&#2&\else{\color{headingcolor}#2}\fi%
+  \ifx&#3&\else\hfill{\small\color{secondary} #3}\fi%
+  \vspace{2pt}\par%
+}
+
+\newcommand{\cvsummary}[1]{%
+  {\large\color{textcolor} #1}%
+}
+
+
+
+
+\color{textcolor}
