@@ -14,6 +14,7 @@ from docx import Document
 from docx.enum.text import WD_ALIGN_PARAGRAPH, WD_TAB_ALIGNMENT
 from docx.oxml.ns import qn
 from docx.shared import Inches, Pt, RGBColor
+from docx.opc.constants import RELATIONSHIP_TYPE as RT
 
 from auto_cv.models.resume import Resume, Section, SectionType
 from auto_cv.models.style import StyleConfig
@@ -92,6 +93,41 @@ _MD_PATTERN = re.compile(
 )
 
 
+def _add_hyperlink(para, url: str, text: str, *, size: float = 10,
+                   color: RGBColor | None = None,
+                   font_name: str | None = None) -> None:
+    """Insert a clickable hyperlink run into *para*."""
+    part = para.part
+    r_id = part.relate_to(url, RT.HYPERLINK, is_external=True)
+
+    hyperlink = para._element.makeelement(qn("w:hyperlink"), {qn("r:id"): r_id})
+    r = para._element.makeelement(qn("w:r"), {})
+    rPr = para._element.makeelement(qn("w:rPr"), {})
+    rStyle = para._element.makeelement(qn("w:rStyle"), {qn("w:val"): "Hyperlink"})
+    rPr.append(rStyle)
+    if font_name:
+        rFonts = para._element.makeelement(qn("w:rFonts"), {
+            qn("w:ascii"): font_name, qn("w:hAnsi"): font_name,
+        })
+        rPr.append(rFonts)
+    sz_el = para._element.makeelement(qn("w:sz"), {qn("w:val"): str(int(size * 2))})
+    rPr.append(sz_el)
+    if color:
+        c_el = para._element.makeelement(qn("w:color"), {
+            qn("w:val"): f"{color[0]:02X}{color[1]:02X}{color[2]:02X}",
+        })
+        rPr.append(c_el)
+    u_el = para._element.makeelement(qn("w:u"), {qn("w:val"): "none"})
+    rPr.append(u_el)
+    r.append(rPr)
+    t = para._element.makeelement(qn("w:t"), {})
+    t.text = text
+    t.set(qn("xml:space"), "preserve")
+    r.append(t)
+    hyperlink.append(r)
+    para._element.append(hyperlink)
+
+
 def _add_md_runs(para, text: str, *, size: float = 10,
                  color: RGBColor | None = None,
                  font_name: str | None = None) -> None:
@@ -108,7 +144,7 @@ def _add_md_runs(para, text: str, *, size: float = 10,
         elif m.group(3) is not None:        # `code`
             _add_run(para, m.group(3), size=size, color=color, font_name=font_name)
         elif m.group(4) is not None:        # [text](url)
-            _add_run(para, m.group(4), size=size, color=color, font_name=font_name)
+            _add_hyperlink(para, m.group(5), m.group(4), size=size, color=color, font_name=font_name)
         pos = m.end()
     # Trailing plain text
     if pos < len(text):
@@ -228,28 +264,41 @@ class DocxRenderer(BaseRenderer):
             _add_run(p, resume.config.title, size=7.6, small_caps=True,
                      color=accent, font_name=style.fonts.body)
 
-        # Contact line
+        # Contact line — with clickable hyperlinks
         contact = resume.config.contact
-        parts: list[str] = []
+        contact_items: list[tuple[str, str | None]] = []  # (display, url|None)
         if contact.email:
-            parts.append(contact.email)
+            contact_items.append((contact.email, f"mailto:{contact.email}"))
         if contact.phone:
-            parts.append(contact.phone)
+            contact_items.append((contact.phone, None))
         if contact.location:
-            parts.append(contact.location)
+            contact_items.append((contact.location, None))
         if contact.linkedin:
-            parts.append(f"linkedin.com/in/{contact.linkedin}")
+            contact_items.append(
+                (f"linkedin.com/in/{contact.linkedin}",
+                 f"https://linkedin.com/in/{contact.linkedin}"))
         if contact.github:
-            parts.append(f"github.com/{contact.github}")
+            contact_items.append(
+                (f"github.com/{contact.github}",
+                 f"https://github.com/{contact.github}"))
         if contact.website:
-            parts.append(contact.website)
+            url = contact.website if contact.website.startswith("http") else f"https://{contact.website}"
+            contact_items.append((contact.website, url))
 
-        if parts:
+        if contact_items:
             p = doc.add_paragraph()
             p.alignment = WD_ALIGN_PARAGRAPH.CENTER
             _set_paragraph_spacing(p, before=0, after=60)
-            _add_run(p, " | ".join(parts), size=6.8, color=text_color,
-                     font_name=style.fonts.heading)
+            for i, (display, url) in enumerate(contact_items):
+                if i > 0:
+                    _add_run(p, " | ", size=6.8, color=text_color,
+                             font_name=style.fonts.heading)
+                if url:
+                    _add_hyperlink(p, url, display, size=6.8,
+                                   color=text_color, font_name=style.fonts.heading)
+                else:
+                    _add_run(p, display, size=6.8, color=text_color,
+                             font_name=style.fonts.heading)
 
     # ------------------------------------------------------------------
     # Sections
@@ -257,24 +306,29 @@ class DocxRenderer(BaseRenderer):
 
     def _render_section(self, doc: Document, section: Section, style: StyleConfig) -> None:
         accent = _hex_to_rgb(style.colors.accent)
-        border_color = style.colors.accent.lstrip("#")
+        gray = _hex_to_rgb(style.colors.secondary)
 
-        # Section heading — accent text + colored bottom rule (matches awesome-cv \cvsection)
+        # Section heading — accent text + gray rule from end of title to right margin
         p = doc.add_paragraph()
         _set_paragraph_spacing(p, before=int(_parse_pt(style.spacing.section_gap) * 20),
                                after=int(_parse_pt(style.spacing.header_to_content) * 20))
         _add_run(p, section.title, size=_parse_pt(style.fonts.size_heading),
                  bold=True, color=accent, font_name=style.fonts.body)
 
-        # Bottom border in accent color
+        # Right-aligned tab stop with a heavy (thick underscore) leader
         pPr = p._element.get_or_add_pPr()
-        pBdr = pPr.makeelement(qn("w:pBdr"), {})
-        bottom = pBdr.makeelement(qn("w:bottom"), {
-            qn("w:val"): "single", qn("w:sz"): "4",
-            qn("w:space"): "1", qn("w:color"): border_color,
+        tabs = pPr.makeelement(qn("w:tabs"), {})
+        tab = tabs.makeelement(qn("w:tab"), {
+            qn("w:val"): "right",
+            qn("w:leader"): "heavy",
+            qn("w:pos"): str(int(self._content_width / 635)),
         })
-        pBdr.append(bottom)
-        pPr.append(pBdr)
+        tabs.append(tab)
+        pPr.append(tabs)
+
+        # A gray-colored tab run so the leader line draws in gray
+        run = p.add_run("\t")
+        run.font.color.rgb = gray
 
         handler = {
             SectionType.EXPERIENCE: self._render_experience,
