@@ -11,10 +11,9 @@ import re
 from pathlib import Path
 
 from docx import Document
-from docx.enum.table import WD_TABLE_ALIGNMENT
-from docx.enum.text import WD_ALIGN_PARAGRAPH
+from docx.enum.text import WD_ALIGN_PARAGRAPH, WD_TAB_ALIGNMENT
 from docx.oxml.ns import qn
-from docx.shared import Inches, Pt, RGBColor, Emu
+from docx.shared import Inches, Pt, RGBColor
 
 from auto_cv.models.resume import Resume, Section, SectionType
 from auto_cv.models.style import StyleConfig
@@ -50,43 +49,22 @@ def _set_paragraph_spacing(para, before: int = 0, after: int = 0, line: int | No
     pPr.append(spacing)
 
 
-def _set_cell_margins(cell, top: int = 0, bottom: int = 0, left: int = 0, right: int = 0) -> None:
-    """Set cell margins in twips."""
-    tc = cell._element
-    tcPr = tc.get_or_add_tcPr()
-    margins = tcPr.makeelement(qn("w:tcMar"), {})
-    for side, val in [("top", top), ("bottom", bottom), ("start", left), ("end", right)]:
-        m = margins.makeelement(qn(f"w:{side}"), {})
-        m.set(qn("w:w"), str(val))
-        m.set(qn("w:type"), "dxa")
-        margins.append(m)
-    tcPr.append(margins)
-
-
-def _hide_table_borders(table) -> None:
-    """Remove all borders from a Word table and its cells."""
-    tbl = table._tbl
-    tblPr = tbl.tblPr if tbl.tblPr is not None else tbl.makeelement(qn("w:tblPr"), {})
-    borders = tblPr.makeelement(qn("w:tblBorders"), {})
-    for edge in ("top", "left", "bottom", "right", "insideH", "insideV"):
-        el = borders.makeelement(qn(f"w:{edge}"), {
-            qn("w:val"): "none", qn("w:sz"): "0",
-            qn("w:space"): "0", qn("w:color"): "auto",
-        })
-        borders.append(el)
-    tblPr.append(borders)
-    # Also clear cell-level borders
-    for row in table.rows:
-        for cell in row.cells:
-            tcPr = cell._element.get_or_add_tcPr()
-            cBdr = tcPr.makeelement(qn("w:tcBorders"), {})
-            for edge in ("top", "left", "bottom", "right"):
-                el = cBdr.makeelement(qn(f"w:{edge}"), {
-                    qn("w:val"): "none", qn("w:sz"): "0",
-                    qn("w:space"): "0", qn("w:color"): "auto",
-                })
-                cBdr.append(el)
-            tcPr.append(cBdr)
+def _add_tab_stop(para, position_emu: int, alignment: WD_TAB_ALIGNMENT) -> None:
+    """Add a tab stop to a paragraph at the given EMU position."""
+    pPr = para._element.get_or_add_pPr()
+    tabs = pPr.find(qn("w:tabs"))
+    if tabs is None:
+        tabs = pPr.makeelement(qn("w:tabs"), {})
+        pPr.append(tabs)
+    tab = tabs.makeelement(qn("w:tab"), {
+        qn("w:val"): {
+            WD_TAB_ALIGNMENT.RIGHT: "right",
+            WD_TAB_ALIGNMENT.LEFT: "left",
+            WD_TAB_ALIGNMENT.CENTER: "center",
+        }.get(alignment, "left"),
+        qn("w:pos"): str(int(position_emu / 635)),  # EMU → twips
+    })
+    tabs.append(tab)
 
 
 def _add_run(para, text: str, *, size: float = 10, bold: bool = False,
@@ -167,7 +145,7 @@ class DocxRenderer(BaseRenderer):
         section.left_margin = margin
         section.right_margin = margin
 
-        # Page-wide content width for table calculations
+        # Page-wide content width for tab-stop calculations (in EMU)
         self._content_width = (
             section.page_width - section.left_margin - section.right_margin
         )
@@ -192,57 +170,31 @@ class DocxRenderer(BaseRenderer):
         return Inches(float(s.replace("in", "")))
 
     # ------------------------------------------------------------------
-    # Two-column invisible table helper (matches LaTeX tabular* layout)
+    # Two-column tab-stop helper (replaces table-based layout)
     # ------------------------------------------------------------------
 
     def _add_two_col_row(self, doc: Document, left_runs, right_runs,
                          *, right_width_emu: int | None = None) -> None:
-        """Add a borderless 2-column table row.
+        """Add a two-column line using a right-aligned tab stop.
 
         *left_runs* and *right_runs* are lists of dicts with keys
         accepted by _add_run (text, size, bold, italic, color, etc.).
         """
-        right_w = right_width_emu or Inches(1.5)
-        left_w = self._content_width - right_w
-
-        table = doc.add_table(rows=1, cols=2)
-        table.alignment = WD_TABLE_ALIGNMENT.CENTER
-        _hide_table_borders(table)
-
-        # Remove default cell margins and table indent
-        tbl = table._tbl
-        tblPr = tbl.tblPr
-        # Zero table indent
-        ind = tblPr.makeelement(qn("w:tblInd"), {
-            qn("w:w"): "0", qn("w:type"): "dxa"
-        })
-        tblPr.append(ind)
-
-        row = table.rows[0]
-        left_cell = row.cells[0]
-        right_cell = row.cells[1]
-
-        # Set column widths
-        left_cell.width = Emu(left_w)
-        right_cell.width = Emu(right_w)
-
-        # Tight cell margins
-        for cell in (left_cell, right_cell):
-            _set_cell_margins(cell, top=0, bottom=0, left=0, right=0)
-
-        # Left cell content
-        p = left_cell.paragraphs[0]
-        p.alignment = WD_ALIGN_PARAGRAPH.LEFT
+        p = doc.add_paragraph()
         _set_paragraph_spacing(p, before=0, after=0)
+
+        # Right-aligned tab stop at the content width
+        _add_tab_stop(p, self._content_width, WD_TAB_ALIGNMENT.RIGHT)
+
+        # Left side runs
         for run_spec in left_runs:
             _add_run(p, **run_spec)
 
-        # Right cell content
-        p = right_cell.paragraphs[0]
-        p.alignment = WD_ALIGN_PARAGRAPH.RIGHT
-        _set_paragraph_spacing(p, before=0, after=0)
-        for run_spec in right_runs:
-            _add_run(p, **run_spec)
+        # Tab + right side runs (only if there's right content)
+        if right_runs:
+            p.add_run("\t")
+            for run_spec in right_runs:
+                _add_run(p, **run_spec)
 
     # ------------------------------------------------------------------
     # Header
@@ -441,40 +393,24 @@ class DocxRenderer(BaseRenderer):
 
     def _add_skill_row(self, doc: Document, label: str, skills_text: str,
                        *, label_color: RGBColor, text_color: RGBColor) -> None:
-        """Skill-specific row: right-aligned label | left-aligned skills with markdown."""
+        """Skill row: right-aligned label, then left-aligned skills text with markdown."""
         label_w = Inches(1.5)
-        skills_w = self._content_width - label_w
+        gap = Inches(0.1)
 
-        table = doc.add_table(rows=1, cols=2)
-        table.alignment = WD_TABLE_ALIGNMENT.CENTER
-        _hide_table_borders(table)
-
-        tblPr = table._tbl.tblPr
-        ind = tblPr.makeelement(qn("w:tblInd"), {
-            qn("w:w"): "0", qn("w:type"): "dxa"
-        })
-        tblPr.append(ind)
-
-        row = table.rows[0]
-        left_cell = row.cells[0]
-        right_cell = row.cells[1]
-
-        left_cell.width = Emu(label_w)
-        right_cell.width = Emu(skills_w)
-
-        _set_cell_margins(left_cell, top=0, bottom=0, left=0, right=60)
-        _set_cell_margins(right_cell, top=0, bottom=0, left=60, right=0)
-
-        # Label: right-aligned
-        p = left_cell.paragraphs[0]
-        p.alignment = WD_ALIGN_PARAGRAPH.RIGHT
+        p = doc.add_paragraph()
         _set_paragraph_spacing(p, before=0, after=0)
+
+        # Right-aligned tab stop at label width for the label
+        _add_tab_stop(p, label_w, WD_TAB_ALIGNMENT.RIGHT)
+        # Left-aligned tab stop just after for the skills text
+        _add_tab_stop(p, label_w + gap, WD_TAB_ALIGNMENT.LEFT)
+
+        # Tab to the right-aligned stop, then the label
+        p.add_run("\t")
         _add_run(p, label, size=10, bold=True, color=label_color)
 
-        # Skills: left-aligned, with markdown interpretation
-        p = right_cell.paragraphs[0]
-        p.alignment = WD_ALIGN_PARAGRAPH.LEFT
-        _set_paragraph_spacing(p, before=0, after=0)
+        # Tab to the left-aligned stop, then skills with markdown
+        p.add_run("\t")
         _add_md_runs(p, skills_text, size=9, color=text_color)
 
     # ------------------------------------------------------------------
