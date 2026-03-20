@@ -6,6 +6,7 @@ order: 4
 # Projects
 
 ## [cascade-recsys](https://github.com/rmehta-ml/cascade-recsys)
+
 Open-source two-tower recommendation system with contrastive learning and real-time serving.
 **Technologies:** PyTorch, FAISS, Redis, FastAPI
 
@@ -13,6 +14,7 @@ Open-source two-tower recommendation system with contrastive learning and real-t
 - Used as reference implementation in O'Reilly "Recommendation Systems in Practice" book
 
 ## [clinical-ner](https://github.com/rmehta-ml/clinical-ner)
+
 Fine-tuned BioBERT model for clinical named entity recognition with active learning loop.
 **Technologies:** Hugging Face Transformers, Prodigy, spaCy, FastAPI
 
@@ -20,6 +22,7 @@ Fine-tuned BioBERT model for clinical named entity recognition with active learn
 - Active learning loop reduces annotation cost by 60%
 
 ## [drift-monitor](https://github.com/rmehta-ml/drift-monitor)
+
 Lightweight model monitoring library detecting data drift, concept drift, and prediction drift.
 **Technologies:** Python, NumPy, Plotly, Prometheus
 

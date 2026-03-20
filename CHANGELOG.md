@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.1.0] - 2026-03-19
 
 ### Added
+
 - Initial release of Auto CV
 - Python CLI for building CVs/resumes from Obsidian-style markdown vaults
 - Support for three output formats: HTML, DOCX, LaTeX/PDF
@@ -20,6 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Comprehensive documentation and examples
 
 ### Features
+
 - **Markdown-based resume authoring** - Write your resume in natural markdown format
 - **Multiple output formats** - Generate HTML, DOCX, and LaTeX/PDF from one source
 - **Style presets** - Choose from built-in templates or create custom styles
@@ -29,6 +31,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **LLM enhancement** (optional) - Polish content, tailor to job postings, suggest layouts
 
 ### Fixed
+
 - Improved error handling and user feedback
 - Better Python executable detection across platforms
 - Enhanced Obsidian plugin UI with better modals and notifications
@@ -36,6 +39,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Planned
+
 - GitHub Actions CI/CD pipeline
 - Obsidian Community Plugins registry submission
 - Additional style presets

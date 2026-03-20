@@ -6,6 +6,7 @@ order: 2
 # Experience
 
 ## 1. Senior Software Engineer
+
 **Company:** Streamline Technologies
 **Location:** San Francisco, CA
 **Dates:** 2022-01 – present
@@ -16,6 +17,7 @@ order: 2
 - Mentored 4 engineers through structured 1:1s, two promoted to senior within 18 months
 
 ## 2. Software Engineer
+
 **Company:** Nexus Cloud
 **Location:** San Francisco, CA
 **Dates:** 2020-03 – 2021-12
@@ -26,6 +28,7 @@ order: 2
 - Contributed to open-source Go libraries for distributed tracing
 
 ## 3. Software Engineer
+
 **Company:** DataPipe Inc.
 **Location:** Oakland, CA
 **Dates:** 2018-06 – 2020-02

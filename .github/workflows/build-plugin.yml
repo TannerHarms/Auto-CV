@@ -11,12 +11,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Set up Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: obsidian-plugin/package-lock.json
 
       - name: Install dependencies
         working-directory: obsidian-plugin
@@ -25,14 +27,17 @@ jobs:
       - name: Lint
         working-directory: obsidian-plugin
         run: npm run lint
-        continue-on-error: true
 
       - name: Build plugin
         working-directory: obsidian-plugin
         run: npm run build
 
+      - name: Run plugin tests
+        working-directory: obsidian-plugin
+        run: npm test
+
       - name: Upload artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: auto-cv-obsidian
           path: |

@@ -6,6 +6,7 @@ order: 4
 # Experience
 
 ## 1. Software Engineering Intern
+
 **Company:** Stripe
 **Location:** San Francisco, CA (Remote)
 **Dates:** 2024-06 – 2024-08
@@ -15,6 +16,7 @@ order: 4
 - Wrote comprehensive integration tests covering 40+ edge cases in payment flow
 
 ## 2. Software Engineering Intern
+
 **Company:** Mailchimp (Intuit)
 **Location:** Atlanta, GA
 **Dates:** 2023-05 – 2023-08
@@ -24,6 +26,7 @@ order: 4
 - Participated in Intuit's Design for Delight programme
 
 ## 3. Undergraduate Teaching Assistant — CS 2110
+
 **Company:** Georgia Institute of Technology
 **Location:** Atlanta, GA
 **Dates:** 2023-01 – 2025-05

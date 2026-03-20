@@ -1,0 +1,21 @@
+<# Interests section — awesome-cv format, reuses cvskills #>
+\cvsection{<< section.title | escape_latex >>}
+
+<# Compute dynamic label column width: min(max label width, \cvskillcolwidth) #>
+\newlength{\acvintmaxw}\setlength{\acvintmaxw}{0pt}%
+<% for cat in section.skill_categories %>
+<% set idx = "abcdefghijklmnopqrstuvwxyz"[loop.index0 % 26] %>
+\newlength{\acvintcur<< idx >>}\settowidth{\acvintcur<< idx >>}{\skilltypestyle{<< cat.name | escape_latex >>}}\ifdim\acvintcur<< idx >>>\acvintmaxw\setlength{\acvintmaxw}{\acvintcur<< idx >>}\fi%
+<% endfor %>
+\ifdim\acvintmaxw>\cvskillcolwidth\setlength{\acvintmaxw}{\cvskillcolwidth}\fi%
+\setlength{\cvskillcolwidth}{\acvintmaxw}%
+
+\begin{cvskills}
+
+<% for cat in section.skill_categories %>
+\cvskill
+{<< cat.name | escape_latex >>}
+{<< cat.skills | join(', ') | escape_latex >>}
+<% endfor %>
+
+\end{cvskills}

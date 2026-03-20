@@ -1,0 +1,15 @@
+{
+  "globs": [
+    "**/*.md",
+    "!**/node_modules/**",
+    "!.venv/**",
+    "!output/**",
+    "!test_output/**",
+    "!local_test_vault/**",
+    "!example_vault/output/**",
+    "!examples/**/output/**"
+  ],
+  "config": {
+    "MD013": false
+  }
+}

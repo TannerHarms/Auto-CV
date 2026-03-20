@@ -8,7 +8,7 @@ Each example is a self-contained vault you can build with `auto-resume build`.
 ## Available Presets (9 total)
 
 | Preset | Style | Layout | Best For |
-|--------|-------|--------|----------|
+| --- | --- | --- | --- |
 | `classic` | Serif, conservative slate/gray | top-header | Traditional industries |
 | `modern` | Sans-serif, dark blue accents | sidebar | Tech & professional roles |
 | `minimal` | Maximum whitespace, black/gray | top-header | Clean, understated profiles |
@@ -32,6 +32,7 @@ Each example is a self-contained vault you can build with `auto-resume build`.
 **Layout:** Sidebar with photo
 **Sections:** Summary, Experience, Skills, Projects, Education, Certifications
 **Build:**
+
 ```bash
 auto-resume build examples/software-engineer -f html -f latex -f docx
 ```
@@ -47,6 +48,7 @@ auto-resume build examples/software-engineer -f html -f latex -f docx
 **Layout:** Top-header, no photo — formal and authoritative
 **Sections:** Summary, Experience, Education, Skills, Awards
 **Build:**
+
 ```bash
 auto-resume build examples/executive -f html -f latex -f docx
 ```
@@ -62,6 +64,7 @@ auto-resume build examples/executive -f html -f latex -f docx
 **Layout:** Cards grid with photo — portfolio-style
 **Sections:** Summary, Experience, Featured Work, Skills, Education, Certifications
 **Build:**
+
 ```bash
 auto-resume build examples/creative-designer -f html -f latex -f docx
 ```
@@ -78,6 +81,7 @@ auto-resume build examples/creative-designer -f html -f latex -f docx
 **Sections:** Research Interests, Experience, Education, Publications, Skills, Awards
 **Note:** PDF output requires XeLaTeX with Roboto & Source Sans Pro fonts
 **Build:**
+
 ```bash
 auto-resume build examples/academic-researcher -f html -f latex -f docx
 ```
@@ -93,6 +97,7 @@ auto-resume build examples/academic-researcher -f html -f latex -f docx
 **Layout:** Top-header, no photo — clean and polished
 **Sections:** Summary, Education, Projects, Experience, Skills, Certifications
 **Build:**
+
 ```bash
 auto-resume build examples/new-graduate -f html -f latex -f docx
 ```
@@ -108,6 +113,7 @@ auto-resume build examples/new-graduate -f html -f latex -f docx
 **Layout:** Sidebar with photo
 **Sections:** Summary, Experience, Skills, Projects, Education, Publications, Certifications
 **Build:**
+
 ```bash
 auto-resume build examples/data-scientist -f html -f latex -f docx
 ```

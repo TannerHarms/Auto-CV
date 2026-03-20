@@ -6,6 +6,7 @@ order: 2
 # Experience
 
 ## 1. Senior UX Designer
+
 **Company:** Luminary Digital
 **Location:** Los Angeles, CA
 **Dates:** 2021-04 – present
@@ -16,6 +17,7 @@ order: 2
 - Collaborated with engineering to implement accessible, WCAG 2.1 AA-compliant interfaces
 
 ## 2. UX Designer
+
 **Company:** BrightPath Media
 **Location:** San Francisco, CA
 **Dates:** 2018-09 – 2021-03
@@ -26,6 +28,7 @@ order: 2
 - Produced motion design prototypes using After Effects and Principle for investor demos
 
 ## 3. Junior Designer
+
 **Company:** Mosaic Creative Agency
 **Location:** Portland, OR
 **Dates:** 2016-06 – 2018-08

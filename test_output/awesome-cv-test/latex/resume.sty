@@ -21,41 +21,14 @@
 % --- XeLaTeX: use fontspec with the original Awesome-CV fonts ---
 \RequirePackage[quiet]{fontspec}
 \RequirePackage{unicode-math}
-\newcommand*{\fontdir}[1][fonts/]{\def\@fontdir{#1}}
-\fontdir
-\newfontfamily\headerfont[
-  Path=fonts/,
-  UprightFont=*-Regular,
-  ItalicFont=*-Italic,
-  BoldFont=*-Bold,
-  BoldItalicFont=*-BoldItalic,
-]{Roboto}
-\newfontfamily\headerfontlight[
-  Path=fonts/,
-  UprightFont=*-Thin,
-  ItalicFont=*-ThinItalic,
-]{Roboto}
-\newfontfamily\bodyfont[
-  Path=fonts/,
-  UprightFont=*-Regular,
-  ItalicFont=*-It,
-  BoldFont=*-Bold,
-  BoldItalicFont=*-BoldIt,
-]{SourceSansPro}
-\newfontfamily\bodyfontlight[
-  Path=fonts/,
-  UprightFont=*-Light,
-  ItalicFont=*-LightIt,
-]{SourceSansPro}
-\newcommand*{\footerfont}{\bodyfont}
+% No font_dir configured — use system defaults
 \defaultfontfeatures{Ligatures=TeX}
-\setmainfont[
-  Path=fonts/,
-  UprightFont=*-Regular,
-  ItalicFont=*-It,
-  BoldFont=*-Bold,
-  BoldItalicFont=*-BoldIt,
-]{SourceSansPro}
+\setmainfont{Latin Modern Sans}
+\newcommand*{\headerfont}{\sffamily}
+\newcommand*{\headerfontlight}{\sffamily}
+\newcommand*{\bodyfont}{\sffamily}
+\newcommand*{\bodyfontlight}{\sffamily}
+\newcommand*{\footerfont}{\sffamily}
 \RequirePackage{microtype}
 
 % ==========================================================================
@@ -76,7 +49,7 @@
 \definecolor{awesome-concrete}{HTML}{95A5A6}
 \definecolor{awesome-darknight}{HTML}{131A28}
 % Active awesome color (set from style config)
-\definecolor{awesome}{HTML}{00A388}
+\definecolor{awesome}{HTML}{153243}
 % Text colors — match awesome-cv.cls exactly
 \definecolor{darktext}{HTML}{414141}
 \colorlet{text}{darkgray}
@@ -101,8 +74,8 @@
 % ==========================================================================
 %  Spacing constants — from awesome-cv.cls, configurable via _style.yml
 % ==========================================================================
-\newcommand{\acvSectionTopSkip}{8pt}
-\newcommand{\acvSectionContentTopSkip}{6pt}
+\newcommand{\acvSectionTopSkip}{10pt}
+\newcommand{\acvSectionContentTopSkip}{1.5mm}
 \newcommand{\acvHeaderAfterNameSkip}{.4mm}
 \newcommand{\acvHeaderAfterPositionSkip}{.4mm}
 \newcommand{\acvHeaderAfterAddressSkip}{-.5mm}
@@ -138,12 +111,12 @@
 \newcommand*{\entrypositionstyle}[1]{{\fontsize{8pt}{1em}\bodyfont\scshape\color{graytext} #1}}
 \newcommand*{\entrydatestyle}[1]{{\fontsize{8pt}{1em}\bodyfontlight\slshape\color{graytext} #1}}
 \newcommand*{\entrylocationstyle}[1]{{\fontsize{9pt}{1em}\bodyfontlight\slshape\color{awesome} #1}}
-\newcommand*{\descriptionstyle}[1]{{\fontsize{10pt}{1em}\bodyfontlight\upshape\color{text} #1}}
+\newcommand*{\descriptionstyle}[1]{{\fontsize{8.5pt}{1em}\bodyfontlight\upshape\color{text} #1}}
 
 % Honor styles
 \newcommand*{\honortitlestyle}[1]{{\fontsize{9pt}{1em}\bodyfont\color{graytext} #1}}
 \newcommand*{\honorpositionstyle}[1]{{\fontsize{9pt}{1em}\bodyfont\bfseries\color{darktext} #1}}
-\newcommand*{\honordatestyle}[1]{{\fontsize{9pt}{1em}\bodyfont\color{graytext} #1}}
+\newcommand*{\honordatestyle}[1]{{\fontsize{9pt}{1em}\bodyfontlight\slshape\color{awesome} #1}}
 \newcommand*{\honorlocationstyle}[1]{{\fontsize{9pt}{1em}\bodyfontlight\slshape\color{awesome} #1}}
 
 % Skill styles
@@ -172,19 +145,21 @@
 %  cvitems environment — matches awesome-cv.cls exactly
 % ==========================================================================
 \newenvironment{cvitems}{%
-  \vspace{-4.0mm}%
+  \vspace{-1.2mm}%
   \begin{justify}%
-  \begin{itemize}[leftmargin=2ex, nosep, noitemsep]%
+  \begin{itemize}[leftmargin=2ex, labelsep=0.5ex, nosep, noitemsep]%
     \setlength{\parskip}{0pt}%
     \renewcommand{\labelitemi}{\textendash}%
 }{%
   \end{itemize}%
   \end{justify}%
-  \vspace{0mm}%
+  \vspace{1.2mm}%
 }
 
 % Also make plain \begin{itemize} match the cvitems look when used in templates
-\setlist[itemize]{leftmargin=2ex, nosep, noitemsep, topsep=-4.0mm, partopsep=0pt, label=\textendash, after=\vspace{0mm}}
+% topsep tightens the gap between the \cventry header and the bullets;
+% after= adds space following the list before the next entry.
+\setlist[itemize]{leftmargin=2ex, labelsep=0.5ex, nosep, noitemsep, topsep=-1.2mm, partopsep=0pt, label=\textendash, after=\vspace{1.2mm}}
 
 % ==========================================================================
 %  STANDARD COMMAND INTERFACE
@@ -233,7 +208,7 @@
 % --- \cvskillcat{type}{skillset} ---
 % Matches awesome-cv \cvskill layout — fixed label column prevents overflow
 \newlength{\skillcatlabelwidth}
-\setlength{\skillcatlabelwidth}{1.5cm}
+\setlength{\skillcatlabelwidth}{4.5cm}
 \newcommand{\cvskillcat}[2]{%
   \setlength\tabcolsep{1ex}%
   \setlength{\extrarowheight}{0pt}%
@@ -254,12 +229,13 @@
 }
 
 % --- \cvcert{name}{issuer}{date} ---
-% Uses cvhonor layout: [date] [position, title] [location]
+% Name bold on left, issuer inline unbolded, date accented on right
 \newcommand{\cvcert}[3]{%
+  \vspace{-2.0mm}%
   \setlength\tabcolsep{0pt}%
   \setlength{\extrarowheight}{0pt}%
-  \begin{tabular*}{\textwidth}{@{\extracolsep{\fill}} C{2.cm} L{\textwidth - 4.5cm} R{2.5cm}}%
-    \honordatestyle{#3} & \honorpositionstyle{#1}\ifblank{#2}{}{, \honortitlestyle{#2}} & \\%
+  \begin{tabular*}{\textwidth}{@{\extracolsep{\fill}} L{\textwidth - 4.5cm} R{4.5cm}}%
+    \entrytitlestyle{#1}\ifblank{#2}{}{~--~{#2}} & \entrylocationstyle{#3} \\%
   \end{tabular*}%
 }
 
@@ -277,14 +253,15 @@
 }
 
 % --- \cvaward{title}{issuer}{date}{description} ---
-% Uses cvhonor layout
+% Title and issuer on left, date accented on right, description below
 \newcommand{\cvaward}[4]{%
+  \vspace{-2.0mm}%
   \setlength\tabcolsep{0pt}%
   \setlength{\extrarowheight}{0pt}%
-  \begin{tabular*}{\textwidth}{@{\extracolsep{\fill}} C{2.cm} L{\textwidth - 4.5cm} R{2.5cm}}%
-    \honordatestyle{#3} & \honorpositionstyle{#1}\ifblank{#2}{}{, \honortitlestyle{#2}} & \\%
+  \begin{tabular*}{\textwidth}{@{\extracolsep{\fill}} L{\textwidth - 4.5cm} R{4.5cm}}%
+    \honorpositionstyle{#1}\ifblank{#2}{}{, \honortitlestyle{#2}} & \entrylocationstyle{#3} \\%
   \end{tabular*}%
-  \ifblank{#4}{}{\noindent\hspace{2cm}\descriptionstyle{#4}\par}%
+  \ifblank{#4}{}{\vspace{-1mm}\descriptionstyle{#4}\par\vspace{1mm}}%
 }
 
 % --- \cvawardcompact{title}{date} ---

@@ -21,7 +21,7 @@ def _hex_to_rgb(hex_color: str) -> RGBColor:
 
 class DocxRenderer(BaseRenderer):
     def render(self, resume: Resume, style: StyleConfig, output_dir: Path) -> Path:
-        docx_dir = output_dir / "docx"
+        docx_dir = self.prepare_output_dir(output_dir, "docx")
         docx_dir.mkdir(parents=True, exist_ok=True)
         out_path = docx_dir / "resume.docx"
 
@@ -147,6 +147,11 @@ class DocxRenderer(BaseRenderer):
             SectionType.PUBLICATIONS: self._render_publications,
             SectionType.AWARDS: self._render_awards,
             SectionType.SUMMARY: self._render_summary,
+            SectionType.VOLUNTEER: self._render_experience,
+            SectionType.SERVICE: self._render_experience,
+            SectionType.LANGUAGES: self._render_languages,
+            SectionType.INTERESTS: self._render_skills,
+            SectionType.REFERENCES: self._render_references,
         }.get(section.section_type, self._render_custom)
 
         handler(doc, section, style)
@@ -328,6 +333,52 @@ class DocxRenderer(BaseRenderer):
             p = doc.add_paragraph()
             run = p.add_run(section.raw_content.strip())
             run.font.size = Pt(10)
+
+    def _render_languages(self, doc: Document, section: Section, style: StyleConfig) -> None:
+        for entry in section.language_entries:
+            p = doc.add_paragraph()
+            run = p.add_run(f"{entry.name}: ")
+            run.bold = True
+            run.font.size = Pt(10)
+            if entry.proficiency:
+                run = p.add_run(entry.proficiency)
+                run.font.size = Pt(10)
+
+    def _render_references(self, doc: Document, section: Section, style: StyleConfig) -> None:
+        for entry in section.reference_entries:
+            p = doc.add_paragraph()
+            run = p.add_run(entry.name)
+            run.bold = True
+            run.font.size = Pt(11)
+            run.font.color.rgb = _hex_to_rgb(style.colors.heading)
+
+            if entry.relationship:
+                run = p.add_run(f"  —  {entry.relationship}")
+                run.italic = True
+                run.font.size = Pt(9)
+                run.font.color.rgb = _hex_to_rgb(style.colors.secondary)
+
+            parts: list[str] = []
+            if entry.title:
+                parts.append(entry.title)
+            if entry.organization:
+                parts.append(entry.organization)
+            if parts:
+                p = doc.add_paragraph()
+                run = p.add_run(" at ".join(parts) if entry.title and entry.organization else parts[0])
+                run.italic = True
+                run.font.size = Pt(10)
+                run.font.color.rgb = _hex_to_rgb(style.colors.accent)
+
+            contact_parts: list[str] = []
+            if entry.email:
+                contact_parts.append(entry.email)
+            if entry.phone:
+                contact_parts.append(entry.phone)
+            if contact_parts:
+                p = doc.add_paragraph()
+                run = p.add_run(" | ".join(contact_parts))
+                run.font.size = Pt(9)
 
     def _render_custom(self, doc: Document, section: Section, style: StyleConfig) -> None:
         if section.raw_content.strip():

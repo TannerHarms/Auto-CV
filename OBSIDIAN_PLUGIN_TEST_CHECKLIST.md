@@ -13,6 +13,7 @@ Complete this checklist to thoroughly test the Auto CV Obsidian plugin before di
 ## Setup Testing
 
 ### Plugin Installation
+
 - [ ] Navigate to `obsidian-plugin` directory
 - [ ] Run `npm install` (dependencies install successfully)
 - [ ] Run `npm run build` (plugin builds without errors)
@@ -28,12 +29,14 @@ Complete this checklist to thoroughly test the Auto CV Obsidian plugin before di
 ## Plugin Loading Tests
 
 ### Startup Behavior
+
 - [ ] Plugin loads without errors in console
 - [ ] If Python path not set, plugin shows helpful notification: "Configure Python path in settings"
 - [ ] Plugin ribbon icon appears in left sidebar (document icon)
 - [ ] "Build Resume/CV" command appears in command palette (Cmd/Ctrl+P)
 
 ### Settings Tab
+
 - [ ] Settings tab accessible under "Auto CV" in Community Plugins settings
 - [ ] All settings load with default values:
   - [ ] Python Executable field is empty or shows detected path
@@ -42,6 +45,7 @@ Complete this checklist to thoroughly test the Auto CV Obsidian plugin before di
   - [ ] Format toggles show HTML and DOCX checked
 
 ### Settings Functionality
+
 - [ ] "Auto-Detect" button detects Python path and updates field
 - [ ] Manually entering Python path saves correctly
 - [ ] Changing preset selector persists after reload
@@ -51,12 +55,14 @@ Complete this checklist to thoroughly test the Auto CV Obsidian plugin before di
 ## Build Modal Tests
 
 ### Modal Opening
+
 - [ ] Click ribbon icon opens Build Modal
 - [ ] "Build Resume/CV" command opens Build Modal
 - [ ] Modal title shows "Build Resume/CV"
 - [ ] Modal can be closed with "Cancel" button or ESC key
 
 ### Format Selection
+
 - [ ] HTML, DOCX, and LaTeX/PDF checkboxes appear
 - [ ] Checkboxes can be toggled on/off
 - [ ] At least one format is checked by default (HTML, DOCX)
@@ -64,12 +70,14 @@ Complete this checklist to thoroughly test the Auto CV Obsidian plugin before di
 - [ ] Build button disabled if no formats selected (or shows warning)
 
 ### Preset Selection
+
 - [ ] Preset dropdown appears with label "Resume Style"
 - [ ] Dropdown shows options: Default, Awesome CV, Classic
 - [ ] Default preset is selected by default
 - [ ] Can change preset before building
 
 ### Output Path
+
 - [ ] Output directory field appears with label "Output Directory"
 - [ ] Field shows "output" as default
 - [ ] Can edit output path
@@ -77,6 +85,7 @@ Complete this checklist to thoroughly test the Auto CV Obsidian plugin before di
 - [ ] Creates directory if it doesn't exist
 
 ### Modal UI Polish
+
 - [ ] Info tooltip appears: "💡 Tip: Configure your vault with _config.yml and sections/ folder..."
 - [ ] Layout is clean and intuitive
 - [ ] Dark/Light theme respects Obsidian theme setting
@@ -85,6 +94,7 @@ Complete this checklist to thoroughly test the Auto CV Obsidian plugin before di
 ## Build Execution Tests
 
 ### Success Build
+
 - [ ] Select formats (at least HTML), confirm preset and output folder
 - [ ] Click "Build" button
 - [ ] Modal shows "⏳ Building Resume/CV"
@@ -100,6 +110,7 @@ Complete this checklist to thoroughly test the Auto CV Obsidian plugin before di
 - [ ] PDF opens and shows correct content
 
 ### Error Handling - Missing Python
+
 - [ ] Update Python path in settings to invalid path (e.g., "/nonexistent/python")
 - [ ] Attempt to build
 - [ ] Error notification shows: "❌ Python not found: ..."
@@ -107,6 +118,7 @@ Complete this checklist to thoroughly test the Auto CV Obsidian plugin before di
 - [ ] Notification persists long enough to read
 
 ### Error Handling - Missing auto-cv Package
+
 - [ ] Use a Python installation without auto-cv installed
 - [ ] Set Python path to that installation
 - [ ] Attempt to build
@@ -114,12 +126,14 @@ Complete this checklist to thoroughly test the Auto CV Obsidian plugin before di
 - [ ] User guidance is clear
 
 ### Error Handling - Invalid Vault
+
 - [ ] Set output folder to a path that doesn't have write permissions
 - [ ] Attempt to build
 - [ ] Error notification shows: "❌ Build failed: ..." with helpful message
 - [ ] Console shows detailed error
 
 ### Concurrent Build Prevention
+
 - [ ] Start a build (select formats, click Build)
 - [ ] While build is running, click Build button again
 - [ ] Shows notification: "⏳ Build already in progress..."
@@ -128,8 +142,10 @@ Complete this checklist to thoroughly test the Auto CV Obsidian plugin before di
 ## Vault Configuration Tests
 
 ### Valid Vault Setup
+
 Create a test vault with proper structure:
-```
+
+```text
 test-vault/
 ├── _config.yml
 ├── _style.yml (optional)
@@ -144,11 +160,13 @@ test-vault/
 - [ ] Output contains all sections
 
 ### Missing Config Files
+
 - [ ] Remove `_config.yml` and attempt build
 - [ ] Error message indicates missing config
 - [ ] Guidance provided to user
 
 ### Empty Vault
+
 - [ ] Create vault with just basic structure, no content
 - [ ] Build completes (may with empty sections)
 - [ ] No crash or error
@@ -156,6 +174,7 @@ test-vault/
 ## UI/UX Tests
 
 ### Notifications
+
 - [ ] Notifications appear at top-right of Obsidian window
 - [ ] Success notifications show ✅ emoji
 - [ ] Error notifications show ❌ emoji
@@ -164,6 +183,7 @@ test-vault/
 - [ ] Multiple notifications can stack
 
 ### Theme Support
+
 - [ ] Test with Obsidian Light theme
   - [ ] Modals are readable
   - [ ] Buttons are clickable
@@ -176,6 +196,7 @@ test-vault/
   - [ ] Plugin adapts to theme colors
 
 ### Accessibility
+
 - [ ] All buttons have hover effects
 - [ ] All form inputs are keyboard-accessible
 - [ ] Tab order is logical
@@ -183,6 +204,7 @@ test-vault/
 - [ ] Form validation messages are clear
 
 ### Performance
+
 - [ ] Plugin loads in < 2 seconds
 - [ ] Setting changes don't cause lag
 - [ ] Modal opens instantly
@@ -191,6 +213,7 @@ test-vault/
 ## Integration Tests
 
 ### Obsidian Integration
+
 - [ ] Works with multiple vaults
 - [ ] Works with vault in different locations (Desktop, Documents, OneDrive, etc.)
 - [ ] Works with special characters in vault path
@@ -198,6 +221,7 @@ test-vault/
 - [ ] Works with unicode characters in vault path
 
 ### Python Integration
+
 - [ ] Works with Python from different sources:
   - [ ] System Python
   - [ ] Anaconda Python
@@ -206,11 +230,13 @@ test-vault/
 - [ ] Works with different Python versions (3.10, 3.11, 3.12)
 
 ### Command Palette Integration
+
 - [ ] Fuzzy search finds "Build Resume" command
 - [ ] Command has proper description
 - [ ] Command executes correctly
 
 ### Ribbon Icon
+
 - [ ] Icon visible in ribbon
 - [ ] Icon tooltip shows on hover
 - [ ] Icon click opens Build Modal
@@ -218,17 +244,20 @@ test-vault/
 ## Edge Cases & Stress Tests
 
 ### Path Handling
+
 - [ ] Long vault paths (> 260 characters) work on Windows
 - [ ] Relative paths in output work correctly
 - [ ] Absolute paths in output work correctly
 - [ ] Paths with `../` work correctly
 
 ### Large Vaults
+
 - [ ] Works with large vault (1000+ files)
 - [ ] Works with large sections (10000+ words)
 - [ ] Build time is reasonable (< 30 seconds)
 
 ### Special Vault Scenarios
+
 - [ ] Vault with nested section folders works
 - [ ] Vault with symlinks works
 - [ ] Vault on network drive works (if applicable)
@@ -237,11 +266,13 @@ test-vault/
 ## Documentation & Help
 
 ### In-Plugin Help
+
 - [ ] Info tooltip helpful and accurate
 - [ ] Settings descriptions are clear
 - [ ] Error messages are actionable
 
 ### External Documentation
+
 - [ ] README.md accessible and helpful
 - [ ] DEVELOPMENT.md covers plugin testing
 - [ ] Links to auto-cv documentation work
@@ -258,11 +289,14 @@ If all checks pass:
 - [ ] Error handling is robust
 - [ ] User experience is smooth
 
-### Known Issues (if any):
-```
+### Known Issues (if any)
+
+```text
 (List any known limitations or issues here)
 ```
 
 ### Test Date: _______________
+
 ### Tester Name: _______________
+
 ### Test Environment: _______________

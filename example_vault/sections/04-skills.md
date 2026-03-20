@@ -3,17 +3,22 @@ type: skills
 ---
 # Technical Skills
 
-### Languages
+## Languages
+
 Python, TypeScript, JavaScript, Go, SQL, Bash
 
-### Frameworks & Libraries
+## Frameworks & Libraries
+
 FastAPI, Django, React, Next.js, Node.js, Express
 
-### Data & Messaging
+## Data & Messaging
+
 PostgreSQL, Redis, Kafka, Elasticsearch, DynamoDB
 
-### Cloud & DevOps
+## Cloud & DevOps
+
 AWS, GCP, Docker, Kubernetes, Terraform, GitHub Actions
 
-### Practices
+## Practices
+
 TDD, CI/CD, Agile/Scrum, System Design, Code Review

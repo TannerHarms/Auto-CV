@@ -1,6 +1,15 @@
 <# Skills section — awesome-cv format #>
 \cvsection{<< section.title | escape_latex >>}
 
+<# Compute dynamic label column width: min(max label width, \cvskillcolwidth) #>
+\newlength{\acvskillmaxw}\setlength{\acvskillmaxw}{0pt}%
+<% for cat in section.skill_categories %>
+<% set idx = "abcdefghijklmnopqrstuvwxyz"[loop.index0 % 26] %>
+\newlength{\acvskillcur<< idx >>}\settowidth{\acvskillcur<< idx >>}{\skilltypestyle{<< cat.name | escape_latex >>}}\ifdim\acvskillcur<< idx >>>\acvskillmaxw\setlength{\acvskillmaxw}{\acvskillcur<< idx >>}\fi%
+<% endfor %>
+\ifdim\acvskillmaxw>\cvskillcolwidth\setlength{\acvskillmaxw}{\cvskillcolwidth}\fi%
+\setlength{\cvskillcolwidth}{\acvskillmaxw}%
+
 \begin{cvskills}
 
 <% for cat in section.skill_categories %>

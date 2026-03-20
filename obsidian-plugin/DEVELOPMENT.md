@@ -4,14 +4,14 @@ This guide covers how to develop, build, and test the Auto CV Obsidian plugin.
 
 ## Prerequisites
 
-- Node.js 16+ and npm
+- Node.js 20+ and npm
 - TypeScript knowledge
 - Obsidian API knowledge (basic familiarity with Obsidian plugin architecture)
 - Python 3.9+ and the `auto-cv` CLI installed locally
 
 ## Project Structure
 
-```
+```text
 obsidian-plugin/
 ├── manifest.json          # Plugin metadata and entry point config
 ├── package.json           # npm dependencies and scripts
@@ -34,8 +34,13 @@ obsidian-plugin/
 ### 1. Install Dependencies
 
 ```bash
-npm install
+..\tools\with-node.ps1 npm.cmd install
 ```
+
+If `node` and `npm` are not available in your VS Code terminal on Windows, either:
+
+- run `..\tools\with-node.ps1 npm.cmd <args>` for one-off commands, or
+- dot-source `..\tools\with-node.ps1` once to add Node.js to the current PowerShell session.
 
 ### 2. Install Auto CV Locally
 
@@ -52,23 +57,26 @@ This installs the Python package in development mode, so your plugin can call it
 
 ```bash
 # Development build with watch mode (rebuilds on changes)
-npm run dev
+..\tools\with-node.ps1 npm.cmd run dev
 
 # Production build (minified, optimized)
-npm run build
+..\tools\with-node.ps1 npm.cmd run build
 
 # Watch mode without optimization
-npm run watch
+..\tools\with-node.ps1 npm.cmd run watch
 ```
 
 ### Code Quality
 
 ```bash
 # Lint TypeScript files
-npm run lint
+..\tools\with-node.ps1 npm.cmd run lint
 
 # Format code with Prettier
-npm run format
+..\tools\with-node.ps1 npm.cmd run format
+
+# Run plugin tests
+..\tools\with-node.ps1 npm.cmd test
 ```
 
 ### Testing in Obsidian
@@ -83,13 +91,14 @@ npm run format
 
 #### Option 2: Copy Built Plugin to Obsidian
 
-```bash
+```powershell
 # After building
-# Windows
 copy main.js your-vault/.obsidian/plugins/auto-cv-obsidian/
 copy manifest.json your-vault/.obsidian/plugins/auto-cv-obsidian/
 copy styles.css your-vault/.obsidian/plugins/auto-cv-obsidian/
+```
 
+```bash
 # macOS/Linux
 cp main.js ~/your-vault/.obsidian/plugins/auto-cv-obsidian/
 cp manifest.json ~/your-vault/.obsidian/plugins/auto-cv-obsidian/
@@ -99,7 +108,9 @@ cp styles.css ~/your-vault/.obsidian/plugins/auto-cv-obsidian/
 ## Key Source Files
 
 ### main.ts
+
 Entry point for the plugin. Responsibilities:
+
 - Load plugin settings
 - Check if auto-cv is installed
 - Register the "Build Resume" command
@@ -107,28 +118,36 @@ Entry point for the plugin. Responsibilities:
 - Handle build execution and error handling
 
 Key functions:
+
 - `onload()` - Initializes the plugin
 - `openBuildModal()` - Opens the build configuration modal
 - `executeBuild()` - Executes the Python subprocess
 
 ### modals.ts
+
 UI modal components for user interaction:
-- `BuildModal` - Modal for selecting formats, preset, and output folder
+
+- `BuildModal` - Modal for selecting formats and output folder in flat vaults
+- `BuildWizard` - Multi-step project/style/output flow for master vaults
 - `ProgressModal` - Shows build progress
 
 ### settings.ts
+
 Plugin configuration and settings panel:
+
 - `AutoResumeSettings` - Type definition for plugin settings
 - `AutoResumeSettingTab` - Settings UI implementation
 
 Manages:
+
 - Python executable path (with auto-detection)
-- Default preset selection
 - Default output folder
 - Default output formats
 
 ### utils.ts
+
 Low-level utilities for Python execution:
+
 - `detectPythonExecutable()` - Finds Python on system
 - `checkAutoResumeInstalled()` - Verifies auto-cv package
 - `buildResume()` - Executes Python CLI subprocess
@@ -138,6 +157,7 @@ Low-level utilities for Python execution:
 ### Add a New Setting
 
 1. Update `AutoResumeSettings` in `settings.ts`:
+
 ```typescript
 export interface AutoResumeSettings {
   // ... existing settings
@@ -145,7 +165,8 @@ export interface AutoResumeSettings {
 }
 ```
 
-2. Add to `DEFAULT_SETTINGS`:
+1. Add to `DEFAULT_SETTINGS`:
+
 ```typescript
 export const DEFAULT_SETTINGS: AutoResumeSettings = {
   // ... existing defaults
@@ -153,7 +174,8 @@ export const DEFAULT_SETTINGS: AutoResumeSettings = {
 };
 ```
 
-3. Add UI component in `AutoResumeSettingTab.display()`:
+1. Add UI component in `AutoResumeSettingTab.display()`:
+
 ```typescript
 new Setting(containerEl)
   .setName('New Setting')
@@ -171,6 +193,7 @@ new Setting(containerEl)
 ### Add a New Command
 
 In `main.ts`:
+
 ```typescript
 this.addCommand({
   id: 'my-new-command',
@@ -189,7 +212,7 @@ export async function buildResume(
   vaultPath: string,
   outputPath: string,
   formats: string[],
-  preset: string
+  project?: string
 ): Promise<void>
 ```
 
@@ -201,7 +224,7 @@ export async function buildResume(
   vaultPath: string,
   outputPath: string,
   formats: string[],
-  preset: string,
+  project?: string,
   onProgress?: (message: string) => void
 ): Promise<void>
 ```
@@ -217,14 +240,17 @@ export async function buildResume(
 ### Python Execution Issues
 
 Check the Python subprocess output:
+
 1. In `utils.ts`, add debugging to the `buildResume()` function:
+
 ```typescript
 console.log('Build args:', args);
 console.log('Build output:', result.stdout);
 console.log('Build errors:', result.stderr);
 ```
 
-2. Or test the Python CLI directly from terminal:
+1. Or test the Python CLI directly from terminal:
+
 ```bash
 python -m auto_cv build /path/to/vault --output ./output
 ```
@@ -257,21 +283,25 @@ zip -r auto-cv-obsidian.zip manifest.json main.js styles.css
 ## Troubleshooting
 
 ### Plugin fails to load
+
 - Check the console for errors (`Ctrl+Shift+I`)
 - Ensure `manifest.json` is valid JSON
 - Try rebuilding: `npm run build`
 
 ### Python detection fails
+
 - Ensure Python is in your PATH
 - Or set explicit Python path in plugin settings
 - Test: `python --version` from terminal
 
 ### Build subprocess fails
+
 - Check Python package is installed: `pip list | grep auto-cv`
 - Test Python CLI directly: `python -m auto_cv build .`
 - Check vault structure matches expected format
 
 ### Settings don't persist
+
 - Ensure `await this.plugin.saveSettings()` is called
 - Check browser console for any storage errors
 

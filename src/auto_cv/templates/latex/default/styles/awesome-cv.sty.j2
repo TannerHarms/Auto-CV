@@ -16,9 +16,7 @@
 \RequirePackage{etoolbox}
 \RequirePackage{setspace}
 \RequirePackage{parskip}
-\RequirePackage[hidelinks,unicode]{hyperref}
-\RequirePackage[T1]{fontenc}
-\RequirePackage[utf8]{inputenc}
+\RequirePackage[unicode]{hyperref}
 
 <% if style.latex.engine == 'xelatex' %>
 % --- XeLaTeX: use fontspec with the original Awesome-CV fonts ---
@@ -71,15 +69,17 @@
 \newcommand*{\footerfont}{\sffamily}
 <% endif %>
 <% else %>
-% --- pdflatex fallback: use helvet (approximates Roboto) ---
-\RequirePackage{helvet}
+% --- pdflatex: use the real Roboto / Source Sans Pro / Source Code Pro packages ---
+\RequirePackage[T1]{fontenc}
+\RequirePackage[utf8]{inputenc}
+\RequirePackage[sfdefault]{roboto}           % Roboto (sets \sfdefault)
+\RequirePackage[scale=0.85]{sourcecodepro}   % Source Code Pro for monospace
 \renewcommand{\familydefault}{\sfdefault}
-\RequirePackage[scaled=0.85]{FiraMono}
-\newcommand*{\headerfont}{\sffamily}
-\newcommand*{\headerfontlight}{\sffamily}
-\newcommand*{\bodyfont}{\sffamily}
-\newcommand*{\bodyfontlight}{\sffamily}
-\newcommand*{\footerfont}{\sffamily}
+\newcommand*{\headerfont}{\fontseries{c}\selectfont}   % Roboto Condensed
+\newcommand*{\headerfontlight}{\fontseries{el}\selectfont} % Roboto Thin
+\newcommand*{\bodyfont}{\fontseries{m}\selectfont}     % Roboto Regular
+\newcommand*{\bodyfontlight}{\fontseries{l}\selectfont}% Roboto Light
+\newcommand*{\footerfont}{\fontseries{m}\selectfont}   % Roboto Regular
 <% endif %>
 \RequirePackage{microtype}
 
@@ -107,9 +107,8 @@
 \colorlet{text}{darkgray}
 \colorlet{graytext}{gray}
 \colorlet{lighttext}{lightgray}
-% Link color
-\definecolor{linkcolor}{HTML}{<< style.colors.link | replace('#', '') >>}
-\hypersetup{colorlinks=true, urlcolor=linkcolor, linkcolor=linkcolor}
+% Link color — use accent (awesome) so hyperlinks match the overall theme
+\hypersetup{colorlinks=true, urlcolor=awesome, linkcolor=awesome}
 
 % ==========================================================================
 %  Column types — exact awesome-cv.cls definitions
@@ -149,7 +148,11 @@
 % Header styles
 \newcommand*{\headerfirstnamestyle}[1]{{\fontsize{32pt}{1em}\headerfontlight\color{text} #1}}
 \newcommand*{\headerlastnamestyle}[1]{{\fontsize{32pt}{1em}\headerfont\bfseries\color{text} #1}}
+<% if style.latex.engine == 'xelatex' %>
 \newcommand*{\headerpositionstyle}[1]{{\fontsize{7.6pt}{1em}\bodyfont\scshape\addfontfeatures{LetterSpace=7}\color{awesome} #1}}
+<% else %>
+\newcommand*{\headerpositionstyle}[1]{{\fontsize{7.6pt}{1em}\bodyfont\scshape\color{awesome}\textls[70]{#1}}}
+<% endif %>
 \newcommand*{\headeraddressstyle}[1]{{\fontsize{8pt}{1em}\headerfont\itshape\color{lighttext} #1}}
 \newcommand*{\headersocialstyle}[1]{{\fontsize{6.8pt}{1em}\headerfont\color{text} #1}}
 \newcommand*{\headerquotestyle}[1]{{\fontsize{9pt}{1em}\bodyfont\itshape\color{darktext} #1}}
@@ -168,12 +171,38 @@
 % Honor styles
 \newcommand*{\honortitlestyle}[1]{{\fontsize{9pt}{1em}\bodyfont\color{graytext} #1}}
 \newcommand*{\honorpositionstyle}[1]{{\fontsize{9pt}{1em}\bodyfont\bfseries\color{darktext} #1}}
-\newcommand*{\honordatestyle}[1]{{\fontsize{9pt}{1em}\bodyfont\color{graytext} #1}}
+\newcommand*{\honordatestyle}[1]{{\fontsize{8pt}{1em}\bodyfontlight\slshape\color{graytext} #1}}
 \newcommand*{\honorlocationstyle}[1]{{\fontsize{9pt}{1em}\bodyfontlight\slshape\color{awesome} #1}}
 
 % Skill styles
 \newcommand*{\skilltypestyle}[1]{{\fontsize{10pt}{1em}\bodyfont\bfseries\color{darktext} #1}}
 \newcommand*{\skillsetstyle}[1]{{\fontsize{9pt}{1em}\bodyfont\color{text} #1}}
+
+% --- \cvskill{labelwidth}{label}{skills} ---
+% Single-row skill entry: label top-right, skills top-left no indent
+\newcommand{\cvskill}[3]{%
+  \vspace{-2.0mm}%
+  \setlength\tabcolsep{0pt}%
+  \setlength{\extrarowheight}{0pt}%
+  \def\arraystretch{0.6}%
+  \begin{tabular*}{\textwidth}{@{} >{\raggedleft\arraybackslash}p{#1} @{\hspace{2ex}} >{\raggedright\arraybackslash}p{\dimexpr\textwidth-#1-2ex\relax} @{}}%
+    \skilltypestyle{#2} & \skillsetstyle{#3} \\%
+  \end{tabular*}%
+  \def\arraystretch{1}%
+}
+
+% --- \cvlang{labelwidth}{label}{proficiency} ---
+% Single-row language entry: label top-right, proficiency top-left no indent
+\newcommand{\cvlang}[3]{%
+  \vspace{-2.0mm}%
+  \setlength\tabcolsep{0pt}%
+  \setlength{\extrarowheight}{0pt}%
+  \def\arraystretch{0.6}%
+  \begin{tabular*}{\textwidth}{@{} >{\raggedleft\arraybackslash}p{#1} @{\hspace{2ex}} >{\raggedright\arraybackslash}p{\dimexpr\textwidth-#1-2ex\relax} @{}}%
+    \skilltypestyle{#2} & \skillsetstyle{#3} \\%
+  \end{tabular*}%
+  \def\arraystretch{1}%
+}
 
 % Paragraph style
 \newcommand*{\paragraphstyle}{{\fontsize{9pt}{1em}\bodyfontlight\upshape\color{text}}}
@@ -201,7 +230,7 @@
 \newenvironment{cvitems}{%
   \vspace{<< style.spacing.bullet_list_topsep >>}%
   \begin{justify}%
-  \begin{itemize}[leftmargin=2ex, nosep, noitemsep]%
+  \begin{itemize}[leftmargin=2.5ex, labelsep=0.5ex, nosep, noitemsep]%
     \setlength{\parskip}{0pt}%
     \renewcommand{\labelitemi}{<< marker >>}%
 }{%
@@ -213,7 +242,7 @@
 % Also make plain \begin{itemize} match the cvitems look when used in templates
 % topsep tightens the gap between the \cventry header and the bullets;
 % after= adds space following the list before the next entry.
-\setlist[itemize]{leftmargin=2ex, nosep, noitemsep, topsep=<< style.spacing.bullet_list_topsep >>, partopsep=0pt, label=<< marker >>, after=\vspace{<< style.spacing.bullet_after >>}}
+\setlist[itemize]{leftmargin=2.5ex, labelsep=0.5ex, nosep, noitemsep, topsep=<< style.spacing.bullet_list_topsep >>, partopsep=0pt, label=<< marker >>, after=\vspace{<< style.spacing.bullet_after >>}}
 
 % ==========================================================================
 %  STANDARD COMMAND INTERFACE
@@ -283,14 +312,25 @@
 }
 
 % --- \cvcert{name}{issuer}{date} ---
-% Consistent with \cventry: name on left, date on right, issuer below
+% Name bold on left, issuer inline unbolded, date accented on right
 \newcommand{\cvcert}[3]{%
   \vspace{-2.0mm}%
   \setlength\tabcolsep{0pt}%
   \setlength{\extrarowheight}{0pt}%
   \begin{tabular*}{\textwidth}{@{\extracolsep{\fill}} L{\textwidth - 4.5cm} R{4.5cm}}%
-    \entrytitlestyle{#1} & \entrydatestyle{#3} \\%
-    \ifblank{#2}{}{\entrypositionstyle{#2} & \\}%
+    \entrytitlestyle{#1}\ifblank{#2}{}{~--~{#2}} & \entrylocationstyle{#3} \\%
+  \end{tabular*}%
+}
+
+% --- \cvservice{title}{organization}{dates}{description} ---
+% Single-row layout: title + org on left, date accented on right, description as tight second row
+\newcommand{\cvservice}[4]{%
+  \vspace{-2.0mm}%
+  \setlength\tabcolsep{0pt}%
+  \setlength{\extrarowheight}{0pt}%
+  \begin{tabular*}{\textwidth}{@{\extracolsep{\fill}} L{\textwidth - 4.5cm} R{4.5cm}}%
+    \entrytitlestyle{#1}\ifblank{#2}{}{, \entrypositionstyle{#2}} & \entrylocationstyle{#3} \\[-2ex]%
+    \ifblank{#4}{}{\multicolumn{2}{@{}p{\textwidth}@{}}{\descriptionstyle{#4}} \\}%
   \end{tabular*}%
 }
 
@@ -308,14 +348,15 @@
 }
 
 % --- \cvaward{title}{issuer}{date}{description} ---
-% Uses cvhonor layout
+% Title and issuer on left, date accented on right, description as tight second row
 \newcommand{\cvaward}[4]{%
+  \vspace{-2.0mm}%
   \setlength\tabcolsep{0pt}%
   \setlength{\extrarowheight}{0pt}%
-  \begin{tabular*}{\textwidth}{@{\extracolsep{\fill}} C{2.cm} L{\textwidth - 4.5cm} R{2.5cm}}%
-    \honordatestyle{#3} & \honorpositionstyle{#1}\ifblank{#2}{}{, \honortitlestyle{#2}} & \\%
+  \begin{tabular*}{\textwidth}{@{\extracolsep{\fill}} L{\textwidth - 4.5cm} R{4.5cm}}%
+    \entrytitlestyle{#1}\ifblank{#2}{}{, \honortitlestyle{#2}} & \entrylocationstyle{#3} \\[-2ex]%
+    \ifblank{#4}{}{\multicolumn{2}{@{}p{\textwidth}@{}}{\descriptionstyle{#4}} \\}%
   \end{tabular*}%
-  \ifblank{#4}{}{\noindent\hspace{2cm}\descriptionstyle{#4}\par}%
 }
 
 % --- \cvawardcompact{title}{date} ---

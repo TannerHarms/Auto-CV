@@ -1,0 +1,18 @@
+<# Interests section — reuses skills table layout #>
+\section{<< section.title | escape_latex >>}
+
+<# Compute dynamic label column width: min(max label width, \skillcatlabelwidth) #>
+\newlength{\intmaxw}\setlength{\intmaxw}{0pt}%
+<% for cat in section.skill_categories %>
+<% set idx = "abcdefghijklmnopqrstuvwxyz"[loop.index0 % 26] %>
+\newlength{\intcur<< idx >>}\settowidth{\intcur<< idx >>}{\skilltypestyle{<< cat.name | escape_latex >>}}\ifdim\intcur<< idx >>>\intmaxw\setlength{\intmaxw}{\intcur<< idx >>}\fi%
+<% endfor %>
+\ifdim\intmaxw>\skillcatlabelwidth\setlength{\intmaxw}{\skillcatlabelwidth}\fi%
+
+\setlength\tabcolsep{1ex}%
+\setlength{\extrarowheight}{0pt}%
+\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}} >{\raggedleft\arraybackslash}p{\intmaxw} p{\dimexpr\textwidth-\intmaxw-4ex\relax}}%
+<% for cat in section.skill_categories -%>
+  \skilltypestyle{<< cat.name | escape_latex >>} & \skillsetstyle{<< cat.skills | join(', ') | escape_latex >>} \\
+<% endfor -%>
+\end{tabular*}%

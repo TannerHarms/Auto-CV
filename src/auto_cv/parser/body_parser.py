@@ -429,17 +429,18 @@ def _parse_education_body(content: str) -> list[dict]:
 
 
 def _parse_skills_body(content: str) -> list[dict]:
-    """Parse ``### Category`` headings or ``**Category:** list`` lines."""
+    """Parse ``### Category`` or ``## Category`` headings, or ``**Category:** list`` lines."""
     categories: list[dict[str, Any]] = []
 
-    # Try ### headings first
-    h3_entries = _split_by_heading_simple(content, 3)
-    if h3_entries:
-        for name, body in h3_entries:
-            skills = _extract_skill_list(body)
-            if skills:
-                categories.append({"name": name, "skills": skills})
-        return categories
+    # Try ### headings first, then ## headings
+    for level in (3, 2):
+        entries = _split_by_heading_simple(content, level)
+        if entries:
+            for name, body in entries:
+                skills = _extract_skill_list(body)
+                if skills:
+                    categories.append({"name": name, "skills": skills})
+            return categories
 
     # Fallback: **Bold:** comma-list lines
     for line in content.split("\n"):
@@ -674,6 +675,46 @@ def _parse_awards_body(content: str) -> list[dict]:
     return entries
 
 
+def _parse_languages_body(content: str) -> list[dict]:
+    """Parse ``## Language`` headings with ``**Proficiency:** value``."""
+    entries: list[dict[str, Any]] = []
+    for heading, body in _split_by_heading_simple(content, 2):
+        entry: dict[str, Any] = {"name": _strip_heading_number(heading)}
+        lines = body.split("\n")
+
+        kv, _ = _parse_kv_lines(lines)
+        if kv.get("proficiency"):
+            entry["proficiency"] = kv["proficiency"]
+        elif kv.get("level"):
+            entry["proficiency"] = kv["level"]
+
+        entries.append(entry)
+    return entries
+
+
+def _parse_references_body(content: str) -> list[dict]:
+    """Parse ``## Name`` headings with title, organization, contact info."""
+    entries: list[dict[str, Any]] = []
+    for heading, body in _split_by_heading_simple(content, 2):
+        entry: dict[str, Any] = {"name": _strip_heading_number(heading)}
+        lines = body.split("\n")
+
+        kv, _ = _parse_kv_lines(lines)
+        if kv.get("title") or kv.get("position") or kv.get("role"):
+            entry["title"] = kv.get("title") or kv.get("position") or kv.get("role")
+        if kv.get("organization") or kv.get("company") or kv.get("institution"):
+            entry["organization"] = kv.get("organization") or kv.get("company") or kv.get("institution")
+        if kv.get("email"):
+            entry["email"] = kv["email"]
+        if kv.get("phone"):
+            entry["phone"] = kv["phone"]
+        if kv.get("relationship") or kv.get("relation"):
+            entry["relationship"] = kv.get("relationship") or kv.get("relation")
+
+        entries.append(entry)
+    return entries
+
+
 # ---------------------------------------------------------------------------
 # Parser dispatch table
 # ---------------------------------------------------------------------------
@@ -687,4 +728,8 @@ _PARSERS: dict[str, Any] = {
     "publications": _parse_publications_body,
     "awards": _parse_awards_body,
     "volunteer": _parse_experience_body,
+    "languages": _parse_languages_body,
+    "service": _parse_experience_body,
+    "interests": _parse_skills_body,  # reuse skill-list parsing for interests
+    "references": _parse_references_body,
 }

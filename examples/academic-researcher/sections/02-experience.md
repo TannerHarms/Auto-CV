@@ -6,6 +6,7 @@ order: 2
 # Research Experience
 
 ## 1. Postdoctoral Research Fellow
+
 **Company:** Massachusetts Institute of Technology, Department of Physics
 **Location:** Cambridge, MA
 **Dates:** 2022-09 – present
@@ -17,6 +18,7 @@ order: 2
 - Presented invited talks at APS March Meeting (2023, 2024) and Gordon Research Conference
 
 ## 2. Graduate Research Assistant
+
 **Company:** Stanford University, SLAC National Accelerator Laboratory
 **Location:** Stanford, CA
 **Dates:** 2017-09 – 2022-08
@@ -28,6 +30,7 @@ order: 2
 - Organised weekly condensed matter seminar series for 2 years
 
 ## 3. Undergraduate Research Assistant
+
 **Company:** University of Colorado Boulder, JILA
 **Location:** Boulder, CO
 **Dates:** 2015-06 – 2017-05

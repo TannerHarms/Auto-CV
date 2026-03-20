@@ -24,7 +24,7 @@
 <% else %>
 <# Default: honor-style (date | title, issuer | ) #>
 <% for entry in section.award_entries %>
+<% if not loop.first %>\vspace{<< style.spacing.entry_gap >>}<% endif %>
 \cvaward{<< entry.title | escape_latex >>}{<< entry.issuer | escape_latex if entry.issuer else '' >>}{<< entry.date | escape_latex if entry.date else '' >>}{<< entry.description | md_latex if entry.description else '' >>}
-
 <% endfor %>
 <% endif %>

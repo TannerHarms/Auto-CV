@@ -15,7 +15,10 @@ from auto_cv.models.resume import (
     DateRange,
     EducationEntry,
     ExperienceEntry,
+    LanguageEntry,
+    ReferenceEntry,
     Page,
+    ProjectConfig,
     ProjectEntry,
     PublicationEntry,
     Resume,
@@ -30,8 +33,20 @@ from auto_cv.parser.body_parser import parse_body, strip_body_title
 from auto_cv.styles.presets import load_preset
 
 
-def load_vault(vault_path: str | Path) -> tuple[Resume, StyleConfig]:
-    """Load a complete resume vault from disk.
+def _is_master_vault(vault: Path) -> bool:
+    """Return True if the vault uses the master/projects layout."""
+    return (vault / "_master").is_dir()
+
+
+def load_vault(
+    vault_path: str | Path,
+    project: str | None = None,
+) -> tuple[Resume, StyleConfig]:
+    """Load a resume vault from disk.
+
+    If the vault contains a ``_master/`` directory and *project* is given,
+    delegates to :func:`load_project`.  Otherwise falls back to loading
+    the vault as a flat (legacy) layout.
 
     Returns ``(Resume, StyleConfig)`` tuple.
     """
@@ -39,11 +54,19 @@ def load_vault(vault_path: str | Path) -> tuple[Resume, StyleConfig]:
     if not vault.is_dir():
         raise FileNotFoundError(f"Vault directory not found: {vault}")
 
-    config = _load_config(vault)
-    style = _load_style(vault)
-    sections = _load_sections(vault)
-    pages = _load_pages(vault)
-    overrides = _detect_overrides(vault)
+    if _is_master_vault(vault) and project:
+        return load_project(vault, project)
+
+    # Legacy flat vault — _config.yml + sections/ at vault root.
+    # Also handles master-vault when no project is given: use _master/ as
+    # the flat root (so `auto-cv build <vault>` still works).
+    root = vault / "_master" if _is_master_vault(vault) else vault
+
+    config = _load_config(root)
+    style = _load_style(root)
+    sections = _load_sections(root)
+    pages = _load_pages(root)
+    overrides = _detect_overrides(root)
 
     resume = Resume(
         config=config,
@@ -52,6 +75,191 @@ def load_vault(vault_path: str | Path) -> tuple[Resume, StyleConfig]:
         overrides=overrides,
     )
     return resume, style
+
+
+# ---------------------------------------------------------------------------
+# Project-based loading
+# ---------------------------------------------------------------------------
+
+def list_projects(vault_path: str | Path) -> list[str]:
+    """Return names of all projects in a master vault."""
+    vault = Path(vault_path).resolve()
+    projects_dir = vault / "projects"
+    if not projects_dir.is_dir():
+        return []
+    return sorted(
+        d.name for d in projects_dir.iterdir()
+        if d.is_dir() and (d / "_project.yml").exists()
+    )
+
+
+def load_project(
+    vault_path: str | Path,
+    project_name: str,
+) -> tuple[Resume, StyleConfig]:
+    """Load a specific project resume from a master vault.
+
+    Resolution logic:
+    1. Load master ``_config.yml``, deep-merge with project config overrides.
+    2. For each entry in the project's ``include`` list, look for a local
+       override in ``projects/<name>/sections/`` first, then fall back to
+       ``_master/sections/``.  Path segments like ``experience/acme-corp``
+       resolve to ``_master/sections/experience/acme-corp.md``.
+    3. Style comes from the project's ``_style.yml`` (falls back to master's).
+    4. Pages come from the project's ``pages/`` (falls back to master's).
+    """
+    vault = Path(vault_path).resolve()
+    master = vault / "_master"
+    project_dir = vault / "projects" / project_name
+
+    if not master.is_dir():
+        raise FileNotFoundError(f"Master vault not found: {master}")
+    if not project_dir.is_dir():
+        raise FileNotFoundError(f"Project not found: {project_dir}")
+
+    project_cfg = _load_project_config(project_dir)
+
+    # --- Config: master + project overrides ---
+    config = _load_config(master)
+    if project_cfg.config:
+        config = _merge_resume_config(config, project_cfg.config)
+
+    # Apply project's section_order to config if specified
+    if project_cfg.section_order:
+        config.section_order = project_cfg.section_order
+
+    # --- Sections: resolve include list ---
+    if project_cfg.include:
+        sections = _resolve_project_sections(
+            master, project_dir, project_cfg.include
+        )
+    else:
+        # No include list — use all master sections
+        sections = _load_sections(master)
+
+    # --- Style: project-local > master ---
+    if (project_dir / "_style.yml").exists():
+        style = _load_style(project_dir)
+    else:
+        style = _load_style(master)
+
+    # --- Pages: project-local > master ---
+    pages = _load_pages(project_dir)
+    if not pages:
+        pages = _load_pages(master)
+
+    # --- Overrides: project-local > master ---
+    overrides = _detect_overrides(project_dir)
+    if not overrides.custom_css and not overrides.resume_sty:
+        overrides = _detect_overrides(master)
+
+    resume = Resume(
+        config=config,
+        sections=sections,
+        pages=pages,
+        overrides=overrides,
+    )
+    return resume, style
+
+
+def _load_project_config(project_dir: Path) -> ProjectConfig:
+    """Load a ``_project.yml`` file into a ProjectConfig."""
+    path = project_dir / "_project.yml"
+    if not path.exists():
+        return ProjectConfig()
+
+    with open(path, "r", encoding="utf-8") as f:
+        raw: dict = yaml.safe_load(f) or {}
+
+    return ProjectConfig(
+        include=raw.get("include", []),
+        section_order=raw.get("section_order", []),
+        config=raw.get("config", {}),
+    )
+
+
+def _merge_resume_config(base: ResumeConfig, overrides: dict) -> ResumeConfig:
+    """Deep-merge override dict into an existing ResumeConfig."""
+    base_dict = base.model_dump()
+    for key, value in overrides.items():
+        if key in base_dict and isinstance(base_dict[key], dict) and isinstance(value, dict):
+            base_dict[key] = {**base_dict[key], **value}
+        else:
+            base_dict[key] = value
+    return ResumeConfig.model_validate(base_dict)
+
+
+def _resolve_project_sections(
+    master: Path,
+    project_dir: Path,
+    include: list[str],
+) -> list[Section]:
+    """Resolve the include list to Section objects.
+
+    For each include entry (e.g. ``"experience/acme-corp"``):
+    1. Check ``project_dir/sections/<path>.md`` (local override).
+    2. Fall back to ``master/sections/<path>.md``.
+    3. If ``<path>`` matches a directory in master, load all ``.md`` files
+       in that directory (e.g. ``"experience"`` loads all experience entries).
+    """
+    sections: list[Section] = []
+    seen_ids: set[str] = set()
+
+    for order_idx, include_path in enumerate(include):
+        section = _resolve_one_include(master, project_dir, include_path, order_idx)
+        if section:
+            for s in section:
+                if s.id not in seen_ids:
+                    sections.append(s)
+                    seen_ids.add(s.id)
+
+    return sections
+
+
+def _resolve_one_include(
+    master: Path,
+    project_dir: Path,
+    include_path: str,
+    order_idx: int,
+) -> list[Section]:
+    """Resolve a single include entry to one or more Section objects."""
+    # Normalise separators
+    include_path = include_path.replace("\\", "/")
+
+    # 1. Check for local project override file
+    local_file = project_dir / "sections" / f"{include_path}.md"
+    if local_file.is_file():
+        s = _parse_section_file(local_file)
+        if s:
+            s.order = order_idx
+            return [s]
+
+    # 2. Check for master section file
+    master_file = master / "sections" / f"{include_path}.md"
+    if master_file.is_file():
+        s = _parse_section_file(master_file)
+        if s:
+            s.order = order_idx
+            return [s]
+
+    # 3. Check if include_path refers to a directory of sections
+    master_dir = master / "sections" / include_path
+    if master_dir.is_dir():
+        results: list[Section] = []
+        for md_file in sorted(master_dir.glob("*.md")):
+            # Check for local override of this specific file
+            relative = md_file.relative_to(master / "sections")
+            local_override = project_dir / "sections" / relative.with_suffix(".md")
+            if local_override.is_file():
+                s = _parse_section_file(local_override)
+            else:
+                s = _parse_section_file(md_file)
+            if s:
+                s.order = order_idx
+                results.append(s)
+        return results
+
+    return []
 
 
 # ---------------------------------------------------------------------------
@@ -337,6 +545,43 @@ def _populate_typed_entries(section: Section, entries_raw: list[dict]) -> None:
                 highlights=e.get("highlights", []),
                 description=e.get("description"),
                 tags=e.get("tags", []),
+            ))
+
+    elif section.section_type == SectionType.SERVICE:
+        for e in entries_raw:
+            section.experience_entries.append(ExperienceEntry(
+                title=e.get("title", e.get("role", "")),
+                organization=e.get("organization", e.get("company", "")),
+                location=e.get("location"),
+                dates=_parse_dates(e),
+                highlights=e.get("highlights", []),
+                description=e.get("description"),
+                tags=e.get("tags", []),
+            ))
+
+    elif section.section_type == SectionType.LANGUAGES:
+        for e in entries_raw:
+            section.language_entries.append(LanguageEntry(
+                name=e.get("name", ""),
+                proficiency=e.get("proficiency"),
+            ))
+
+    elif section.section_type == SectionType.INTERESTS:
+        for e in entries_raw:
+            section.skill_categories.append(SkillCategory(
+                name=e.get("name", e.get("category", "")),
+                skills=e.get("skills", []),
+            ))
+
+    elif section.section_type == SectionType.REFERENCES:
+        for e in entries_raw:
+            section.reference_entries.append(ReferenceEntry(
+                name=e.get("name", ""),
+                title=e.get("title"),
+                organization=e.get("organization"),
+                email=e.get("email"),
+                phone=e.get("phone"),
+                relationship=e.get("relationship"),
             ))
 
 

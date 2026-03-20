@@ -6,13 +6,16 @@ labels: bug
 assignees: ''
 ---
 
-## Description
+<!-- markdownlint-disable MD025 -->
+
+# Description
 
 A clear and concise description of what the bug is.
 
 ## Reproduction Steps
 
 Steps to reproduce the behavior:
+
 1. Go to '...'
 2. Click on '...'
 3. See error
@@ -40,7 +43,7 @@ If applicable, add screenshots to help explain your problem.
 
 Please copy and paste any error messages or stack traces:
 
-```
+```text
 (paste error here)
 ```
 

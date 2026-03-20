@@ -1,0 +1,14 @@
+<# Languages section — uses \cvlang command for consistent spacing #>
+\section{<< section.title | escape_latex >>}
+
+<# Compute dynamic label column width: min(max label width, \skillcatlabelwidth) #>
+\newlength{\lngmaxw}\setlength{\lngmaxw}{0pt}%
+<% for entry in section.language_entries %>
+<% set idx = "abcdefghijklmnopqrstuvwxyz"[loop.index0 % 26] %>
+\newlength{\lngcur<< idx >>}\settowidth{\lngcur<< idx >>}{\skilltypestyle{<< entry.name | escape_latex >>}}\ifdim\lngcur<< idx >>>\lngmaxw\setlength{\lngmaxw}{\lngcur<< idx >>}\fi%
+<% endfor %>
+\ifdim\lngmaxw>\skillcatlabelwidth\setlength{\lngmaxw}{\skillcatlabelwidth}\fi%
+
+<% for entry in section.language_entries %>
+\cvlang{\lngmaxw}{<< entry.name | escape_latex >>}{<< entry.proficiency | md_latex if entry.proficiency else '' >>}
+<% endfor %>

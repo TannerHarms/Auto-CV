@@ -41,6 +41,10 @@ def build(
         Path,
         typer.Option("--output", "-o", help="Output directory."),
     ] = Path("output"),
+    project: Annotated[
+        Optional[str],
+        typer.Option("--project", "-p", help="Project name (for master vaults with projects/)."),
+    ] = None,
     polish: Annotated[
         bool,
         typer.Option("--polish", help="Use LLM to polish bullet points."),
@@ -59,14 +63,14 @@ def build(
     ] = None,
 ) -> None:
     """Parse a vault and render resumes in the requested formats."""
-from auto_cv.parser.vault_reader import load_vault
+    from auto_cv.parser.vault_reader import load_vault
 
     vault = vault.resolve()
     output = output.resolve()
     output.mkdir(parents=True, exist_ok=True)
 
     with console.status("[bold green]Loading vault…"):
-        resume, style = load_vault(vault)
+        resume, style = load_vault(vault, project=project)
 
     # --- Agent pipeline (optional) ---
     if polish:
@@ -132,33 +136,32 @@ section_order:
 #   description: "Experienced software engineer."
 """
 
-_INIT_STYLE = """\
-# Style preset — choose from: classic, modern, minimal
-# Or point to a vault-local preset: ./presets/my_theme.yml
-preset: classic
+def _generate_full_style_yaml(preset: str = "classic") -> str:
+    """Generate a _style.yml with all configurable values populated from a preset."""
+    from auto_cv.models.style import StyleConfig
+    from auto_cv.styles.presets import load_preset
 
-# Override any preset value below (uncomment to customise):
-# colors:
-#   primary: "#2C3E50"
-#   accent: "#3498DB"
-# fonts:
-#   heading: Helvetica
-#   body: Georgia
-#   size_base: "11pt"
-# spacing:
-#   page_margin: "0.75in"
-#   section_gap: "12pt"
+    try:
+        style = load_preset(preset)
+    except Exception:
+        style = StyleConfig(preset=preset)
 
-# Per-format options:
-# latex:
-#   font_package: helvet
-#   use_icons: false
-# docx:
-#   page_width_inches: 8.5
-# html:
-#   layout: top-header   # top-header | sidebar | cards
-#   include_photo: false
-"""
+    data = style.model_dump()
+
+    import yaml
+    # Force all strings through quotes for consistency
+    yaml_str = yaml.dump(data, default_flow_style=False, sort_keys=False, allow_unicode=True)
+    lines = [
+        "# Auto-CV Style Configuration",
+        "# All values below are configurable. Edit any value and rebuild.",
+        f"# Preset: {preset}",
+        "#",
+        "# Available presets: classic, modern, minimal, academic, awesome-cv,",
+        "#   creative, elegant, executive, technical",
+        "",
+    ]
+    lines.append(yaml_str)
+    return "\n".join(lines)
 
 _INIT_SUMMARY = """\
 ---
@@ -247,7 +250,7 @@ def init(
 
     # Files
     (path / "_config.yml").write_text(_INIT_CONFIG, encoding="utf-8")
-    (path / "_style.yml").write_text(_INIT_STYLE, encoding="utf-8")
+    (path / "_style.yml").write_text(_generate_full_style_yaml("classic"), encoding="utf-8")
     (path / "sections" / "01-summary.md").write_text(_INIT_SUMMARY, encoding="utf-8")
     (path / "sections" / "02-experience.md").write_text(_INIT_EXPERIENCE, encoding="utf-8")
     (path / "sections" / "03-education.md").write_text(_INIT_EDUCATION, encoding="utf-8")
@@ -291,13 +294,131 @@ def preview(
 
 
 # ---------------------------------------------------------------------------
+# list-projects
+# ---------------------------------------------------------------------------
+
+@app.command("list-projects")
+def list_projects_cmd(
+    vault: Annotated[Path, typer.Argument(help="Path to the resume vault directory.")],
+) -> None:
+    """List all resume projects in a master vault."""
+    from auto_cv.parser.vault_reader import list_projects
+
+    vault = vault.resolve()
+    names = list_projects(vault)
+    if not names:
+        rprint(f"[yellow]No projects found in {vault}/projects/[/yellow]")
+        rprint("Create one with: [bold]auto-cv new-project <vault> <name>[/bold]")
+        return
+
+    table = Table(title="Resume Projects")
+    table.add_column("Project", style="bold cyan")
+    table.add_column("Path")
+    for name in names:
+        table.add_row(name, str(vault / "projects" / name))
+    console.print(table)
+
+
+# ---------------------------------------------------------------------------
+# new-project
+# ---------------------------------------------------------------------------
+
+_PROJECT_TEMPLATE = """\
+# Sections to include from _master/sections/ (order matters).
+# Use paths relative to _master/sections/, e.g. "experience/acme-corp".
+# Use a directory name like "experience" to include all files in it.
+include:
+  - summary
+  - experience
+  - education
+  - skills
+  - projects
+
+# Display order — maps to section type names.
+# If omitted, uses the order from 'include' above.
+section_order:
+  - summary
+  - experience
+  - skills
+  - projects
+  - education
+
+# Override any _master/_config.yml fields.
+# config:
+#   title: "Specific Role Title"
+"""
+
+
+@app.command("new-project")
+def new_project_cmd(
+    vault: Annotated[Path, typer.Argument(help="Path to the resume vault directory.")],
+    name: Annotated[str, typer.Argument(help="Name for the new project.")],
+) -> None:
+    """Create a new resume project in a master vault."""
+    vault = vault.resolve()
+    master = vault / "_master"
+    if not master.is_dir():
+        rprint("[red]Error:[/red] No _master/ directory found. "
+               "Initialise a master vault first or add a _master/ folder.")
+        raise typer.Exit(code=1)
+
+    project_dir = vault / "projects" / name
+    if project_dir.exists():
+        rprint(f"[red]Error:[/red] Project {name!r} already exists at {project_dir}")
+        raise typer.Exit(code=1)
+
+    project_dir.mkdir(parents=True)
+    (project_dir / "sections").mkdir()
+    (project_dir / "output").mkdir()
+    (project_dir / "_project.yml").write_text(_PROJECT_TEMPLATE, encoding="utf-8")
+
+    # Generate _style.yml with full defaults so users can customise per-project
+    master_style_path = vault / "_master" / "_style.yml"
+    if master_style_path.exists():
+        import yaml
+        raw = yaml.safe_load(master_style_path.read_text(encoding="utf-8")) or {}
+        preset_name = raw.get("preset", "classic")
+    else:
+        root_style_path = vault / "_style.yml"
+        if root_style_path.exists():
+            import yaml
+            raw = yaml.safe_load(root_style_path.read_text(encoding="utf-8")) or {}
+            preset_name = raw.get("preset", "classic")
+        else:
+            preset_name = "classic"
+    (project_dir / "_style.yml").write_text(
+        _generate_full_style_yaml(preset_name), encoding="utf-8"
+    )
+
+    rprint(f"[green]✓[/green] Project created at [bold]{project_dir}[/bold]")
+    rprint(f"  Edit [bold]{project_dir / '_project.yml'}[/bold] to select sections.")
+    rprint(f"  Build with: [bold]auto-cv build {vault} -p {name}[/bold]")
+
+
+# ---------------------------------------------------------------------------
 # list-presets
 # ---------------------------------------------------------------------------
 
 @app.command("list-presets")
-def list_presets_cmd() -> None:
+def list_presets_cmd(
+    json_output: Annotated[
+        bool,
+        typer.Option("--json", help="Output full preset data as JSON."),
+    ] = False,
+) -> None:
     """Show available style presets."""
-    from auto_cv.styles.presets import list_presets
+    from auto_cv.styles.presets import list_presets, load_preset
+
+    if json_output:
+        import json
+
+        presets = {}
+        for name in list_presets():
+            cfg = load_preset(name)
+            presets[name] = cfg.model_dump()
+        # Use print() to avoid Rich formatting
+        print(json.dumps(presets))
+        return
 
     table = Table(title="Available Style Presets")
     table.add_column("Name", style="bold cyan")

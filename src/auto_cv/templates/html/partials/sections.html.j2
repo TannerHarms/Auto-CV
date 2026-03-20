@@ -21,6 +21,12 @@
     {{ render_awards(section) }}
   {% elif section.section_type.value == "volunteer" %}
     {{ render_experience(section) }}
+  {% elif section.section_type.value == "service" %}
+    {{ render_experience(section) }}
+  {% elif section.section_type.value == "languages" %}
+    {{ render_languages(section) }}
+  {% elif section.section_type.value == "interests" %}
+    {{ render_skills(section) }}
   {% else %}
     {{ render_custom(section) }}
   {% endif %}
@@ -148,6 +154,17 @@
   {% if entry.url %}<br><a href="{{ entry.url }}">View credential</a>{% endif %}
 </div>
 {% endfor %}
+{% endmacro %}
+
+{% macro render_languages(section) %}
+<div class="languages-grid">
+  {% for entry in section.language_entries %}
+  <div class="language-entry">
+    <strong>{{ entry.name }}</strong>
+    {% if entry.proficiency %}<span class="language-proficiency">{{ entry.proficiency }}</span>{% endif %}
+  </div>
+  {% endfor %}
+</div>
 {% endmacro %}
 
 {% macro render_custom(section) %}

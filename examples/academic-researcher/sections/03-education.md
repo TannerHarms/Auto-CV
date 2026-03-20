@@ -6,6 +6,7 @@ order: 3
 # Education
 
 ## 1. Ph.D. Physics
+
 **Institution:** Stanford University
 **Location:** Stanford, CA
 **Dates:** 2017-09 – 2022-08
@@ -15,6 +16,7 @@ order: 3
 - Stanford Graduate Fellowship (2017–2020)
 
 ## 2. B.S. Physics, Minor in Mathematics
+
 **Institution:** University of Colorado Boulder
 **Location:** Boulder, CO
 **Dates:** 2013-08 – 2017-05

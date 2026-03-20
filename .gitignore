@@ -18,3 +18,4 @@ output/
 .ruff_cache/
 .pytest_cache/
 .mypy_cache/
+local_test_vault/

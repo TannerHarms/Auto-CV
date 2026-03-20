@@ -1,0 +1,23 @@
+<# Volunteer section — awesome-cv format, reuses cventries #>
+\cvsection{<< section.title | escape_latex >>}
+
+\begin{cventries}
+
+<% for entry in section.experience_entries %>
+\cventry
+{<< entry.organization | escape_latex >>}
+{<< entry.title | escape_latex >>}
+{<< (entry.location or '') | escape_latex >>}
+{<< entry.dates.display | escape_latex if entry.dates else '' >>}
+{<% if entry.highlights %>
+\begin{cvitems}
+<% for h in entry.highlights %>
+\item {<< h | md_latex >>}
+<% endfor %>
+\end{cvitems}
+<% elif entry.description %>
+<< entry.description | md_latex >>
+<% endif %>}
+
+<% endfor %>
+\end{cventries}

@@ -1,10 +1,14 @@
-<# Skills section — single table for aligned rows #>
+<# Skills section — uses \cvskill command for consistent spacing #>
 \section{<< section.title | escape_latex >>}
 
-\setlength\tabcolsep{1ex}%
-\setlength{\extrarowheight}{0pt}%
-\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}} >{\raggedleft\arraybackslash}p{\skillcatlabelwidth} p{\dimexpr\textwidth-\skillcatlabelwidth-4ex\relax}}%
-<% for cat in section.skill_categories -%>
-  \skilltypestyle{<< cat.name | escape_latex >>} & \skillsetstyle{<< cat.skills | join(', ') | escape_latex >>} \\
-<% endfor -%>
-\end{tabular*}%
+<# Compute dynamic label column width: min(max label width, \skillcatlabelwidth) #>
+\newlength{\sklmaxw}\setlength{\sklmaxw}{0pt}%
+<% for cat in section.skill_categories %>
+<% set idx = "abcdefghijklmnopqrstuvwxyz"[loop.index0 % 26] %>
+\newlength{\sklcur<< idx >>}\settowidth{\sklcur<< idx >>}{\skilltypestyle{<< cat.name | escape_latex >>}}\ifdim\sklcur<< idx >>>\sklmaxw\setlength{\sklmaxw}{\sklcur<< idx >>}\fi%
+<% endfor %>
+\ifdim\sklmaxw>\skillcatlabelwidth\setlength{\sklmaxw}{\skillcatlabelwidth}\fi%
+
+<% for cat in section.skill_categories %>
+\cvskill{\sklmaxw}{<< cat.name | escape_latex >>}{<< cat.skills | join(', ') | md_latex >>}
+<% endfor %>

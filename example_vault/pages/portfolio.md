@@ -13,6 +13,7 @@ Designed and built a horizontally scalable event processing platform handling
 processing, and Kubernetes for orchestration.
 
 **Key achievements:**
+
 - Sub-second end-to-end latency at the 99th percentile
 - Zero-downtime deployments via blue-green strategy
 - Automated scaling based on consumer lag metrics

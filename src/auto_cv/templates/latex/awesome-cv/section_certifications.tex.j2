@@ -1,14 +1,13 @@
 <# Certifications section — awesome-cv format #>
 \cvsection{<< section.title | escape_latex >>}
 
-\begin{cvhonors}
+\begin{cvcerts}
 
 <% for entry in section.certification_entries %>
-\cvhonor
+\cvcertitem
 {<< entry.name | escape_latex >>}
 {<< (entry.issuer or '') | escape_latex >>}
-{}
 {<< entry.date | escape_latex if entry.date else '' >>}
 <% endfor %>
 
-\end{cvhonors}
+\end{cvcerts}

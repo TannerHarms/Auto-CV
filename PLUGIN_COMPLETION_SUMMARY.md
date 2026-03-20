@@ -4,7 +4,8 @@
 
 ## What's Been Completed
 
-### 1. **Enhanced Plugin Code** 
+### 1. **Enhanced Plugin Code**
+
 - ✅ Improved error handling with custom error classes
 - ✅ Better user messages for all error scenarios
 - ✅ Python detection algorithm that checks multiple paths
@@ -12,6 +13,7 @@
 - ✅ Progress tracking with status updates during build
 
 ### 2. **Enhanced UI/UX**
+
 - ✅ BuildModal now includes:
   - Preset selector (Default, Awesome CV, Classic)
   - Better format selection with visual feedback
@@ -27,6 +29,7 @@
   - Better spacing and layout
 
 ### 3. **Project Infrastructure**
+
 - ✅ **LICENSE** - MIT license for open-source distribution
 - ✅ **CHANGELOG.md** - Version history and feature tracking
 - ✅ **CONTRIBUTING.md** - Complete developer guide for contributors
@@ -35,11 +38,13 @@
   - `build-plugin.yml` - Verifies Obsidian plugin builds on every commit
 
 ### 4. **GitHub Templates**
+
 - ✅ **pull_request_template.md** - PR checklist and structure
 - ✅ **bug_report.md** - Bug report template
 - ✅ **feature_request.md** - Feature request template
 
 ### 5. **Testing Documentation**
+
 - ✅ **OBSIDIAN_PLUGIN_TEST_CHECKLIST.md** - Comprehensive testing guide with:
   - Setup testing steps
   - Plugin loading tests
@@ -55,6 +60,7 @@
 ## What You Need to Do Now
 
 ### Step 1: Install Node.js (One-Time)
+
 ```bash
 # Download and install from https://nodejs.org/ (LTS version 18+)
 # Test installation:
@@ -63,6 +69,7 @@ npm --version
 ```
 
 ### Step 2: Build and Test the Plugin Locally
+
 ```bash
 cd obsidian-plugin
 npm install
@@ -72,14 +79,15 @@ npm run build
 If you see `npm: The term 'npm' is not recognized` after installing Node.js, restart PowerShell/terminal.
 
 ### Step 3: Load Plugin into Obsidian
+
 1. In Obsidian: Settings → Community Plugins → Toggle "Restricted mode" **OFF**
 2. Create a test vault or use existing one
 3. Copy these files to Obsidian plugins folder:
    - `obsidian-plugin/main.js`
    - `obsidian-plugin/manifest.json`
    - `obsidian-plugin/styles.css`
-   
-   To: 
+
+   To:
    - Windows: `$HOME/.obsidian/plugins/auto-cv-obsidian/`
    - macOS: `~/.obsidian/plugins/auto-cv-obsidian/`
    - Linux: `~/.config/obsidian/plugins/auto-cv-obsidian/`
@@ -87,7 +95,9 @@ If you see `npm: The term 'npm' is not recognized` after installing Node.js, res
 4. Reload Obsidian (close and reopen, or DevTools reload)
 
 ### Step 4: Test Using the Checklist
+
 Follow **OBSIDIAN_PLUGIN_TEST_CHECKLIST.md** from start to finish:
+
 - Test plugin installation
 - Test settings configuration
 - Test the build modal
@@ -96,7 +106,9 @@ Follow **OBSIDIAN_PLUGIN_TEST_CHECKLIST.md** from start to finish:
 - Test UI/UX across themes
 
 ### Step 5: Report Any Issues
+
 If you find issues during testing:
+
 1. Note the specific step that failed
 2. Screenshot or describe the problem
 3. Check browser console (Ctrl+Shift+I) for errors
@@ -131,6 +143,7 @@ git push origin feature/your-feature-name
 ## GitHub Actions Are Now Active ✅
 
 Every time you push:
+
 - ✅ Python tests run automatically (3 versions × 3 OS = 9 test runs)
 - ✅ Plugin build verification runs automatically
 - ✅ Results visible in GitHub Actions tab
@@ -140,6 +153,7 @@ This means if something breaks, you'll know immediately!
 ## What's Ready for Obsidian Community Plugins
 
 Once testing is complete and verified:
+
 1. Plugin has proper metadata (manifest.json ✅)
 2. Plugin has MIT license ✅
 3. Plugin has documentation ✅
@@ -150,7 +164,8 @@ You can submit to [Obsidian Community Plugins](https://github.com/obsidianmd/obs
 
 ## Files Created/Modified
 
-### New Files:
+### New Files
+
 - `LICENSE` - MIT license
 - `CHANGELOG.md` - Version tracking
 - `CONTRIBUTING.md` - Developer guide
@@ -161,7 +176,8 @@ You can submit to [Obsidian Community Plugins](https://github.com/obsidianmd/obs
 - `.github/ISSUE_TEMPLATE/bug_report.md` - Bug report template
 - `.github/ISSUE_TEMPLATE/feature_request.md` - Feature request template
 
-### Modified Files:
+### Modified Files
+
 - `obsidian-plugin/src/main.ts` - Better error handling, progress tracking
 - `obsidian-plugin/src/modals.ts` - Enhanced UI, preset selector, validation
 - `obsidian-plugin/styles.css` - Better styling, theme support, accessibility
@@ -169,9 +185,10 @@ You can submit to [Obsidian Community Plugins](https://github.com/obsidianmd/obs
 ## Git Commit
 
 All changes have been committed and pushed:
+
 - **Latest commit:** `ac254b3` - "feat: enhance Obsidian plugin UI/UX and add CI/CD infrastructure"
 - **Branch:** main
-- **Remote:** https://github.com/TannerHarms/Auto-CV
+- **Remote:** <https://github.com/TannerHarms/Auto-CV>
 
 ## Next Steps Summary
 

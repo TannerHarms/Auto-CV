@@ -1,0 +1,27 @@
+<# References section — awesome-cv format #>
+\cvsection{<< section.title | escape_latex >>}
+
+<% if section.reference_entries %>
+\begin{cventries}
+
+<% for entry in section.reference_entries %>
+\cventry
+{<< entry.organization | escape_latex if entry.organization else '' >>}
+{<< entry.name | escape_latex >>}
+{<< (entry.relationship or '') | escape_latex >>}
+{}
+{<% if entry.title or entry.email or entry.phone %>
+\begin{cvitems}
+<% if entry.title %>\item {<< entry.title | escape_latex >>}<% endif %>
+<% if entry.email %>\item {<< entry.email | escape_latex >>}<% endif %>
+<% if entry.phone %>\item {<< entry.phone | escape_latex >>}<% endif %>
+\end{cvitems}
+<% endif %>}
+
+<% endfor %>
+\end{cventries}
+<% else %>
+\begin{cvparagraph}
+<< section.raw_content | md_latex >>
+\end{cvparagraph}
+<% endif %>

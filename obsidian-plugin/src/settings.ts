@@ -2,28 +2,31 @@
  * Plugin settings and settings tab.
  */
 
-import { App, PluginSettingTab, Setting } from 'obsidian';
-import AutoResumePlugin from './main';
+import { App, Plugin, PluginSettingTab, Setting } from 'obsidian';
 import { detectPythonExecutable } from './utils';
+import { applyDetectedPythonPath, toggleFormatSelection } from './settings-helpers';
+
+interface AutoResumePluginLike extends Plugin {
+  settings: AutoResumeSettings;
+  saveSettings(): Promise<void>;
+}
 
 export interface AutoResumeSettings {
   pythonExecutable: string;
-  defaultPreset: string;
   defaultOutputFolder: string;
   defaultFormats: string[];
 }
 
 export const DEFAULT_SETTINGS: AutoResumeSettings = {
   pythonExecutable: '',
-  defaultPreset: 'default',
   defaultOutputFolder: 'output',
   defaultFormats: ['html', 'docx'],
 };
 
 export class AutoResumeSettingTab extends PluginSettingTab {
-  plugin: AutoResumePlugin;
+  plugin: AutoResumePluginLike;
 
-  constructor(app: App, plugin: AutoResumePlugin) {
+  constructor(app: App, plugin: AutoResumePluginLike) {
     super(app, plugin);
     this.plugin = plugin;
   }
@@ -54,35 +57,22 @@ export class AutoResumeSettingTab extends PluginSettingTab {
         .setButtonText('Auto-Detect')
         .onClick(async () => {
           try {
-            const pythonPath = await detectPythonExecutable();
+            const adapterWithBasePath = this.app.vault.adapter as unknown as { basePath?: string };
+            const vaultRoot = adapterWithBasePath.basePath || process.cwd();
+            const pythonPath = await detectPythonExecutable(undefined, [
+              `${vaultRoot}\\.venv\\Scripts\\python.exe`,
+              `${vaultRoot}\\..\\.venv\\Scripts\\python.exe`,
+              `${vaultRoot}/.venv/bin/python`,
+              `${vaultRoot}/../.venv/bin/python`,
+            ]);
             this.plugin.settings.pythonExecutable = pythonPath;
             await this.plugin.saveSettings();
-            // Update the text input
-            containerEl.querySelector('input[placeholder="python3"]')?.setAttr ?
-              (containerEl.querySelector('input[placeholder="python3"]') as HTMLInputElement).value = pythonPath
-              : null;
+            applyDetectedPythonPath(containerEl, pythonPath);
           } catch (e) {
             alert(`Failed to detect Python: ${(e as Error).message}`);
           }
         })
     );
-
-    // Default preset
-    new Setting(containerEl)
-      .setName('Default Preset')
-      .setDesc('Default resume styling preset')
-      .addDropdown((dropdown) =>
-        dropdown
-          .addOption('default', 'Default')
-          .addOption('awesome-cv', 'Awesome CV')
-          .addOption('classic', 'Classic')
-          .addOption('modern', 'Modern')
-          .setValue(this.plugin.settings.defaultPreset)
-          .onChange(async (value) => {
-            this.plugin.settings.defaultPreset = value;
-            await this.plugin.saveSettings();
-          })
-      );
 
     // Default output folder
     new Setting(containerEl)
@@ -105,33 +95,21 @@ export class AutoResumeSettingTab extends PluginSettingTab {
 
     const formats = ['html', 'docx', 'latex'];
     for (const fmt of formats) {
-      new Setting(containerEl).addToggle((toggle) =>
-        toggle
-          .setValue(this.plugin.settings.defaultFormats.includes(fmt))
-          .onChange(async (value) => {
-            if (value && !this.plugin.settings.defaultFormats.includes(fmt)) {
-              this.plugin.settings.defaultFormats.push(fmt);
-            } else if (!value) {
-              this.plugin.settings.defaultFormats = this.plugin.settings.defaultFormats.filter(
-                (f) => f !== fmt
+      const label = fmt === 'latex' ? 'LaTeX/PDF' : fmt.toUpperCase();
+      new Setting(containerEl)
+        .setName(label)
+        .addToggle((toggle) =>
+          toggle
+            .setValue(this.plugin.settings.defaultFormats.includes(fmt))
+            .onChange(async (value) => {
+              this.plugin.settings.defaultFormats = toggleFormatSelection(
+                this.plugin.settings.defaultFormats,
+                fmt,
+                value
               );
-            }
-            await this.plugin.saveSettings();
-          })
-      );
+              await this.plugin.saveSettings();
+            })
+        );
     }
-  }
-}
-
-// Fix for toggle label
-PluginSettingTab.prototype.addToggle = function (callback: any) {
-  const setting = new Setting(this as any);
-  return setting.addToggle(callback);
-};
-
-declare global {
-  interface Setting {
-    setName(name: string): this;
-    setDesc(desc: string): this;
   }
 }

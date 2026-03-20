@@ -1,31 +1,30 @@
 
 
 
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dr. Elena Vasquez — Condensed Matter Physics</title>
+  <title>Avery Quinn - Senior Platform Engineer</title>
   
-  <meta name="description" content="Postdoctoral researcher specialising in topological materials and quantum transport.">
+  <meta name="description" content="Platform and infrastructure engineer focused on reliability, developer experience, and scalable systems.">
   
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;1,100;1,300;1,400&family=Source+Sans+3:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&display=swap" rel="stylesheet">
+  
+  
+  
   <style>
     :root {
       
-      --color-primary: #00A388;
+      --color-primary: #153243;
       
       --color-secondary: #5D5D5D;
       
-      --color-accent: #00A388;
+      --color-accent: #2A9D8F;
       
       --color-text: #333333;
       
-      --color-heading: #00A388;
+      --color-heading: #CC5500;
       
       --color-background: #FFFFFF;
       
@@ -33,7 +32,7 @@
       
       --color-border: #999999;
       
-      --font-heading: Roboto;
+      --font-heading: Helvetica;
       
       --font-body: Source Sans Pro;
       
@@ -45,388 +44,200 @@
       
       --font-size-name: 32pt;
       
-      --font-size-small: 10pt;
+      --font-size-small: 8pt;
       
-      --font-size-bullet: 10pt;
+      --font-size-bullet: 8.5pt;
       
-      --spacing-page-margin: 0.65in;
+      --spacing-page-margin: 0.75in;
       
-      --spacing-section-gap: 8pt;
+      --spacing-section-gap: 10pt;
       
-      --spacing-entry-gap: 4pt;
+      --spacing-entry-gap: 5pt;
       
-      --spacing-line-height: 1.05;
+      --spacing-line-height: 1.2;
       
-      --spacing-header-to-content: 6pt;
+      --spacing-header-to-content: 1.5mm;
       
-      --spacing-skill-label-width: 1.5cm;
+      --spacing-skill-label-width: 4.5cm;
       
-      --spacing-bullet-before: -4.0mm;
+      --spacing-bullet-before: -2.0mm;
       
-      --spacing-bullet-after: 0mm;
+      --spacing-bullet-list-topsep: -1.2mm;
+      
+      --spacing-bullet-after: 1.2mm;
       
       --spacing-bullet-marker: dash;
       
-      --acv-header-font: 'Roboto', 'Helvetica Neue', Arial, sans-serif;
-      --acv-body-font: 'Source Sans 3', 'Source Sans Pro', 'Helvetica Neue', Arial, sans-serif;
-      --acv-darktext: #414141;
-      --acv-text: #333333;
-      --acv-graytext: #5D5D5D;
-      --acv-lighttext: #999999;
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      font-family: var(--acv-body-font);
-      font-size: 9pt;
-      font-weight: 400;
-      line-height: 1.4;
-      color: var(--acv-text);
-      background: var(--color-background, #FFFFFF);
-    }
-
-    .page {
-      max-width: 8.5in;
+      font-family: var(--font-body), Georgia, serif;
+      font-size: var(--font-size-base);
+      line-height: var(--spacing-line-height);
+      color: var(--color-text);
+      background: var(--color-background);
+      max-width: 850px;
       margin: 0 auto;
-      padding: 1.5cm 2.0cm 2.0cm;
+      padding: var(--spacing-page-margin);
     }
 
-    a { color: var(--color-link, #0395DE); text-decoration: none; }
+    a { color: var(--color-link); text-decoration: none; }
     a:hover { text-decoration: underline; }
 
-    /* =====================================================================
-       Header — centered, Roboto, matches awesome-cv.cls
-       ===================================================================== */
+    /* --- Header --- */
     .resume-header {
       text-align: center;
-      margin-bottom: 6mm;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid var(--color-primary);
     }
     .resume-name {
-      font-family: var(--acv-header-font);
-      font-size: 32pt;
-      line-height: 1;
-      color: var(--acv-text);
-      margin-bottom: 0.4mm;
-    }
-    .resume-name .first-name {
-      font-weight: 300;
-    }
-    .resume-name .last-name {
+      font-family: var(--font-heading);
+      font-size: var(--font-size-name);
+      color: var(--color-primary);
       font-weight: 700;
+      margin-bottom: 0.25rem;
     }
     .resume-title {
-      font-family: var(--acv-body-font);
-      font-size: 7.6pt;
-      font-variant: small-caps;
-      letter-spacing: 0.5pt;
-      color: var(--color-primary, #CC5500);
-      margin-bottom: 0.4mm;
-    }
-    .resume-address {
-      font-family: var(--acv-header-font);
-      font-size: 8pt;
-      font-style: italic;
-      color: var(--acv-lighttext);
-      margin-bottom: -0.5mm;
+      font-size: 1.1rem;
+      color: var(--color-secondary);
+      margin-bottom: 0.5rem;
     }
     .resume-contact {
-      font-family: var(--acv-header-font);
-      font-size: 6.8pt;
-      color: var(--acv-text);
-      margin-top: 1mm;
+      font-size: var(--font-size-small);
+      color: var(--color-text);
     }
-    .resume-contact a { color: var(--acv-text); }
-    .resume-contact a:hover { color: var(--color-primary, #CC5500); }
-    .resume-contact .sep {
-      display: inline-block;
-      margin: 0 0.4em;
-      color: var(--acv-lighttext);
+    .resume-contact span + span::before {
+      content: " | ";
+      color: var(--color-border);
     }
 
-    /* =====================================================================
-       Sections — awesome-cv style: colored title + gray rule
-       ===================================================================== */
-    .resume-section {
-      margin-top: var(--spacing-section-gap, 10pt);
-      margin-bottom: 0;
-    }
-    .section-title {
-      font-family: var(--acv-body-font);
-      font-size: 16pt;
-      font-weight: 700;
-      color: var(--color-primary, #CC5500);
-      border-bottom: none;
-      padding-bottom: 0;
-      margin-bottom: 2.5mm;
-      display: flex;
-      align-items: center;
-      gap: 0;
-    }
-    .section-title::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: var(--acv-graytext);
-      margin-left: 6px;
-    }
-
-    /* =====================================================================
-       Entries — two-row table layout matching awesome-cv.cls
-       ===================================================================== */
-    .entry { margin-bottom: var(--spacing-entry-gap, 4pt); }
-    .entry-header { margin-bottom: 0; }
-    .entry-title-line {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-    }
-    .entry-title {
-      font-family: var(--acv-body-font);
-      font-size: 10pt;
-      font-weight: 700;
-      color: var(--acv-darktext);
-      margin: 0;
-    }
-    .entry-dates {
-      font-family: var(--acv-body-font);
-      font-size: 8pt;
-      font-weight: 300;
-      font-style: italic;
-      color: var(--acv-graytext);
-      white-space: nowrap;
-    }
-    .entry-subtitle-line {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-    }
-    .entry-org {
-      font-family: var(--acv-body-font);
-      font-size: 8pt;
-      font-variant: small-caps;
-      font-style: normal;
-      color: var(--acv-graytext);
-    }
-    .entry-location {
-      font-family: var(--acv-body-font);
-      font-size: 9pt;
-      font-weight: 300;
-      font-style: italic;
-      color: var(--color-primary, #CC5500);
-    }
-    .entry-tech {
-      font-size: 8pt;
-      font-variant: small-caps;
-      color: var(--acv-graytext);
-    }
-    .entry-description {
-      font-size: var(--font-size-bullet, 8.5pt);
-      font-weight: 300;
-      color: var(--acv-text);
-      margin: var(--spacing-header-to-content, 1.5mm) 0;
-    }
-    .entry-highlights {
-      margin: 0.5mm 0 var(--spacing-entry-gap, 4pt) 2ex;
-      padding: 0;
-      list-style-type: disc;
-    }
-    .entry-highlights li {
-      font-size: var(--font-size-bullet, 8.5pt);
-      font-weight: 300;
-      color: var(--acv-text);
-      margin-bottom: 0;
-      line-height: 1.4;
-    }
-
-    /* =====================================================================
-       Education — GPA inline
-       ===================================================================== */
-    .entry-gpa {
-      font-size: var(--font-size-bullet, 8.5pt);
-      font-weight: 300;
-      color: var(--acv-text);
-      margin: var(--spacing-header-to-content, 1.5mm) 0 0 2ex;
-    }
-    .entry-coursework {
-      font-size: var(--font-size-bullet, 8.5pt);
-      font-weight: 300;
-      color: var(--acv-text);
-      margin: var(--spacing-header-to-content, 1.5mm) 0 0 2ex;
-    }
-
-    /* =====================================================================
-       Skills — label | value layout matching \cvskillcat
-       ===================================================================== */
-    .skills-grid {
-      display: flex;
-      flex-direction: column;
-      gap: 1px;
-    }
-    .skill-category {
-      display: flex;
-      gap: 1em;
-      font-size: 9pt;
-      line-height: 1.6;
-    }
-    .skill-category strong {
-      font-family: var(--acv-body-font);
-      font-size: 10pt;
-      font-weight: 700;
-      color: var(--acv-darktext);
-      min-width: var(--spacing-skill-label-width, 4.5cm);
-      text-align: right;
-      flex-shrink: 0;
-    }
-    .skill-category .skill-list {
-      color: var(--acv-text);
-    }
-
-    /* =====================================================================
-       Publications — citation style
-       ===================================================================== */
-    .pub-entry { margin-bottom: 2mm; }
-    .entry-authors {
-      font-size: 8pt;
-      font-variant: small-caps;
-      color: var(--acv-graytext);
-    }
-    .entry-venue {
-      font-size: 9pt;
-      font-weight: 300;
-      font-style: italic;
-      color: var(--acv-graytext);
-    }
-
-    /* =====================================================================
-       Awards — honor-style layout
-       ===================================================================== */
-    .award-entry .entry-title-line {
-      display: flex;
-    }
-    .award-entry .entry-title {
-      font-size: 9pt;
-      font-weight: 700;
-      color: var(--acv-darktext);
-    }
-    .award-entry .entry-dates {
-      font-size: 9pt;
-      font-weight: 400;
-      font-style: normal;
-      color: var(--acv-graytext);
-      min-width: 2cm;
-    }
-    .award-entry .entry-org {
-      font-size: 9pt;
-      font-weight: 400;
-      font-variant: normal;
-      color: var(--acv-graytext);
-    }
-
-    /* =====================================================================
-       Summary — paragraph style
-       ===================================================================== */
-    .summary-content {
-      font-size: 9pt;
-      font-weight: 300;
-      color: var(--acv-text);
-      margin-top: -1mm;
-    }
-    .summary-content p {
-      margin-bottom: 2mm;
-    }
-
-    /* =====================================================================
-       Certifications
-       ===================================================================== */
-    .cert-entry {
-      font-size: 9pt;
-      margin-bottom: 1.5mm;
-    }
-
-    /* =====================================================================
-       Footer
-       ===================================================================== */
-    .resume-footer {
-      margin-top: 6mm;
-      padding-top: 3mm;
-      font-family: var(--acv-body-font);
-      font-size: 8pt;
-      font-variant: small-caps;
-      color: var(--acv-lighttext);
-      display: flex;
-      justify-content: space-between;
-    }
-
-    /* =====================================================================
-       Nav (for multi-page)
-       ===================================================================== */
+    /* --- Nav --- */
     .resume-nav {
       display: flex;
       gap: 1rem;
       justify-content: center;
-      margin-bottom: 4mm;
-      padding: 2mm 0;
-      border-bottom: 0.5px solid var(--acv-lighttext);
-      font-family: var(--acv-header-font);
-      font-size: 8pt;
+      margin-bottom: 1.5rem;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid var(--color-border);
     }
-    .nav-link { color: var(--acv-graytext); }
-    .nav-link.active { font-weight: 700; color: var(--color-primary, #CC5500); }
+    .nav-link { font-size: 0.9rem; color: var(--color-link); }
+    .nav-link.active { font-weight: 700; color: var(--color-primary); }
 
-    /* =====================================================================
-       Print stylesheet
-       ===================================================================== */
+    /* --- Sections --- */
+    .resume-section { margin-bottom: var(--spacing-section-gap); }
+    .section-title {
+      font-family: var(--font-heading);
+      font-size: var(--font-size-heading);
+      color: var(--color-heading);
+      border-bottom: 1px solid var(--color-primary);
+      padding-bottom: 4px;
+      margin-bottom: 0.75rem;
+    }
+
+    /* --- Entries --- */
+    .entry { margin-bottom: var(--spacing-entry-gap); }
+    .entry-header { margin-bottom: 0.25rem; }
+    .entry-title-line {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      flex-wrap: wrap;
+    }
+    .entry-title { font-size: 1rem; color: var(--color-heading); margin: 0; }
+    .entry-dates { font-size: var(--font-size-small); color: var(--color-secondary); }
+    .entry-subtitle-line {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+    }
+    .entry-org { color: var(--color-accent); font-style: italic; }
+    .entry-location { font-size: var(--font-size-small); color: var(--color-secondary); }
+    .entry-tech { font-size: var(--font-size-small); color: var(--color-secondary); font-style: italic; }
+    .entry-description { margin: 0.25rem 0; }
+    .entry-highlights {
+      margin: 0.25rem 0 0 1.5rem;
+      padding: 0;
+    }
+    .entry-highlights li { margin-bottom: 2px; }
+
+    /* --- Skills --- */
+    .skills-grid { display: flex; flex-direction: column; gap: 0.25rem; }
+    .skill-category { font-size: 0.95rem; }
+    .skill-category strong::after { content: ':'; }
+    .skill-category .skill-list { margin-left: 0.3em; }
+
+    /* --- Photo --- */
+    .resume-photo {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin: 0 auto 1rem;
+      display: block;
+    }
+
+    /* --- Print --- */
     @media print {
-      .page {
-        margin: 0;
-        padding: 1.5cm 2.0cm 2.0cm;
-        max-width: 100%;
-      }
+      body { max-width: 100%; padding: 0.5in; font-size: 10pt; }
       .resume-nav { display: none; }
-      a { color: inherit; }
+      a { color: inherit; text-decoration: none; }
+      .resume-header { border-bottom-color: #000; }
+      .section-title { border-bottom-color: #000; }
     }
   </style>
   
 </head>
 <body>
-  <div class="page">
+  
+
+<nav class="resume-nav">
+  <a href="index.html" class="nav-link active">Resume</a>
+  
+  <a href="portfolio.html" class="nav-link ">Portfolio</a>
+  
+</nav>
+
+
+
+  <header class="resume-header">
     
+    <h1 class="resume-name">Avery Quinn</h1>
+    
+    <p class="resume-title">Senior Platform Engineer</p>
+    
+    <div class="resume-contact">
+      <span>avery.quinn@example.com</span>
+      <span>+1-555-0199</span>
+      <span>Denver, CO</span>
+      <span><a href="https://linkedin.com/in/avery-quinn">LinkedIn</a></span>
+      <span><a href="https://github.com/averyq">GitHub</a></span>
+      <span><a href="https://averyquinn.dev">Website</a></span>
+    </div>
+  </header>
 
-
-
-    <header class="resume-header">
-      
-      <h1 class="resume-name"><span class="first-name">Dr. Elena</span> <span class="last-name">Vasquez</span></h1>
-      
-      <p class="resume-title">Postdoctoral Research Fellow — Condensed Matter Physics</p>
-      
-      
-      <p class="resume-address">Cambridge, MA</p>
-      
-      <div class="resume-contact"><a href="mailto:e.vasquez@example.edu">e.vasquez@example.edu</a><span class="sep">|</span>+1-617-555-0237<span class="sep">|</span><a href="https://linkedin.com/in/elena-vasquez-phd">linkedin.com/in/elena-vasquez-phd</a><span class="sep">|</span><a href="https://github.com/evasquez-physics">github.com/evasquez-physics</a><span class="sep">|</span><a href="https://evasquez.physics.mit.edu">evasquez.physics.mit.edu</a>
-      </div>
-    </header>
-
-    <main>
-      
-      
+  <main>
+    
+    
 <section class="resume-section" id="section-summary">
-  <h2 class="section-title">Research Interests</h2>
+  <h2 class="section-title">Summary</h2>
 
   
     
 <div class="summary-content">
-  <p>Theoretical and computational condensed matter physics with focus on topological phases, quantum transport in low-dimensional systems, and non-equilibrium dynamics. Expertise in density functional theory (DFT), tight-binding models, and tensor network methods. Seeking faculty positions to establish an independent research programme bridging quantum materials theory and experiment.</p>
+  <p>Senior platform engineer with 10+ years building resilient cloud platforms, improving deployment velocity, and reducing incident rates through automation and observability.</p>
+<p>I specialize in Python, TypeScript, Kubernetes, and AWS, and I enjoy mentoring teams on reliability engineering and developer experience.</p>
 </div>
 
   
 </section>
 
-      
-      
+    
+    
 <section class="resume-section" id="section-experience">
-  <h2 class="section-title">Research Experience</h2>
+  <h2 class="section-title">Experience</h2>
 
   
     
@@ -434,15 +245,15 @@
 <div class="entry experience-entry">
   <div class="entry-header">
     <div class="entry-title-line">
-      <h3 class="entry-title">Postdoctoral Research Fellow</h3>
+      <h3 class="entry-title">Staff Platform Engineer</h3>
       
-      <span class="entry-dates">2022-09 – present</span>
+      <span class="entry-dates">Jan 2022 – present</span>
       
     </div>
     <div class="entry-subtitle-line">
-      <span class="entry-org">Massachusetts Institute of Technology, Department of Physics</span>
+      <span class="entry-org">Summit Data Systems</span>
       
-      <span class="entry-location">Cambridge, MA</span>
+      <span class="entry-location">Denver, CO</span>
       
     </div>
   </div>
@@ -450,15 +261,11 @@
   
   <ul class="entry-highlights">
     
-    <li>Developing first-principles framework for predicting topological invariants in disordered systems</li>
+    <li>Led migration of 40+ services to a Kubernetes platform with standardized deployment templates and guardrails.</li>
     
-    <li>Published 4 first-author papers in Physical Review Letters and Physical Review B</li>
+    <li>Reduced mean time to recovery by 48% through better runbooks and incident automation.</li>
     
-    <li>Mentoring 2 graduate students on computational methods for quantum transport</li>
-    
-    <li>Secured $85K NSF supplemental grant for high-performance computing resources</li>
-    
-    <li>Presented invited talks at APS March Meeting (2023, 2024) and Gordon Research Conference</li>
+    <li>Partnered with security to enforce signed artifacts and policy-as-code across CI/CD.</li>
     
   </ul>
   
@@ -467,15 +274,15 @@
 <div class="entry experience-entry">
   <div class="entry-header">
     <div class="entry-title-line">
-      <h3 class="entry-title">Graduate Research Assistant</h3>
+      <h3 class="entry-title">Senior DevOps Engineer</h3>
       
-      <span class="entry-dates">2017-09 – 2022-08</span>
+      <span class="entry-dates">Mar 2018 – Dec 2021</span>
       
     </div>
     <div class="entry-subtitle-line">
-      <span class="entry-org">Stanford University, SLAC National Accelerator Laboratory</span>
+      <span class="entry-org">Northline HealthTech</span>
       
-      <span class="entry-location">Stanford, CA</span>
+      <span class="entry-location">Remote</span>
       
     </div>
   </div>
@@ -483,15 +290,11 @@
   
   <ul class="entry-highlights">
     
-    <li>Completed PhD thesis: &#34;Topological Phase Transitions in Driven Quantum Systems&#34;</li>
+    <li>Built Terraform modules used by 20+ teams for consistent AWS infrastructure provisioning.</li>
     
-    <li>Developed novel tensor network algorithm reducing computation time by 10x for 2D systems</li>
+    <li>Introduced golden paths for service onboarding that reduced setup time from 2 weeks to 2 days.</li>
     
-    <li>Performed tight-binding and DFT calculations on high-performance computing clusters</li>
-    
-    <li>Published 6 peer-reviewed papers (3 first-author) with 180+ total citations</li>
-    
-    <li>Organised weekly condensed matter seminar series for 2 years</li>
+    <li>Established SLO dashboards and alert tuning process that dropped false-positive pages by 60%.</li>
     
   </ul>
   
@@ -500,13 +303,13 @@
 <div class="entry experience-entry">
   <div class="entry-header">
     <div class="entry-title-line">
-      <h3 class="entry-title">Undergraduate Research Assistant</h3>
+      <h3 class="entry-title">Software Engineer</h3>
       
-      <span class="entry-dates">2015-06 – 2017-05</span>
+      <span class="entry-dates">Jun 2014 – Feb 2018</span>
       
     </div>
     <div class="entry-subtitle-line">
-      <span class="entry-org">University of Colorado Boulder, JILA</span>
+      <span class="entry-org">Maple Analytics</span>
       
       <span class="entry-location">Boulder, CO</span>
       
@@ -516,11 +319,11 @@
   
   <ul class="entry-highlights">
     
-    <li>Simulated ultracold atomic systems using QuTiP and custom Fortran codes</li>
+    <li>Developed backend APIs for high-volume analytics ingestion and reporting pipelines.</li>
     
-    <li>Co-authored paper in Physical Review A on Floquet engineering of optical lattices</li>
+    <li>Implemented async workers and queuing architecture to process over 8M daily events.</li>
     
-    <li>Awarded departmental Outstanding Undergraduate Research Prize</li>
+    <li>Collaborated with product and design on dashboard performance and usability improvements.</li>
     
   </ul>
   
@@ -530,8 +333,151 @@
   
 </section>
 
+    
+    
+<section class="resume-section" id="section-skills">
+  <h2 class="section-title">Skills</h2>
+
+  
+    
+<div class="skills-grid">
+  
+  <div class="skill-category">
+    <strong>Languages</strong>
+    <span class="skill-list">Python, TypeScript, Go, SQL, Bash</span>
+  </div>
+  
+  <div class="skill-category">
+    <strong>Cloud &amp; Infra</strong>
+    <span class="skill-list">AWS, Kubernetes, Terraform, Docker, Helm</span>
+  </div>
+  
+  <div class="skill-category">
+    <strong>Data &amp; Messaging</strong>
+    <span class="skill-list">PostgreSQL, Redis, Kafka, S3</span>
+  </div>
+  
+  <div class="skill-category">
+    <strong>Practices</strong>
+    <span class="skill-list">SRE, CI/CD, Observability, Incident Response</span>
+  </div>
+  
+  <div class="skill-category">
+    <strong>Developer Tools</strong>
+    <span class="skill-list">GitHub Actions, ArgoCD, Datadog, Prometheus, Grafana</span>
+  </div>
+  
+  <div class="skill-category">
+    <strong>Testing</strong>
+    <span class="skill-list">pytest, Playwright, unit/integration/load testing</span>
+  </div>
+  
+</div>
+
+  
+</section>
+
+    
+    
+<section class="resume-section" id="section-projects">
+  <h2 class="section-title">Projects</h2>
+
+  
+    
+
+<div class="entry project-entry">
+  <div class="entry-header">
+    <div class="entry-title-line">
+      <h3 class="entry-title">
+        <a href="https://github.com/TannerHarms/Auto-CV">Auto CV</a>
+      </h3>
       
+    </div>
+    
+    <div class="entry-tech">Python · Pydantic · Jinja2 · Typer · TypeScript</div>
+    
+  </div>
+  
+  <p class="entry-description">Markdown-based CV/resume builder that outputs LaTeX/PDF, DOCX, and HTML from one source of truth.</p>
+  
+  
+</div>
+
+<div class="entry project-entry">
+  <div class="entry-header">
+    <div class="entry-title-line">
+      <h3 class="entry-title">
+        <a href="https://github.com/example/platform-baseline">Platform Baseline Toolkit</a>
+      </h3>
       
+    </div>
+    
+    <div class="entry-tech">TypeScript · Terraform · GitHub Actions · Docker</div>
+    
+  </div>
+  
+  <p class="entry-description">Internal toolkit that generates production-ready service scaffolds, Terraform modules, and release pipelines.</p>
+  
+  
+</div>
+
+<div class="entry project-entry">
+  <div class="entry-header">
+    <div class="entry-title-line">
+      <h3 class="entry-title">
+        <a href="https://github.com/example/incident-replay">Incident Replay Sandbox</a>
+      </h3>
+      
+    </div>
+    
+    <div class="entry-tech">Python · FastAPI · Redis · Pytest</div>
+    
+  </div>
+  
+  <p class="entry-description">Local simulation framework for reproducing service incidents and validating runbook steps.</p>
+  
+  
+</div>
+
+
+  
+</section>
+
+    
+    
+<section class="resume-section" id="section-certifications">
+  <h2 class="section-title">Certifications</h2>
+
+  
+    
+
+<div class="entry cert-entry">
+  <strong>AWS Certified Solutions Architect - Professional</strong>
+   — Amazon Web Services
+  <span class="entry-dates">2025</span>
+  
+</div>
+
+<div class="entry cert-entry">
+  <strong>Certified Kubernetes Administrator (CKA)</strong>
+   — The Linux Foundation
+  <span class="entry-dates">2024</span>
+  
+</div>
+
+<div class="entry cert-entry">
+  <strong>HashiCorp Terraform Associate</strong>
+   — HashiCorp
+  <span class="entry-dates">2023</span>
+  
+</div>
+
+
+  
+</section>
+
+    
+    
 <section class="resume-section" id="section-education">
   <h2 class="section-title">Education</h2>
 
@@ -541,39 +487,9 @@
 <div class="entry education-entry">
   <div class="entry-header">
     <div class="entry-title-line">
-      <h3 class="entry-title">Ph.D. Physics</h3>
+      <h3 class="entry-title">M.S. Computer Science</h3>
       
-      <span class="entry-dates">2017-09 – 2022-08</span>
-      
-    </div>
-    <div class="entry-subtitle-line">
-      <span class="entry-org">Stanford University</span>
-      
-      <span class="entry-location">Stanford, CA</span>
-      
-    </div>
-  </div>
-  
-  
-  <ul class="entry-highlights">
-    
-    <li>Thesis: &#34;Topological Phase Transitions in Driven Quantum Systems&#34;</li>
-    
-    <li>Advisor: Prof. Srinivas Raghu</li>
-    
-    <li>Stanford Graduate Fellowship (2017–2020)</li>
-    
-  </ul>
-  
-  
-</div>
-
-<div class="entry education-entry">
-  <div class="entry-header">
-    <div class="entry-title-line">
-      <h3 class="entry-title">B.S. Physics, Minor in Mathematics</h3>
-      
-      <span class="entry-dates">2013-08 – 2017-05</span>
+      <span class="entry-dates">2014 – Present</span>
       
     </div>
     <div class="entry-subtitle-line">
@@ -584,18 +500,26 @@
     </div>
   </div>
   
-  <p class="entry-gpa">GPA: 3.95</p>
   
   
-  <ul class="entry-highlights">
-    
-    <li>Summa Cum Laude</li>
-    
-    <li>Goldwater Scholar (2016)</li>
-    
-    <li>Dean&#39;s List all semesters</li>
-    
-  </ul>
+</div>
+
+<div class="entry education-entry">
+  <div class="entry-header">
+    <div class="entry-title-line">
+      <h3 class="entry-title">B.S. Computer Science</h3>
+      
+      <span class="entry-dates">2012 – Present</span>
+      
+    </div>
+    <div class="entry-subtitle-line">
+      <span class="entry-org">Colorado State University</span>
+      
+      <span class="entry-location">Fort Collins, CO</span>
+      
+    </div>
+  </div>
+  
   
   
 </div>
@@ -604,10 +528,10 @@
   
 </section>
 
-      
-      
+    
+    
 <section class="resume-section" id="section-publications">
-  <h2 class="section-title">Selected Publications</h2>
+  <h2 class="section-title">Publications</h2>
 
   
     
@@ -615,14 +539,12 @@
 <div class="entry pub-entry">
   <div class="entry-header">
     <div class="entry-title-line">
-      <h3 class="entry-title">Disorder-Induced Topological Transitions in Monolayer Transition Metal Dichalcogenides</h3>
+      <h3 class="entry-title">Production Reliability at Scale in Mid-Size Engineering Orgs</h3>
       <span class="entry-dates">2023</span>
     </div>
     
-    <div class="entry-authors">E. Vasquez, J. Park, S. Raghu</div>
     
-    
-    <div class="entry-venue"><em>Physical Review Letters 131, 056401</em></div>
+    <div class="entry-venue"><em>SRE Journal</em></div>
     
   </div>
 </div>
@@ -630,262 +552,57 @@
 <div class="entry pub-entry">
   <div class="entry-header">
     <div class="entry-title-line">
-      <h3 class="entry-title">Efficient Tensor Network Methods for Two-Dimensional Topological Phases</h3>
-      <span class="entry-dates">2023</span>
-    </div>
-    
-    <div class="entry-authors">E. Vasquez, S. Raghu</div>
-    
-    
-    <div class="entry-venue"><em>Physical Review B 107, 115132</em></div>
-    
-  </div>
-</div>
-
-<div class="entry pub-entry">
-  <div class="entry-header">
-    <div class="entry-title-line">
-      <h3 class="entry-title">Floquet Engineering of Anomalous Hall Effect in Graphene Superlattices</h3>
+      <h3 class="entry-title">Measuring Developer Experience with Outcome Metrics</h3>
       <span class="entry-dates">2022</span>
     </div>
     
-    <div class="entry-authors">E. Vasquez, M. Chen, J. Park, S. Raghu</div>
     
-    
-    <div class="entry-venue"><em>Physical Review Letters 128, 176404</em></div>
+    <div class="entry-venue"><em>PlatformCon Proceedings</em></div>
     
   </div>
 </div>
 
-<div class="entry pub-entry">
+
+  
+</section>
+
+    
+    
+<section class="resume-section" id="section-awards">
+  <h2 class="section-title">Awards</h2>
+
+  
+    
+
+
+<div class="entry award-entry">
   <div class="entry-header">
     <div class="entry-title-line">
-      <h3 class="entry-title">Non-Equilibrium Phase Diagram of Driven Kitaev Chains</h3>
+      <h3 class="entry-title">Engineering Impact Award</h3>
+      <span class="entry-dates">2024</span>
+    </div>
+    
+    <div class="entry-org">Summit Data Systems</div>
+    
+    
+    <p class="entry-description">Recognized for platform reliability work that reduced customer-facing incidents by 35%.</p>
+    
+  </div>
+</div>
+
+<div class="entry award-entry">
+  <div class="entry-header">
+    <div class="entry-title-line">
+      <h3 class="entry-title">Technical Leadership Award</h3>
       <span class="entry-dates">2021</span>
     </div>
     
-    <div class="entry-authors">E. Vasquez, S. Raghu</div>
+    <div class="entry-org">Northline HealthTech</div>
     
     
-    <div class="entry-venue"><em>Physical Review B 104, 235140</em></div>
-    
-  </div>
-</div>
-
-<div class="entry pub-entry">
-  <div class="entry-header">
-    <div class="entry-title-line">
-      <h3 class="entry-title">Floquet Topological Phases in Shaken Optical Lattices</h3>
-      <span class="entry-dates">2019</span>
-    </div>
-    
-    <div class="entry-authors">E. Vasquez, R. Thompson, A. Rey</div>
-    
-    
-    <div class="entry-venue"><em>Physical Review A 99, 043624</em></div>
+    <p class="entry-description">Awarded for cross-team mentorship and successful rollout of platform golden paths.</p>
     
   </div>
-</div>
-
-
-  
-</section>
-
-      
-      
-<section class="resume-section" id="section-skills">
-  <h2 class="section-title">Technical Skills</h2>
-
-  
-    
-<div class="skills-grid">
-  
-  <div class="skill-category">
-    <strong>Programming</strong>
-    <span class="skill-list">Python, Julia, Fortran, C++, MATLAB, Bash</span>
-  </div>
-  
-  <div class="skill-category">
-    <strong>Computational Methods</strong>
-    <span class="skill-list">Density Functional Theory (VASP, Quantum ESPRESSO), Tight-Binding Models, DMRG, Tensor Networks</span>
-  </div>
-  
-  <div class="skill-category">
-    <strong>Scientific Computing</strong>
-    <span class="skill-list">MPI, OpenMP, SLURM, Jupyter, NumPy, SciPy, QuTiP, ITensor</span>
-  </div>
-  
-  <div class="skill-category">
-    <strong>Writing &amp; Presentation</strong>
-    <span class="skill-list">LaTeX, Matplotlib, Inkscape, Beamer, Overleaf</span>
-  </div>
-  
-</div>
-
-  
-</section>
-
-      
-      
-<section class="resume-section" id="section-projects">
-  <h2 class="section-title">Research Software</h2>
-
-  
-    
-
-<div class="entry project-entry">
-  <div class="entry-header">
-    <div class="entry-title-line">
-      <h3 class="entry-title">
-        TopoNet
-      </h3>
-      
-    </div>
-    
-    <div class="entry-tech">Python · Julia · MPI · HDF5</div>
-    
-  </div>
-  
-  
-  <ul class="entry-highlights">
-    
-    <li>Implements Bott index and Chern marker algorithms for 2D and 3D systems</li>
-    
-    <li>Scales to 10⁶-site lattices via distributed MPI parallelism</li>
-    
-    <li>120+ GitHub stars; adopted by 3 external research groups</li>
-    
-  </ul>
-  
-</div>
-
-<div class="entry project-entry">
-  <div class="entry-header">
-    <div class="entry-title-line">
-      <h3 class="entry-title">
-        Floquet-DMRG
-      </h3>
-      
-      <span class="entry-dates">2019-09 – 2022-05</span>
-      
-    </div>
-    
-    <div class="entry-tech">Julia · ITensor · SLURM</div>
-    
-  </div>
-  
-  
-  <ul class="entry-highlights">
-    
-    <li>Novel time-periodic MPS compression scheme reducing bond dimension by 40%</li>
-    
-    <li>Benchmarked against exact diagonalisation on Kitaev chain models</li>
-    
-    <li>Released as open-source supplement to PRB publication</li>
-    
-  </ul>
-  
-</div>
-
-
-  
-</section>
-
-      
-      
-<section class="resume-section" id="section-awards">
-  <h2 class="section-title">Honours &amp; Awards</h2>
-
-  
-    
-
-
-<div class="entry award-entry award-expressive">
-  <div class="entry-header">
-    <div class="entry-title-line">
-      <h3 class="entry-title">NSF Postdoctoral Research Fellowship</h3>
-      <span class="entry-dates">2022</span>
-    </div>
-    <div class="entry-subtitle-line">
-      <span class="entry-org">National Science Foundation</span>
-      <span class="entry-location">Arlington, VA</span>
-    </div>
-  </div>
-  
-  
-  <ul class="entry-highlights">
-    
-    <li>Competitive fellowship supporting independent postdoctoral research in condensed matter theory</li>
-    
-    <li>Funded 2-year appointment at MIT with full salary and $85K research budget</li>
-    
-  </ul>
-  
-</div>
-
-<div class="entry award-entry award-expressive">
-  <div class="entry-header">
-    <div class="entry-title-line">
-      <h3 class="entry-title">Stanford Graduate Fellowship</h3>
-      <span class="entry-dates">2017</span>
-    </div>
-    <div class="entry-subtitle-line">
-      <span class="entry-org">Stanford University</span>
-      <span class="entry-location">Stanford, CA</span>
-    </div>
-  </div>
-  
-  
-  <ul class="entry-highlights">
-    
-    <li>Three-year merit-based fellowship covering full tuition and stipend</li>
-    
-    <li>Awarded to top 10% of incoming PhD cohort in the School of Humanities &amp; Sciences</li>
-    
-  </ul>
-  
-</div>
-
-<div class="entry award-entry award-expressive">
-  <div class="entry-header">
-    <div class="entry-title-line">
-      <h3 class="entry-title">Barry M. Goldwater Scholarship</h3>
-      <span class="entry-dates">2016</span>
-    </div>
-    <div class="entry-subtitle-line">
-      <span class="entry-org">Barry Goldwater Scholarship Foundation</span>
-      <span class="entry-location">Washington, DC</span>
-    </div>
-  </div>
-  
-  
-  <ul class="entry-highlights">
-    
-    <li>National scholarship for outstanding undergraduates in STEM research</li>
-    
-  </ul>
-  
-</div>
-
-<div class="entry award-entry award-expressive">
-  <div class="entry-header">
-    <div class="entry-title-line">
-      <h3 class="entry-title">Outstanding Undergraduate Research Prize</h3>
-      <span class="entry-dates">2017</span>
-    </div>
-    <div class="entry-subtitle-line">
-      <span class="entry-org">University of Colorado Boulder, Dept. of Physics</span>
-      <span class="entry-location">Boulder, CO</span>
-    </div>
-  </div>
-  
-  
-  <ul class="entry-highlights">
-    
-    <li>Departmental award for senior thesis on Floquet engineering of optical lattices</li>
-    
-  </ul>
-  
 </div>
 
 
@@ -893,156 +610,8 @@
   
 </section>
 
-      
-      
-<section class="resume-section" id="section-certifications">
-  <h2 class="section-title">Certifications &amp; Training</h2>
-
-  
     
-
-<div class="entry cert-entry">
-  <strong>Responsible Conduct of Research</strong>
-   — MIT Office of Research
-  <span class="entry-dates">2023</span>
-  
-</div>
-
-<div class="entry cert-entry">
-  <strong>High-Performance Computing Workshop</strong>
-   — XSEDE / ACCESS
-  <span class="entry-dates">2021</span>
-  
-</div>
-
-<div class="entry cert-entry">
-  <strong>Advanced Quantum Information Science</strong>
-   — Kavli Institute for Theoretical Physics
-  <span class="entry-dates">2020</span>
-  
-</div>
-
-
-  
-</section>
-
-      
-      
-<section class="resume-section" id="section-languages">
-  <h2 class="section-title">Languages</h2>
-
-  
-    
-<div class="custom-content">
-  <ul>
-<li><strong>English</strong> — Native</li>
-<li><strong>Spanish</strong> — Native</li>
-<li><strong>French</strong> — Intermediate (B2)</li>
-<li><strong>German</strong> — Basic (A2)</li>
-</ul>
-</div>
-
-  
-</section>
-
-      
-      
-<section class="resume-section" id="section-service">
-  <h2 class="section-title">Professional Service</h2>
-
-  
-    
-
-<div class="entry experience-entry">
-  <div class="entry-header">
-    <div class="entry-title-line">
-      <h3 class="entry-title">Peer Reviewer</h3>
-      
-      <span class="entry-dates">2022-01 – present</span>
-      
-    </div>
-    <div class="entry-subtitle-line">
-      <span class="entry-org">American Physical Society (PRL, PRB)</span>
-      
-      <span class="entry-location">Remote</span>
-      
-    </div>
-  </div>
-  
-  
-  <ul class="entry-highlights">
-    
-    <li>Reviewed 12+ manuscripts for Physical Review Letters and Physical Review B</li>
-    
-  </ul>
-  
-</div>
-
-<div class="entry experience-entry">
-  <div class="entry-header">
-    <div class="entry-title-line">
-      <h3 class="entry-title">Graduate Admissions Committee Member</h3>
-      
-      <span class="entry-dates">2020-09 – 2022-05</span>
-      
-    </div>
-    <div class="entry-subtitle-line">
-      <span class="entry-org">Stanford University, Dept. of Physics</span>
-      
-      <span class="entry-location">Stanford, CA</span>
-      
-    </div>
-  </div>
-  
-  
-  <ul class="entry-highlights">
-    
-    <li>Evaluated 150+ applications per cycle; advocated for holistic review criteria</li>
-    
-  </ul>
-  
-</div>
-
-<div class="entry experience-entry">
-  <div class="entry-header">
-    <div class="entry-title-line">
-      <h3 class="entry-title">Science Outreach Volunteer</h3>
-      
-      <span class="entry-dates">2023-01 – present</span>
-      
-    </div>
-    <div class="entry-subtitle-line">
-      <span class="entry-org">MIT Science Policy Initiative</span>
-      
-      <span class="entry-location">Cambridge, MA</span>
-      
-    </div>
-  </div>
-  
-  
-  <ul class="entry-highlights">
-    
-    <li>Led physics demonstrations at local high schools reaching 500+ students</li>
-    
-    <li>Organised &#34;Physics for Everyone&#34; public lecture series</li>
-    
-  </ul>
-  
-</div>
-
-
-  
-</section>
-
-      
-    </main>
-
-    <footer class="resume-footer">
-      <span></span>
-      <span>Dr. Elena Vasquez</span>
-      <span></span>
-    </footer>
-  </div>
+  </main>
 
   
 </body>

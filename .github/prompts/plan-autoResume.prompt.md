@@ -1,13 +1,14 @@
 # Plan: Auto_Resume — Markdown-to-Resume Builder
 
 ## TL;DR
+
 Build a Python tool that reads an Obsidian-style markdown vault (one file per section, YAML frontmatter-first) and deterministically renders resumes to three outputs: a structured LaTeX repo that compiles to PDF, a .docx file, and an HTML digital resume. Styling is controlled via presets + YAML overrides. Optional LLM agents polish content, tailor to job descriptions, or suggest layout. Architecture is CLI-first but web-app-ready from day one.
 
 ---
 
 ## Architecture
 
-```
+```text
 src/auto_resume/
 ├── __init__.py
 ├── models/              # Pydantic data models (no I/O)
@@ -40,7 +41,8 @@ src/auto_resume/
 ```
 
 ### Vault (input) structure
-```
+
+```text
 my_resume/
 ├── _config.yml          # Name, contact info, section ordering, metadata, html_meta
 ├── _style.yml           # Optional: preset name + overrides (commented template on init)
@@ -63,7 +65,8 @@ my_resume/
 ```
 
 ### LaTeX output structure (per user request)
-```
+
+```text
 output/latex/
 ├── main.tex             # \input{sections/*}, document setup
 ├── resume.sty           # Style file: colors, fonts, spacing, section commands
@@ -102,7 +105,7 @@ output/latex/
 
 ### Phase 2: Core Pipeline (sequential: 4 → 5–7 parallel)
 
-4. **Vault parser** (`parser/vault_reader.py`)
+1. **Vault parser** (`parser/vault_reader.py`)
    - `load_vault(path) -> (Resume, StyleConfig)`: main entry point
    - Reads `_config.yml` → `ResumeConfig` (including `html_meta` if present)
    - Reads `_style.yml` → loads preset (built-in or vault-local via `./presets/` path), merges overrides → `StyleConfig`
@@ -111,7 +114,7 @@ output/latex/
    - Detects vault-level override files: `resume.sty`, `custom.css`, `custom.js`
    - Populates typed entry lists on each `Section` based on its `SectionType`
 
-5. **LaTeX renderer** (`renderers/latex.py`, `templates/latex/`) — *parallel with 6, 7*
+2. **LaTeX renderer** (`renderers/latex.py`, `templates/latex/`) — *parallel with 6, 7*
    - `LatexRenderer.render(resume, style, output_dir)`
    - Generate `resume.sty` from style config (colors via xcolor, fonts, spacing, custom commands like `\cvsection`, `\cventry`)
    - **Vault .sty override**: if vault contains `resume.sty`, copy it into output instead of generating. Lets power users hand-craft their LaTeX style once and reuse it.
@@ -120,14 +123,14 @@ output/latex/
    - Compile step: shell out to `latexmk -pdf main.tex` if available; log warning if not installed
    - Escape LaTeX special chars in all user data (& % $ # _ { } ~ ^ \)
 
-6. **DOCX renderer** (`renderers/docx.py`) — *parallel with 5, 7*
+3. **DOCX renderer** (`renderers/docx.py`) — *parallel with 5, 7*
    - `DocxRenderer.render(resume, style, output_dir)`
    - Use python-docx to build a .docx from scratch (no template dependency)
    - Map StyleConfig → Word styles (fonts, colors, spacing)
    - Section-by-section rendering: heading + entries using styled paragraphs/runs
    - Support for skill tables (tabular layout for skill categories)
 
-7. **HTML renderer** (`renderers/html.py`, `templates/html/`) — *parallel with 5, 6*
+4. **HTML renderer** (`renderers/html.py`, `templates/html/`) — *parallel with 5, 6*
    - `HtmlRenderer.render(resume, style, output_dir)`
    - **Layout templates**: Named layouts, not just a flag. Three built-in:
      - `top-header` — traditional single-column, name/contact at top (default)
@@ -145,21 +148,21 @@ output/latex/
 
 ### Phase 3: Interface & Content
 
-8. **CLI** (`cli.py`) — *depends on 4–7*
+1. **CLI** (`cli.py`) — *depends on 4–7*
    - `auto-resume build <vault_path> --format latex,docx,html --output ./output`
    - `auto-resume init <path>` — scaffold a new vault with example content
    - `auto-resume preview` — quick HTML render + open in browser
    - `auto-resume list-presets` — show available style presets
    - Uses Typer for argument parsing, Rich for terminal output
 
-9. **Example vault** — *parallel with 8*
+2. **Example vault** — *parallel with 8*
    - Full example vault with realistic content (fictional person)
    - Demonstrates all section types, frontmatter patterns, and style overrides
    - Serves as documentation-by-example and test fixture
 
 ### Phase 4: Agents (optional module)
 
-10. **Agent framework** (`agents/`) — *depends on 4*
+1. **Agent framework** (`agents/`) — *depends on 4*
     - `BaseAgent` abstract class with `process(resume, **kwargs) -> Resume` interface
     - `PolishAgent`: takes resume, rewrites bullet points for impact/conciseness
     - `TailorAgent`: takes resume + job description text, adjusts emphasis/keywords
@@ -170,7 +173,7 @@ output/latex/
 
 ### Phase 5: Testing & Documentation
 
-11. **Tests** — `tests/`
+1. **Tests** — `tests/`
     - Unit tests for models (serialization, merging, ordering)
     - Unit tests for parser (fixture vaults in `tests/fixtures/`)
     - Integration tests for each renderer (generate output, verify structure)
@@ -178,7 +181,7 @@ output/latex/
     - DOCX test: verify output is valid .docx (can be opened by python-docx)
     - HTML test: verify output contains expected sections/content
 
-12. **README & docs**
+2. **README & docs**
     - Project overview, installation, quickstart
     - Vault format documentation (frontmatter schemas per section type)
     - Style customization guide

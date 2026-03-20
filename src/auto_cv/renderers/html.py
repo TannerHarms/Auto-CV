@@ -17,7 +17,7 @@ _TEMPLATES_DIR = Path(__file__).parent.parent / "templates" / "html"
 
 class HtmlRenderer(BaseRenderer):
     def render(self, resume: Resume, style: StyleConfig, output_dir: Path) -> Path:
-        html_dir = output_dir / "html"
+        html_dir = self.prepare_output_dir(output_dir, "html")
         html_dir.mkdir(parents=True, exist_ok=True)
 
         env = Environment(

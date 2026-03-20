@@ -1,1 +1,3 @@
-Place photo and other assets here. Referenced from _config.yml (e.g. photo: headshot.jpg).
+# Assets
+
+Place photo and other assets here. Referenced from `_config.yml` (for example, `photo: headshot.jpg`).

@@ -23,6 +23,7 @@ class SectionType(str, Enum):
     PUBLICATIONS = "publications"
     AWARDS = "awards"
     VOLUNTEER = "volunteer"
+    SERVICE = "service"
     LANGUAGES = "languages"
     INTERESTS = "interests"
     REFERENCES = "references"
@@ -116,6 +117,20 @@ class AwardEntry(BaseModel):
     highlights: list[str] = Field(default_factory=list)
 
 
+class LanguageEntry(BaseModel):
+    name: str
+    proficiency: str | None = None
+
+
+class ReferenceEntry(BaseModel):
+    name: str
+    title: str | None = None
+    organization: str | None = None
+    email: str | None = None
+    phone: str | None = None
+    relationship: str | None = None
+
+
 # ---------------------------------------------------------------------------
 # Section
 # ---------------------------------------------------------------------------
@@ -143,6 +158,8 @@ class Section(BaseModel):
     certification_entries: list[CertificationEntry] = Field(default_factory=list)
     publication_entries: list[PublicationEntry] = Field(default_factory=list)
     award_entries: list[AwardEntry] = Field(default_factory=list)
+    language_entries: list[LanguageEntry] = Field(default_factory=list)
+    reference_entries: list["ReferenceEntry"] = Field(default_factory=list)
 
 
 # ---------------------------------------------------------------------------
@@ -181,6 +198,17 @@ class VaultOverrides(BaseModel):
     custom_css_path: str | None = None
     custom_js: bool = False
     custom_js_path: str | None = None
+
+
+class ProjectConfig(BaseModel):
+    """Configuration for a resume project within a master vault.
+
+    Loaded from ``projects/<name>/_project.yml``.  Controls which master
+    sections to include and in what order, with optional config overrides.
+    """
+    include: list[str] = Field(default_factory=list)
+    section_order: list[str] = Field(default_factory=list)
+    config: dict[str, Any] = Field(default_factory=dict)
 
 
 class Resume(BaseModel):

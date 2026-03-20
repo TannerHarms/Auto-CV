@@ -6,8 +6,8 @@
 <% for entry in section.award_entries %>
 \cvhonor
 {<< entry.title | escape_latex >>}
-{<< (entry.organization or '') | escape_latex >>}
-{<< (entry.location or '') | escape_latex >>}
+{<< (entry.issuer or '') | escape_latex >>}
+{}
 {<< entry.date | escape_latex if entry.date else '' >>}
 <% endfor %>
 

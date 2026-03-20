@@ -6,7 +6,8 @@ order: 7
 # Research Software
 
 ## TopoNet
-**URL:** https://github.com/evasquez-physics/toponet
+
+**URL:** <https://github.com/evasquez-physics/toponet>
 **Dates:** 2021-03 – present
 **Technologies:** Python, Julia, MPI, HDF5
 **Description:** Open-source toolkit for computing topological invariants in disordered lattice systems.
@@ -16,6 +17,7 @@ order: 7
 - 120+ GitHub stars; adopted by 3 external research groups
 
 ## Floquet-DMRG
+
 **Dates:** 2019-09 – 2022-05
 **Technologies:** Julia, ITensor, SLURM
 **Description:** Density matrix renormalisation group extension for periodically driven Hamiltonians.

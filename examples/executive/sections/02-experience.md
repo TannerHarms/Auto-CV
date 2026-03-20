@@ -6,6 +6,7 @@ order: 2
 # Professional Experience
 
 ## 1. Vice President, Operations
+
 **Company:** Meridian Global Industries
 **Location:** New York, NY
 **Dates:** 2019-03 – present
@@ -17,6 +18,7 @@ order: 2
 - Present quarterly business reviews to the Board of Directors and CEO
 
 ## 2. Senior Director, Strategy & Transformation
+
 **Company:** Atlantic Consumer Group
 **Location:** New York, NY
 **Dates:** 2015-06 – 2019-02
@@ -27,6 +29,7 @@ order: 2
 - Reduced customer churn by 18% through data-driven retention programme
 
 ## 3. Director, Operations Excellence
+
 **Company:** Vanguard Manufacturing Corp.
 **Location:** Philadelphia, PA
 **Dates:** 2011-01 – 2015-05
@@ -36,6 +39,7 @@ order: 2
 - Led cross-functional team of 80 through ISO 9001 recertification with zero non-conformances
 
 ## 4. Operations Manager
+
 **Company:** Prestige Logistics Solutions
 **Location:** Philadelphia, PA
 **Dates:** 2007-08 – 2010-12

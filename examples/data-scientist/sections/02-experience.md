@@ -6,6 +6,7 @@ order: 2
 # Experience
 
 ## 1. Senior Data Scientist
+
 **Company:** Cascade Commerce
 **Location:** Seattle, WA
 **Dates:** 2021-06 – present
@@ -17,6 +18,7 @@ order: 2
 - Mentor 3 junior data scientists and lead weekly ML paper reading group
 
 ## 2. Data Scientist
+
 **Company:** HealthBridge Analytics
 **Location:** Seattle, WA
 **Dates:** 2019-01 – 2021-05
@@ -27,6 +29,7 @@ order: 2
 - Collaborated with clinical teams to ensure HIPAA-compliant data pipelines and model explainability
 
 ## 3. Machine Learning Engineer
+
 **Company:** Veritas Financial Technologies
 **Location:** New York, NY
 **Dates:** 2017-07 – 2018-12

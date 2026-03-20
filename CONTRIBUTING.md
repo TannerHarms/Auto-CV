@@ -5,6 +5,7 @@ Thank you for your interest in contributing to Auto CV! We welcome contributions
 ## Getting Started
 
 ### Prerequisites
+
 - Python 3.10+
 - Node.js 18+ (for Obsidian plugin development)
 - Git
@@ -13,12 +14,14 @@ Thank you for your interest in contributing to Auto CV! We welcome contributions
 ### Development Setup
 
 1. **Clone the repository:**
+
    ```bash
    git clone https://github.com/TannerHarms/Auto-CV.git
    cd Auto-CV
    ```
 
 2. **Set up Python environment:**
+
    ```bash
    python -m venv .venv
    # On Windows:
@@ -28,11 +31,13 @@ Thank you for your interest in contributing to Auto CV! We welcome contributions
    ```
 
 3. **Install dependencies:**
+
    ```bash
    pip install -e ".[dev]"
    ```
 
 4. **Run tests:**
+
    ```bash
    pytest tests/ -v
    ```
@@ -40,12 +45,15 @@ Thank you for your interest in contributing to Auto CV! We welcome contributions
 ## Development Workflow
 
 ### Creating a Feature Branch
+
 ```bash
 git checkout -b feature/your-feature-name
 ```
 
 ### Committing Changes
+
 Use conventional commits format:
+
 - `feat:` for new features
 - `fix:` for bug fixes
 - `docs:` for documentation
@@ -54,11 +62,13 @@ Use conventional commits format:
 - `test:` for adding tests
 
 Example:
+
 ```bash
 git commit -m "feat: add new resume template option"
 ```
 
 ### Running Tests Before Commit
+
 ```bash
 # Python tests
 pytest tests/ -q
@@ -71,11 +81,13 @@ ruff check src/
 ```
 
 ### Pushing Changes
+
 ```bash
 git push origin feature/your-feature-name
 ```
 
 ### Creating a Pull Request
+
 1. Go to GitHub and create a Pull Request
 2. Fill out the template with clear description and testing info
 3. Link any related issues (#123)
@@ -84,12 +96,14 @@ git push origin feature/your-feature-name
 ## Code Style
 
 ### Python
+
 - PEP 8 compliant
 - 100 character line length
 - Type hints where possible
 - Docstrings for public functions
 
 ### TypeScript
+
 - ESLint compliant
 - Prettier formatted
 - Clear variable names
@@ -98,12 +112,14 @@ git push origin feature/your-feature-name
 ## Testing Guidelines
 
 ### Python Tests
+
 - Add tests for new features in `tests/`
 - Maintain > 80% code coverage
 - Test both happy paths and error cases
 - Run `pytest tests/ -v` before committing
 
 ### Obsidian Plugin Testing
+
 - Complete the [plugin test checklist](OBSIDIAN_PLUGIN_TEST_CHECKLIST.md)
 - Test in both light and dark themes
 - Test on Windows, macOS, and Linux if possible
@@ -112,13 +128,16 @@ git push origin feature/your-feature-name
 ## Documentation
 
 ### Updating Docs
+
 When adding features:
+
 1. Update relevant README sections
 2. Add examples if applicable
 3. Update CHANGELOG.md
 4. Add docstrings to code
 
 ### Writing Good Documentation
+
 - Be clear and concise
 - Include examples
 - Link to related documentation
@@ -127,6 +146,7 @@ When adding features:
 ## Reporting Issues
 
 ### Bug Reports
+
 - Search existing issues first
 - Use the bug report template
 - Include reproduction steps
@@ -134,6 +154,7 @@ When adding features:
 - Attach error messages/screenshots
 
 ### Feature Requests
+
 - Use the feature request template
 - Explain the use case
 - Suggest an implementation (optional)
@@ -163,7 +184,7 @@ When adding features:
 
 ## Directory Structure Reference
 
-```
+```text
 Auto-CV/
 ├── src/auto_cv/           # Python package
 │   ├── models/            # Data models
@@ -184,6 +205,7 @@ Auto-CV/
 ## Common Tasks
 
 ### Adding a New Style Preset
+
 1. Create `src/auto_cv/styles/presets/your-preset.yml`
 2. Add example values based on existing presets
 3. Test with example vaults
@@ -191,6 +213,7 @@ Auto-CV/
 5. Add tests if adding new style properties
 
 ### Fixing a Bug
+
 1. Create issue with bug report
 2. Create feature branch: `fix/issue-description`
 3. Write test that reproduces bug
@@ -199,6 +222,7 @@ Auto-CV/
 6. Submit PR with issue number
 
 ### Adding Python Tests
+
 1. Create test in `tests/test_*.py`
 2. Use descriptive test names
 3. Test both success and failure paths
@@ -206,6 +230,7 @@ Auto-CV/
 5. Add to PR description which tests were added
 
 ### Building Obsidian Plugin
+
 1. `cd obsidian-plugin`
 2. `npm install` (if needed)
 3. `npm run dev` (watch mode) or `npm run build` (production)
@@ -222,6 +247,7 @@ Auto-CV/
 ## Recognition
 
 Contributors will be acknowledged in:
+
 - README.md contributors section
 - CHANGELOG.md
 - GitHub contributor graph

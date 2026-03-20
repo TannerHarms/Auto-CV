@@ -1,0 +1,14 @@
+<# Service section — compact single-row layout with inline date #>
+\section{<< section.title | escape_latex >>}
+
+<% for entry in section.experience_entries %>
+<% if not loop.first %>\vspace{<< style.spacing.entry_gap >>}<% endif %>
+\cvservice{<< entry.title | escape_latex >>}{<< entry.organization | escape_latex >>}{<< entry.dates.display | escape_latex if entry.dates else '' >>}{<< entry.description | md_latex if entry.description else '' >>}
+<% if entry.highlights %>
+\begin{itemize}
+<% for h in entry.highlights %>
+  \item << h | md_latex >>
+<% endfor %>
+\end{itemize}
+<% endif %>
+<% endfor %>

@@ -3,7 +3,7 @@
 Build polished resumes from an **Obsidian-style markdown vault**. One command produces three outputs:
 
 | Format | Description |
-|--------|-------------|
+| --- | --- |
 | **LaTeX → PDF** | Structured LaTeX repo (`main.tex` + `resume.sty` + `sections/*.tex`), auto-compiled with `latexmk` |
 | **DOCX** | Word document built from scratch via `python-docx` — open and edit in Word/Google Docs |
 | **HTML** | Styled, multi-page website with three layout options, print stylesheet, and custom CSS/JS support |
@@ -27,7 +27,7 @@ auto-resume build my_resume
 
 A vault is a directory with YAML config + markdown section files:
 
-```
+```text
 my_resume/
 ├── _config.yml           # Name, contact info, section ordering
 ├── _style.yml            # Style preset + overrides (optional)
@@ -78,6 +78,7 @@ html_meta:
 Each section is a markdown file with YAML frontmatter. The filename prefix (`01-`, `02-`, etc.) controls default ordering.
 
 **Experience** (`sections/02-experience.md`):
+
 ```yaml
 ---
 title: Experience
@@ -96,6 +97,7 @@ entries:
 ```
 
 **Skills** (`sections/04-skills.md`):
+
 ```yaml
 ---
 title: Skills
@@ -120,7 +122,7 @@ categories:
 Nine built-in presets are included:
 
 | Preset | Description |
-|--------|-------------|
+| --- | --- |
 | `classic` | Georgia serif, conservative navy palette, single-column |
 | `modern` | Helvetica sans-serif, blue accents, sidebar HTML layout, icons |
 | `minimal` | Near-black, maximum whitespace, quiet typography |
@@ -132,6 +134,7 @@ Nine built-in presets are included:
 | `technical` | Clean technical resume with monospace accents |
 
 List available presets:
+
 ```bash
 auto-resume list-presets
 ```
@@ -172,6 +175,7 @@ html:
 ### Vault-Local Presets
 
 Create your own preset YAML file and reference it:
+
 ```yaml
 preset: ./presets/my_theme.yml
 ```
@@ -179,6 +183,7 @@ preset: ./presets/my_theme.yml
 ### Full Schema
 
 Dump the complete `StyleConfig` JSON schema for reference:
+
 ```bash
 auto-resume style-schema
 ```
@@ -192,6 +197,7 @@ Three built-in layouts, selectable via `html.layout` in `_style.yml`:
 - **`cards`** — Grid of cards per section with hover effects, modern portfolio feel
 
 All layouts include:
+
 - CSS variables generated from your `StyleConfig` (no framework dependency)
 - Responsive design (mobile collapse)
 - Print stylesheet (`@media print`) — "Print to PDF" from browser looks professional
@@ -201,6 +207,7 @@ All layouts include:
 ### Extra Pages
 
 Add markdown files to `pages/` for additional HTML pages (portfolio, about, etc.):
+
 ```yaml
 ---
 title: Portfolio
@@ -214,11 +221,12 @@ These are rendered as separate HTML pages with navigation. Ignored by LaTeX/DOCX
 
 ## CLI Reference
 
-```
+```text
 auto-cv build <vault> [OPTIONS]
 ```
+
 | Option | Description |
-|--------|-------------|
+| --- | --- |
 | `--format`, `-f` | Output formats: `latex`, `docx`, `html` (repeatable, default: all three) |
 | `--output`, `-o` | Output directory (default: `./output`) |
 | `--polish` | Use LLM to rewrite bullet points for impact |
@@ -259,7 +267,7 @@ auto-cv build my_cv --polish --tailor-to job_posting.txt --suggest-layout
 ### Agent Details
 
 | Agent | What it does |
-|-------|--------------|
+| --- | --- |
 | **PolishAgent** | Rewrites experience & project bullet points — stronger action verbs, quantified results, concise phrasing |
 | **TailorAgent** | Adjusts summary, reorders highlights, injects keywords to match a target job description |
 | **LayoutAgent** | Suggests section ordering and hides irrelevant sections for a target role |
@@ -283,7 +291,7 @@ ruff check src/ tests/
 
 ## Project Structure
 
-```
+```text
 src/auto_cv/
 ├── models/          # Pydantic data models (Resume, Section, StyleConfig)
 ├── parser/          # Vault reader (YAML/frontmatter → models)

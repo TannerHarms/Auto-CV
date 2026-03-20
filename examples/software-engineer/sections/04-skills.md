@@ -5,14 +5,18 @@ order: 3
 
 # Technical Skills
 
-### Languages
+## Languages
+
 - Go, Python, TypeScript, SQL, Bash
 
-### Frameworks & Tools
+## Frameworks & Tools
+
 - gRPC, Kafka, Redis, PostgreSQL, DynamoDB, Elasticsearch
 
-### Cloud & DevOps
+## Cloud & DevOps
+
 - AWS (ECS, Lambda, S3, SQS), Kubernetes, Terraform, Docker, GitHub Actions
 
-### Observability
+## Observability
+
 - OpenTelemetry, Prometheus, Grafana, Datadog, PagerDuty

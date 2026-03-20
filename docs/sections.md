@@ -32,10 +32,11 @@ display: ""             # Display variant (see Awards section)
 | `certifications`  | `CertificationEntry`| Professional certifications with issuer and date     |
 | `publications`    | `PublicationEntry`  | Papers, articles with venue, authors, DOI            |
 | `awards`          | `AwardEntry`        | Honours, awards, fellowships, societies              |
-| `volunteer`       | *(raw text)*        | Falls back to raw markdown rendering                 |
-| `languages`       | *(raw text)*        | Falls back to raw markdown rendering                 |
-| `interests`       | *(raw text)*        | Falls back to raw markdown rendering                 |
-| `references`      | *(raw text)*        | Falls back to raw markdown rendering                 |
+| `volunteer`       | `ExperienceEntry`   | Volunteer work — same format as experience           |
+| `service`         | `ExperienceEntry`   | Academic/professional service — same as experience   |
+| `languages`       | `LanguageEntry`     | Language proficiency entries                          |
+| `interests`       | `SkillCategory`     | Interests grouped by category — same as skills       |
+| `references`      | `ReferenceEntry`    | Professional references with contact info            |
 | `custom`          | *(raw text)*        | Any content not matching a known type                |
 
 ---
@@ -98,6 +99,7 @@ Passionate about developer experience and open-source tooling.
 **Fields:** `title` (from heading), `organization`, `location`, `dates`, `highlights`, `description`, `tags`
 
 **Key-Value format:**
+
 ```markdown
 ---
 type: experience
@@ -123,6 +125,7 @@ type: experience
 ```
 
 **Pipe-delimited format:**
+
 ```markdown
 ## Senior Software Engineer
 **Acme Corp** | San Francisco, CA | 2021-01 – present
@@ -139,6 +142,7 @@ type: experience
 **Fields:** `degree` (from heading), `institution`, `location`, `dates`, `gpa`, `highlights`, `coursework`
 
 **Key-Value format:**
+
 ```markdown
 ---
 type: education
@@ -165,6 +169,7 @@ type: education
 ```
 
 **Pipe-delimited format:**
+
 ```markdown
 ## B.S. Mathematics
 **MIT** | Cambridge, MA | 2013 – 2017
@@ -186,6 +191,7 @@ GPA: 3.95
 Skills use `### Heading` sub-sections (level 3) to define categories.
 
 **Sub-heading format:**
+
 ```markdown
 ---
 type: skills
@@ -208,6 +214,7 @@ PostgreSQL, Redis, MongoDB
 Under each `###` heading, skills are parsed from either comma-separated text or bullet lists.
 
 **Bold-key fallback format:**
+
 ```markdown
 **Programming Languages:** Python, TypeScript, Go, SQL
 **Cloud & DevOps:** AWS, Docker, Kubernetes, Terraform
@@ -220,6 +227,7 @@ Under each `###` heading, skills are parsed from either comma-separated text or 
 **Fields:** `name` (from heading), `url`, `dates`, `description`, `highlights`, `technologies`
 
 **Key-Value format:**
+
 ```markdown
 ---
 type: projects
@@ -238,6 +246,7 @@ A markdown-to-resume generator supporting multiple output formats.
 ```
 
 **Pipe-delimited format:**
+
 ```markdown
 ## Auto Resume
 **Python, Jinja2** | 2024
@@ -250,6 +259,7 @@ https://github.com/user/auto-resume
 **Recognised keys:** `technologies`, `tech`, `stack`, `tools`, `dates`, `date`, `url`, `link`
 
 **Special:**
+
 - Heading can be a link: `## [Name](url)` to extract the URL
 - Standalone URL lines (`https://...`) are captured as the project URL
 - Non-bullet, non-metadata paragraph text becomes the `description`
@@ -261,6 +271,7 @@ https://github.com/user/auto-resume
 **Fields:** `name` (from heading), `issuer`, `date`, `url`
 
 **Key-Value format:**
+
 ```markdown
 ---
 type: certifications
@@ -278,6 +289,7 @@ type: certifications
 ```
 
 **Pipe-delimited format:**
+
 ```markdown
 ## AWS Solutions Architect
 **Amazon Web Services** | 2023-05
@@ -294,6 +306,7 @@ type: certifications
 **Fields:** `title` (from heading), `venue`, `date`, `url`, `authors`
 
 **Key-Value format:**
+
 ```markdown
 ---
 type: publications
@@ -313,6 +326,7 @@ type: publications
 ```
 
 **Pipe-delimited format:**
+
 ```markdown
 ## Paper Title
 **NeurIPS 2023** | 2023
@@ -323,6 +337,7 @@ Authors: Smith, J., Doe, A.
 **Recognised keys:** `venue`, `journal`, `conference`, `date`, `year`, `authors`, `author`, `by`
 
 **Special:**
+
 - Heading can be a link `[Title](url)` to extract the DOI/URL
 - Freeform `Authors:` lines (without bold prefix) are also parsed
 
@@ -333,6 +348,7 @@ Authors: Smith, J., Doe, A.
 **Fields:** `title` (from heading), `issuer`, `date`, `location`, `description`, `highlights`
 
 **Key-Value format:**
+
 ```markdown
 ---
 type: awards
@@ -356,6 +372,7 @@ Recognised for outstanding contribution to the field.
 ```
 
 **Pipe-delimited format:**
+
 ```markdown
 ## NSF Postdoctoral Fellowship
 **National Science Foundation** | 2022
@@ -374,11 +391,11 @@ display: compact    # or "expressive" or "" (default)
 ---
 ```
 
-| Variant       | Appearance                                                        |
-|---------------|-------------------------------------------------------------------|
-| *(default)*   | Honour-style: date on the left, title + issuer on the right       |
-| `compact`     | One line per award: title (+ issuer) on left, date on right       |
-| `expressive`  | Full entry layout like experience: title, issuer, date, location, bullet points |
+| Variant | Appearance |
+| :-- | :-- |
+| *(default)* | Honour-style: date on the left, title + issuer on the right |
+| `compact` | One line per award: title (+ issuer) on left, date on right |
+| `expressive` | Full entry layout like experience: title, issuer, date, location, bullet points |
 
 **Compact** is ideal for professional affiliations, society memberships, or long award lists.
 **Expressive** is ideal for major honours where you want to elaborate with descriptions and bullet points.
@@ -387,7 +404,22 @@ display: compact    # or "expressive" or "" (default)
 
 ### Custom / Fallback Types
 
-Section types `volunteer`, `languages`, `interests`, `references`, and `custom` render the raw markdown body directly. Use standard markdown formatting:
+Section type `custom` renders the raw markdown body directly. Use standard markdown formatting:
+
+```markdown
+---
+type: custom
+title: Additional Information
+---
+
+Available for relocation. Open to remote work.
+```
+
+---
+
+### Volunteer / Service
+
+Volunteer and service sections use the **same format as experience** entries:
 
 ```markdown
 ---
@@ -406,6 +438,82 @@ Weekly mentoring sessions teaching Python fundamentals to high school students.
 
 Organised monthly trail maintenance days with 20+ volunteers.
 ```
+
+**Recognised keys:** Same as experience — `company`, `organization`, `location`, `dates`, `date`
+
+---
+
+### Languages
+
+**Fields:** `name` (from heading), `proficiency`
+
+```markdown
+---
+type: languages
+---
+
+# Languages
+
+## English
+**Proficiency:** Native
+
+## Spanish
+**Proficiency:** Professional working proficiency
+
+## Mandarin
+**Proficiency:** Elementary
+```
+
+**Recognised keys:** `proficiency`, `level`
+
+---
+
+### Interests
+
+Interests use the **same format as skills** — `### Category` sub-headings with comma-separated or bulleted lists:
+
+```markdown
+---
+type: interests
+---
+
+# Interests
+
+### Sports
+Rock climbing, Trail running, Swimming
+
+### Creative
+Photography, Woodworking
+```
+
+---
+
+### References
+
+**Fields:** `name` (from heading), `title`, `organization`, `email`, `phone`, `relationship`
+
+```markdown
+---
+type: references
+---
+
+# References
+
+## Dr. Jane Smith
+**Title:** Professor of Computer Science
+**Organization:** MIT
+**Email:** jsmith@mit.edu
+**Phone:** (555) 123-4567
+**Relationship:** Ph.D. Advisor
+
+## John Doe
+**Title:** Engineering Manager
+**Organization:** Acme Corp
+**Email:** jdoe@acme.com
+**Relationship:** Former Manager
+```
+
+**Recognised keys:** `title`, `position`, `role`, `organization`, `company`, `institution`, `email`, `phone`, `relationship`, `relation`
 
 ---
 

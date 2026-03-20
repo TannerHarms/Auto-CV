@@ -55,6 +55,14 @@ class TestLatexRenderer:
             # Just verify the file is non-empty
             assert len(content) > 0
 
+    def test_latex_respects_format_specific_output_dir(self, resume_and_style, tmp_path):
+        resume, style = resume_and_style
+        target = tmp_path / "latex"
+        result = LatexRenderer().render(resume, style, target)
+
+        assert (target / "main.tex").exists()
+        assert result.parent == target
+
 
 # ---------------------------------------------------------------------------
 # Markdown-to-LaTeX conversion
@@ -132,6 +140,14 @@ class TestDocxRenderer:
         full_text = "\n".join(p.text for p in doc.paragraphs)
         assert "Jordan Rivera" in full_text
 
+    def test_docx_respects_format_specific_output_dir(self, resume_and_style, tmp_path):
+        resume, style = resume_and_style
+        target = tmp_path / "docx"
+        result = DocxRenderer().render(resume, style, target)
+
+        assert result == target / "resume.docx"
+        assert result.exists()
+
 
 # ---------------------------------------------------------------------------
 # HTML
@@ -177,3 +193,11 @@ class TestHtmlRenderer:
         html = (self.output / "html" / "index.html").read_text(encoding="utf-8")
         # Should have nav with link to portfolio
         assert "portfolio.html" in html
+
+    def test_html_respects_format_specific_output_dir(self, resume_and_style, tmp_path):
+        resume, style = resume_and_style
+        target = tmp_path / "html"
+        result = HtmlRenderer().render(resume, style, target)
+
+        assert result == target / "index.html"
+        assert (target / "portfolio.html").exists()

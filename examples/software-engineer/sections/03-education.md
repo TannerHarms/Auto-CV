@@ -6,6 +6,7 @@ order: 5
 # Education
 
 ## 1. B.S. Computer Science
+
 **Institution:** University of California, Berkeley
 **Location:** Berkeley, CA
 **Dates:** 2014-08 – 2018-05

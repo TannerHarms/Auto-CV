@@ -95,7 +95,7 @@ def _templates_dir(template_set: str = "default") -> Path:
 
 class LatexRenderer(BaseRenderer):
     def render(self, resume: Resume, style: StyleConfig, output_dir: Path) -> Path:
-        latex_dir = output_dir / "latex"
+        latex_dir = self.prepare_output_dir(output_dir, "latex")
         latex_dir.mkdir(parents=True, exist_ok=True)
         sections_dir = latex_dir / "sections"
         sections_dir.mkdir(exist_ok=True)

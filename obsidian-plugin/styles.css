@@ -99,6 +99,293 @@
   margin: 15px 0;
 }
 
+/* ====================================================================
+   Build Wizard
+   ==================================================================== */
+
+.auto-cv-wizard .modal-content {
+  max-width: 600px;
+}
+
+/* Step indicator bar */
+.wizard-step-bar {
+  display: flex;
+  gap: 8px;
+  margin: 10px 0 20px;
+  justify-content: center;
+}
+
+.wizard-step-dot {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 12px;
+  border-radius: 16px;
+  background: var(--background-secondary);
+  font-size: 12px;
+  color: var(--text-muted);
+  transition: all 0.2s ease;
+}
+
+.wizard-step-dot.active {
+  background: var(--interactive-accent);
+  color: var(--text-on-accent);
+  font-weight: 600;
+}
+
+.wizard-step-dot.completed {
+  background: var(--background-modifier-success);
+  color: var(--text-on-accent);
+}
+
+.wizard-step-num {
+  font-weight: 700;
+}
+
+.wizard-step-label {
+  display: none;
+}
+
+.wizard-step-dot.active .wizard-step-label {
+  display: inline;
+}
+
+/* Wizard body */
+.wizard-body {
+  min-height: 250px;
+  padding: 5px 0;
+}
+
+.wizard-hint {
+  color: var(--text-muted);
+  font-size: 13px;
+  margin: 4px 0 12px;
+}
+
+/* Step 1: Project */
+.wizard-radio-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.wizard-radio-label input[type='radio'] {
+  accent-color: var(--interactive-accent);
+}
+
+.wizard-indent {
+  padding: 4px 0 8px 28px;
+}
+
+.wizard-select {
+  width: 100%;
+  padding: 6px 10px;
+  border: 1px solid var(--background-modifier-border);
+  border-radius: 4px;
+  background: var(--background-primary);
+  color: var(--text-normal);
+  font-size: 14px;
+}
+
+.wizard-text-input {
+  width: 100%;
+  padding: 6px 10px;
+  border: 1px solid var(--background-modifier-border);
+  border-radius: 4px;
+  background: var(--background-primary);
+  color: var(--text-normal);
+  font-size: 14px;
+}
+
+/* Step 2: Sections */
+.wizard-section-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.wizard-section-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  border-radius: 4px;
+  cursor: grab;
+  transition: background 0.15s ease;
+}
+
+.wizard-section-row:hover {
+  background: var(--background-secondary);
+}
+
+.wizard-section-row.dragging {
+  opacity: 0.4;
+}
+
+.wizard-section-row.drag-over {
+  border-top: 2px solid var(--interactive-accent);
+}
+
+.wizard-drag-handle {
+  color: var(--text-muted);
+  cursor: grab;
+  user-select: none;
+  font-size: 16px;
+  line-height: 1;
+}
+
+.wizard-section-row input[type='checkbox'] {
+  accent-color: var(--interactive-accent);
+  width: 16px;
+  height: 16px;
+}
+
+.wizard-section-name {
+  flex: 1;
+  font-weight: 500;
+}
+
+.wizard-section-file {
+  color: var(--text-faint);
+  font-size: 12px;
+  font-family: var(--font-monospace);
+}
+
+/* Step 3: Preset grid */
+.wizard-preset-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin: 8px 0 16px;
+}
+
+.wizard-preset-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 2px solid var(--background-modifier-border);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.wizard-preset-card:hover {
+  border-color: var(--interactive-accent);
+  background: var(--background-secondary);
+}
+
+.wizard-preset-card.selected {
+  border-color: var(--interactive-accent);
+  background: var(--background-secondary-alt);
+}
+
+.wizard-preset-swatches {
+  display: flex;
+  gap: 3px;
+  flex-shrink: 0;
+}
+
+.wizard-swatch {
+  width: 16px;
+  height: 16px;
+  border-radius: 3px;
+  border: 1px solid var(--background-modifier-border);
+}
+
+.wizard-preset-text {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.wizard-preset-text strong {
+  font-size: 13px;
+  text-transform: capitalize;
+}
+
+.wizard-preset-text small {
+  font-size: 11px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Color picker row */
+.wizard-color-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 0;
+}
+
+.wizard-color-label {
+  min-width: 60px;
+  font-size: 14px;
+}
+
+.wizard-color-picker {
+  width: 36px;
+  height: 28px;
+  padding: 0;
+  border: 1px solid var(--background-modifier-border);
+  border-radius: 4px;
+  cursor: pointer;
+  background: none;
+}
+
+.wizard-color-text {
+  width: 90px;
+  padding: 4px 8px;
+  border: 1px solid var(--background-modifier-border);
+  border-radius: 4px;
+  background: var(--background-primary);
+  color: var(--text-normal);
+  font-family: var(--font-monospace);
+  font-size: 13px;
+}
+
+/* Customize section */
+.wizard-customize {
+  border-top: 1px solid var(--background-modifier-border);
+  padding-top: 8px;
+  margin-top: 4px;
+}
+
+/* Summary (step 4) */
+.wizard-summary {
+  margin-top: 16px;
+  padding: 12px;
+  background: var(--background-secondary);
+  border-radius: 6px;
+}
+
+.wizard-summary h4 {
+  margin: 0 0 8px;
+}
+
+.wizard-summary-list {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 4px 12px;
+  margin: 0;
+}
+
+.wizard-summary-list dt {
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.wizard-summary-list dd {
+  margin: 0;
+  font-size: 13px;
+}
+
 /* Info and Warning Text */
 .info-text {
   background-color: var(--background-secondary);

@@ -1,0 +1,21 @@
+<# Languages section — awesome-cv format #>
+\cvsection{<< section.title | escape_latex >>}
+
+<# Compute dynamic label column width: min(max label width, \cvskillcolwidth) #>
+\newlength{\acvlangmaxw}\setlength{\acvlangmaxw}{0pt}%
+<% for entry in section.language_entries %>
+<% set idx = "abcdefghijklmnopqrstuvwxyz"[loop.index0 % 26] %>
+\newlength{\acvlangcur<< idx >>}\settowidth{\acvlangcur<< idx >>}{\skilltypestyle{<< entry.name | escape_latex >>}}\ifdim\acvlangcur<< idx >>>\acvlangmaxw\setlength{\acvlangmaxw}{\acvlangcur<< idx >>}\fi%
+<% endfor %>
+\ifdim\acvlangmaxw>\cvskillcolwidth\setlength{\acvlangmaxw}{\cvskillcolwidth}\fi%
+\setlength{\cvskillcolwidth}{\acvlangmaxw}%
+
+\begin{cvskills}
+
+<% for entry in section.language_entries %>
+\cvskill
+{<< entry.name | escape_latex >>}
+{<< entry.proficiency | escape_latex if entry.proficiency else '' >>}
+<% endfor %>
+
+\end{cvskills}
