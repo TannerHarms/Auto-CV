@@ -6,5 +6,10 @@
 <% if entry.url %>
 \href{<< entry.url >>}{[link]}
 <% endif %>
+<% if entry.description %>
+\begin{itemize}
+  \item << entry.description | md_latex >>
+\end{itemize}
+<% endif %>
 
 <% endfor %>

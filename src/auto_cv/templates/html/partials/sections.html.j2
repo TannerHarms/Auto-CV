@@ -57,12 +57,12 @@
     </div>
   </div>
   {% if entry.description %}
-  <p class="entry-description">{{ entry.description }}</p>
+  <p class="entry-description">{{ entry.description | markdown_inline | safe }}</p>
   {% endif %}
   {% if entry.highlights %}
   <ul class="entry-highlights">
     {% for h in entry.highlights %}
-    <li>{{ h }}</li>
+    <li>{{ h | markdown_inline | safe }}</li>
     {% endfor %}
   </ul>
   {% endif %}
@@ -90,10 +90,13 @@
   {% if entry.gpa %}
   <p class="entry-gpa">GPA: {{ entry.gpa }}</p>
   {% endif %}
+  {% if entry.description %}
+  <p class="entry-description">{{ entry.description | markdown_inline | safe }}</p>
+  {% endif %}
   {% if entry.highlights %}
   <ul class="entry-highlights">
     {% for h in entry.highlights %}
-    <li>{{ h }}</li>
+    <li>{{ h | markdown_inline | safe }}</li>
     {% endfor %}
   </ul>
   {% endif %}
@@ -109,7 +112,7 @@
   {% for cat in section.skill_categories %}
   <div class="skill-category">
     <strong>{{ cat.name }}</strong>
-    <span class="skill-list">{{ cat.skills | join(', ') }}</span>
+    <span class="skill-list">{% for skill in cat.skills %}{{ skill | markdown_inline | safe }}{% if not loop.last %}<br>{% endif %}{% endfor %}</span>
   </div>
   {% endfor %}
 </div>
@@ -132,12 +135,12 @@
     {% endif %}
   </div>
   {% if entry.description %}
-  <p class="entry-description">{{ entry.description }}</p>
+  <p class="entry-description">{{ entry.description | markdown_inline | safe }}</p>
   {% endif %}
   {% if entry.highlights %}
   <ul class="entry-highlights">
     {% for h in entry.highlights %}
-    <li>{{ h }}</li>
+    <li>{{ h | markdown_inline | safe }}</li>
     {% endfor %}
   </ul>
   {% endif %}
@@ -187,6 +190,9 @@
     {% if entry.venue %}
     <div class="entry-venue"><em>{{ entry.venue }}</em></div>
     {% endif %}
+    {% if entry.description %}
+    <p class="entry-description">{{ entry.description | markdown_inline | safe }}</p>
+    {% endif %}
   </div>
 </div>
 {% endfor %}
@@ -218,12 +224,12 @@
     </div>
   </div>
   {% if entry.description %}
-  <p class="entry-description">{{ entry.description }}</p>
+  <p class="entry-description">{{ entry.description | markdown_inline | safe }}</p>
   {% endif %}
   {% if entry.highlights %}
   <ul class="entry-highlights">
     {% for h in entry.highlights %}
-    <li>{{ h }}</li>
+    <li>{{ h | markdown_inline | safe }}</li>
     {% endfor %}
   </ul>
   {% endif %}
@@ -241,7 +247,7 @@
     <div class="entry-org">{{ entry.issuer }}</div>
     {% endif %}
     {% if entry.description %}
-    <p class="entry-description">{{ entry.description }}</p>
+    <p class="entry-description">{{ entry.description | markdown_inline | safe }}</p>
     {% endif %}
   </div>
 </div>

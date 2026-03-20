@@ -117,6 +117,7 @@ class LatexRenderer(BaseRenderer):
         )
         env.filters["escape_latex"] = _escape_latex
         env.filters["md_latex"] = _md_to_latex
+        env.tests["starts_with_bold"] = lambda s: isinstance(s, str) and s.strip().startswith("**")
 
         # --- Copy static assets for the template set (e.g. .cls, .sty) ---
         static_dir = tmpl_dir / "static"

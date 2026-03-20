@@ -10,5 +10,11 @@
 \ifdim\sklmaxw>\skillcatlabelwidth\setlength{\sklmaxw}{\skillcatlabelwidth}\fi%
 
 <% for cat in section.skill_categories %>
+<% if cat.skills and cat.skills[0] is starts_with_bold %>
+<% for skill in cat.skills %>
+\cvskill{\sklmaxw}{<% if loop.first %><< cat.name | escape_latex >><% endif %>}{<< skill | md_latex >>}
+<% endfor %>
+<% else %>
 \cvskill{\sklmaxw}{<< cat.name | escape_latex >>}{<< cat.skills | join(', ') | md_latex >>}
+<% endif %>
 <% endfor %>

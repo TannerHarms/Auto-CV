@@ -483,6 +483,7 @@ def _populate_typed_entries(section: Section, entries_raw: list[dict]) -> None:
                 location=e.get("location"),
                 dates=_parse_dates(e),
                 gpa=e.get("gpa"),
+                description=e.get("description"),
                 highlights=e.get("highlights", []),
                 coursework=e.get("coursework", []),
             ))
@@ -522,6 +523,7 @@ def _populate_typed_entries(section: Section, entries_raw: list[dict]) -> None:
                 date=e.get("date"),
                 url=e.get("url"),
                 authors=e.get("authors", []),
+                description=e.get("description"),
             ))
 
     elif section.section_type == SectionType.AWARDS:

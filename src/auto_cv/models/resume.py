@@ -37,11 +37,13 @@ class SectionType(str, Enum):
 class DateRange(BaseModel):
     """A flexible date range for experience/education entries."""
     start: str  # Flexible: "Jan 2020", "2020", "2020-01", etc.
-    end: str | None = None  # None ⇒ "Present"
+    end: str | None = None  # None ⇒ just show start
 
     @property
     def display(self) -> str:
-        return f"{self.start} – {self.end or 'Present'}"
+        if self.end is None:
+            return self.start
+        return f"{self.start} – {self.end}"
 
 
 class ContactInfo(BaseModel):
@@ -75,6 +77,7 @@ class EducationEntry(BaseModel):
     location: str | None = None
     dates: DateRange | None = None
     gpa: str | None = None
+    description: str | None = None
     highlights: list[str] = Field(default_factory=list)
     coursework: list[str] = Field(default_factory=list)
 
@@ -106,6 +109,7 @@ class PublicationEntry(BaseModel):
     date: str | None = None
     url: str | None = None
     authors: list[str] = Field(default_factory=list)
+    description: str | None = None
 
 
 class AwardEntry(BaseModel):

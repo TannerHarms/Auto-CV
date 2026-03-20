@@ -424,6 +424,22 @@ def _parse_education_body(content: str) -> list[dict]:
             if honors_m:
                 entry["honors"] = honors_m.group(1).strip()
 
+        # Description: plain text that is not a bullet, metadata, or special field
+        desc_lines: list[str] = []
+        for line in remaining:
+            stripped = line.strip()
+            if not stripped:
+                continue
+            if stripped.startswith("- ") or stripped.startswith("* "):
+                break
+            if stripped.startswith("**"):
+                continue
+            if re.match(r"(?:GPA|gpa|Honors?|Coursework)[:\s]", stripped, re.IGNORECASE):
+                continue
+            desc_lines.append(stripped)
+        if desc_lines:
+            entry["description"] = " ".join(desc_lines)
+
         entries.append(entry)
     return entries
 
@@ -456,7 +472,7 @@ def _parse_skills_body(content: str) -> list[dict]:
 
 
 def _extract_skill_list(body: str) -> list[str]:
-    """Skills from bullet points or comma-separated text."""
+    """Skills from bullet points, bold-label lines, or comma-separated text."""
     lines = body.strip().split("\n")
 
     bullets = [
@@ -466,6 +482,11 @@ def _extract_skill_list(body: str) -> list[str]:
     ]
     if bullets:
         return bullets
+
+    # Detect **label:** lines — keep each as a single entry
+    bold_lines = [l.strip() for l in lines if re.match(r"\*\*(.+?)\*\*", l.strip())]
+    if bold_lines:
+        return bold_lines
 
     text = " ".join(l.strip() for l in lines if l.strip())
     return [s.strip() for s in text.split(",") if s.strip()]
@@ -622,6 +643,22 @@ def _parse_publications_body(content: str) -> list[dict]:
                 m = re.match(r"(?:Authors?|By)[:\s]+(.+)", stripped, re.IGNORECASE)
                 if m:
                     entry["authors"] = [a.strip() for a in m.group(1).split(",")]
+
+        # Description: plain text after metadata
+        desc_lines: list[str] = []
+        for line in lines:
+            stripped = line.strip()
+            if not stripped:
+                continue
+            if stripped.startswith("**"):
+                continue
+            if re.match(r"(?:Authors?|By)[:\s]", stripped, re.IGNORECASE):
+                continue
+            if re.match(r"https?://", stripped) or re.search(r"\[.+?\]\(.+?\)", stripped):
+                continue
+            desc_lines.append(stripped)
+        if desc_lines:
+            entry["description"] = " ".join(desc_lines)
 
         entries.append(entry)
     return entries

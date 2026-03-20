@@ -68,6 +68,17 @@ def _add_tab_stop(para, position_emu: int, alignment: WD_TAB_ALIGNMENT) -> None:
     tabs.append(tab)
 
 
+def _set_run_font(run, font_name: str) -> None:
+    """Set all four w:rFonts facets so Word doesn't fall back to theme fonts."""
+    rPr = run._element.get_or_add_rPr()
+    rFonts = rPr.find(qn("w:rFonts"))
+    if rFonts is None:
+        rFonts = rPr.makeelement(qn("w:rFonts"), {})
+        rPr.insert(0, rFonts)
+    for attr in ("w:ascii", "w:hAnsi", "w:eastAsia", "w:cs"):
+        rFonts.set(qn(attr), font_name)
+
+
 def _add_run(para, text: str, *, size: float = 10, bold: bool = False,
              italic: bool = False, color: RGBColor | None = None,
              small_caps: bool = False, font_name: str | None = None) -> None:
@@ -81,7 +92,7 @@ def _add_run(para, text: str, *, size: float = 10, bold: bool = False,
     if small_caps:
         run.font.small_caps = True
     if font_name:
-        run.font.name = font_name
+        _set_run_font(run, font_name)
 
 
 # Markdown → DOCX runs
@@ -190,6 +201,19 @@ class DocxRenderer(BaseRenderer):
         doc_style.font.name = style.fonts.body
         doc_style.font.size = Pt(_parse_pt(style.fonts.size_base))
         doc_style.font.color.rgb = _hex_to_rgb(style.colors.text)
+        # Set all four rFonts facets on the Normal style so Word doesn't
+        # fall back to theme-linked fonts (Calibri, etc.)
+        rPr = doc_style.element.get_or_add_rPr()
+        rFonts = rPr.find(qn("w:rFonts"))
+        if rFonts is None:
+            rFonts = rPr.makeelement(qn("w:rFonts"), {})
+            rPr.insert(0, rFonts)
+        for attr in ("w:ascii", "w:hAnsi", "w:eastAsia", "w:cs"):
+            rFonts.set(qn(attr), style.fonts.body)
+        # Remove theme font references that override explicit names
+        for attr in ("w:asciiTheme", "w:hAnsiTheme", "w:eastAsiaTheme", "w:cstheme"):
+            if rFonts.get(qn(attr)) is not None:
+                del rFonts.attrib[qn(attr)]
         # Tight default paragraph spacing
         doc_style.paragraph_format.space_before = Pt(0)
         doc_style.paragraph_format.space_after = Pt(0)
@@ -315,20 +339,26 @@ class DocxRenderer(BaseRenderer):
         _add_run(p, section.title, size=_parse_pt(style.fonts.size_heading),
                  bold=True, color=accent, font_name=style.fonts.body)
 
-        # Right-aligned tab stop with a heavy (thick underscore) leader
+        # Right-aligned tab stop (no leader — we use an underlined tab run instead)
         pPr = p._element.get_or_add_pPr()
         tabs = pPr.makeelement(qn("w:tabs"), {})
         tab = tabs.makeelement(qn("w:tab"), {
             qn("w:val"): "right",
-            qn("w:leader"): "heavy",
             qn("w:pos"): str(int(self._content_width / 635)),
         })
         tabs.append(tab)
         pPr.append(tabs)
 
-        # A gray-colored tab run so the leader line draws in gray
+        # Gray-colored tab run with a solid underline to draw the section rule
+        gray_hex = f"{gray[0]:02X}{gray[1]:02X}{gray[2]:02X}"
         run = p.add_run("\t")
         run.font.color.rgb = gray
+        rPr = run._element.get_or_add_rPr()
+        u_el = rPr.makeelement(qn("w:u"), {
+            qn("w:val"): "thick",
+            qn("w:color"): gray_hex,
+        })
+        rPr.append(u_el)
 
         handler = {
             SectionType.EXPERIENCE: self._render_experience,
@@ -413,8 +443,15 @@ class DocxRenderer(BaseRenderer):
                 right = [{"text": entry.dates.display, "size": 8, "italic": True, "color": gray}]
             last_p = self._add_two_col_row(doc, left, right)
 
-            # GPA and highlights
+            # Description (plain text below header)
             bullet_size = _parse_pt(style.fonts.size_bullet)
+            if entry.description:
+                last_p = doc.add_paragraph()
+                _set_paragraph_spacing(last_p, before=0, after=0)
+                last_p.paragraph_format.left_indent = Inches(0.25)
+                _add_md_runs(last_p, entry.description, size=bullet_size, color=dark)
+
+            # GPA and highlights
             if entry.gpa:
                 last_p = doc.add_paragraph()
                 _set_paragraph_spacing(last_p, before=0, after=0)
@@ -442,9 +479,18 @@ class DocxRenderer(BaseRenderer):
         text_color = _hex_to_rgb(style.colors.text)
 
         for cat in section.skill_categories:
-            right_text = ", ".join(cat.skills)
-            self._add_skill_row(doc, cat.name, right_text,
-                                label_color=dark, text_color=text_color)
+            # Detect if skills are multi-line bold-label entries
+            has_bold = any(s.strip().startswith("**") for s in cat.skills)
+            if has_bold:
+                # Render each skill entry as a separate line in the same row
+                for j, skill in enumerate(cat.skills):
+                    lbl = cat.name if j == 0 else ""
+                    self._add_skill_row(doc, lbl, skill,
+                                        label_color=dark, text_color=text_color)
+            else:
+                right_text = ", ".join(cat.skills)
+                self._add_skill_row(doc, cat.name, right_text,
+                                    label_color=dark, text_color=text_color)
 
     def _add_skill_row(self, doc: Document, label: str, skills_text: str,
                        *, label_color: RGBColor, text_color: RGBColor) -> None:
@@ -567,6 +613,14 @@ class DocxRenderer(BaseRenderer):
                 right = [{"text": entry.venue, "size": 8, "italic": True, "color": gray}]
             if left or right:
                 last_p = self._add_two_col_row(doc, left, right)
+
+            # Description
+            if entry.description:
+                last_p = doc.add_paragraph()
+                _set_paragraph_spacing(last_p, before=0, after=0)
+                last_p.paragraph_format.left_indent = Inches(0.25)
+                _add_md_runs(last_p, entry.description, size=_parse_pt(style.fonts.size_bullet),
+                             color=dark)
 
             if i < len(section.publication_entries) - 1:
                 _set_paragraph_spacing(last_p, before=0, after=entry_gap)

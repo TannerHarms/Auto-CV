@@ -26,6 +26,7 @@ class HtmlRenderer(BaseRenderer):
             keep_trailing_newline=True,
         )
         env.filters["markdown"] = _render_markdown
+        env.filters["markdown_inline"] = _render_markdown_inline
         env.globals["SectionType"] = SectionType
 
         layout = style.html.layout
@@ -186,3 +187,12 @@ class HtmlRenderer(BaseRenderer):
 def _render_markdown(text: str) -> str:
     """Convert markdown text to HTML."""
     return md.markdown(text, extensions=["tables", "fenced_code", "nl2br"])
+
+
+def _render_markdown_inline(text: str) -> str:
+    """Convert inline markdown (bold, italic, code, links) to HTML without wrapping <p>."""
+    import re as _re
+    html = md.markdown(text)
+    # Strip the wrapping <p>…</p> that markdown adds to single-line content
+    html = _re.sub(r"^<p>(.*)</p>$", r"\1", html.strip(), flags=_re.DOTALL)
+    return html
