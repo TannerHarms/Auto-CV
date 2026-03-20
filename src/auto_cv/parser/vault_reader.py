@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 from pathlib import Path
 from typing import Any
 
@@ -89,7 +90,9 @@ def list_projects(vault_path: str | Path) -> list[str]:
         return []
     return sorted(
         d.name for d in projects_dir.iterdir()
-        if d.is_dir() and (d / "_project.yml").exists()
+        if d.is_dir() and (
+            (d / "header.md").exists() or (d / "_project.yml").exists()
+        )
     )
 
 
@@ -163,7 +166,11 @@ def load_project(
 
 
 def _load_project_config(project_dir: Path) -> ProjectConfig:
-    """Load a ``_project.yml`` file into a ProjectConfig."""
+    """Load project config from ``header.md`` or ``_project.yml``."""
+    header_path = project_dir / "header.md"
+    if header_path.exists():
+        return _load_project_config_from_header(header_path)
+
     path = project_dir / "_project.yml"
     if not path.exists():
         return ProjectConfig()
@@ -267,9 +274,16 @@ def _resolve_one_include(
 # ---------------------------------------------------------------------------
 
 def _load_config(vault: Path) -> ResumeConfig:
+    # Prefer header.md, fall back to _config.yml
+    header_path = vault / "header.md"
+    if header_path.exists():
+        return _load_config_from_header(header_path)
+
     config_path = vault / "_config.yml"
     if not config_path.exists():
-        raise FileNotFoundError(f"Missing _config.yml in vault: {vault}")
+        raise FileNotFoundError(
+            f"Missing header.md or _config.yml in vault: {vault}"
+        )
 
     with open(config_path, "r", encoding="utf-8") as f:
         raw: dict = yaml.safe_load(f) or {}
@@ -290,6 +304,175 @@ def _load_config(vault: Path) -> ResumeConfig:
         section_order=section_order,
         html_meta=html_meta,
         metadata=metadata,
+    )
+
+
+# ---------------------------------------------------------------------------
+# header.md parsing
+# ---------------------------------------------------------------------------
+
+_EMAIL_RE = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
+_PHONE_RE = re.compile(r"^[\+\d\(\)\-\s\.]{7,}$")
+_MD_LINK_RE = re.compile(r"\[([^\]]+)\]\(([^)]+)\)")
+
+
+def _parse_contact_items(items: list[str]) -> dict[str, str]:
+    """Classify pipe-separated contact fragments into ContactInfo fields."""
+    contact: dict[str, str] = {}
+    for item in items:
+        item = item.strip()
+        if not item:
+            continue
+
+        # Markdown link: [text](url)
+        link = _MD_LINK_RE.match(item)
+        if link:
+            url = link.group(2)
+            if "linkedin.com" in url:
+                contact["linkedin"] = url.rstrip("/").split("/")[-1]
+            elif "github.com" in url:
+                contact["github"] = url.rstrip("/").split("/")[-1]
+            else:
+                contact["website"] = url
+            continue
+
+        # Bare email
+        if _EMAIL_RE.match(item):
+            contact["email"] = item
+            continue
+
+        # Phone number
+        if _PHONE_RE.match(item):
+            contact["phone"] = item
+            continue
+
+        # Bare URL
+        if item.startswith("http://") or item.startswith("https://"):
+            if "linkedin.com" in item:
+                contact["linkedin"] = item.rstrip("/").split("/")[-1]
+            elif "github.com" in item:
+                contact["github"] = item.rstrip("/").split("/")[-1]
+            else:
+                contact["website"] = item
+            continue
+
+        # Default: location
+        contact["location"] = item
+
+    return contact
+
+
+def _load_config_from_header(path: Path) -> ResumeConfig:
+    """Parse a ``header.md`` file into a :class:`ResumeConfig`.
+
+    Format::
+
+        ---
+        photo: headshot.jpg
+        section_order: [summary, experience, ...]
+        html_meta:
+          title: "..."
+        ---
+        # Full Name
+        *Job Title*
+
+        email@example.com | +1-555-0000 | City, ST
+        [LinkedIn](https://linkedin.com/in/handle) | [GitHub](https://github.com/handle)
+    """
+    post = frontmatter.load(str(path))
+    fm: dict = dict(post.metadata)
+    body: str = post.content.strip()
+
+    section_order = fm.pop("section_order", fm.pop("sections", []))
+    html_meta = fm.pop("html_meta", {})
+    metadata = fm.pop("metadata", {})
+    photo = fm.pop("photo", None)
+
+    # Parse body for name, title, contact
+    name = "Your Name"
+    title = None
+    contact_items: list[str] = []
+
+    for line in body.split("\n"):
+        stripped = line.strip()
+        if not stripped:
+            continue
+        # H1 → name
+        if stripped.startswith("# ") and not stripped.startswith("## "):
+            name = stripped[2:].strip()
+            continue
+        # *italic* → title  (but not **bold**)
+        if (
+            stripped.startswith("*")
+            and stripped.endswith("*")
+            and not stripped.startswith("**")
+        ):
+            title = stripped.strip("*").strip()
+            continue
+        # H2 → title (alternative syntax)
+        if stripped.startswith("## "):
+            title = stripped[3:].strip()
+            continue
+        # Contact line — contains | or recognised tokens
+        if "|" in stripped:
+            contact_items.extend(i.strip() for i in stripped.split("|"))
+        elif _EMAIL_RE.match(stripped) or _PHONE_RE.match(stripped):
+            contact_items.append(stripped)
+        elif _MD_LINK_RE.match(stripped):
+            contact_items.append(stripped)
+        elif stripped.startswith("http://") or stripped.startswith("https://"):
+            contact_items.append(stripped)
+
+    contact_data = _parse_contact_items(contact_items) if contact_items else {}
+
+    return ResumeConfig(
+        name=name,
+        title=title,
+        photo=photo,
+        contact=ContactInfo(**contact_data),
+        section_order=section_order,
+        html_meta=html_meta,
+        metadata=metadata,
+    )
+
+
+def _load_project_config_from_header(path: Path) -> ProjectConfig:
+    """Parse a project ``header.md`` into a :class:`ProjectConfig`.
+
+    Frontmatter carries ``include`` and ``section_order``.
+    Body may override config fields (name, title, contact).
+    """
+    post = frontmatter.load(str(path))
+    fm: dict = dict(post.metadata)
+    body: str = post.content.strip()
+
+    include = fm.pop("include", [])
+    section_order = fm.pop("section_order", [])
+
+    # Parse body for config overrides
+    config_overrides: dict[str, Any] = {}
+    for line in body.split("\n"):
+        stripped = line.strip()
+        if not stripped:
+            continue
+        if stripped.startswith("# ") and not stripped.startswith("## "):
+            config_overrides["name"] = stripped[2:].strip()
+        elif (
+            stripped.startswith("*")
+            and stripped.endswith("*")
+            and not stripped.startswith("**")
+        ):
+            config_overrides["title"] = stripped.strip("*").strip()
+        elif stripped.startswith("## "):
+            config_overrides["title"] = stripped[3:].strip()
+        elif "|" in stripped:
+            items = [i.strip() for i in stripped.split("|")]
+            config_overrides["contact"] = _parse_contact_items(items)
+
+    return ProjectConfig(
+        include=include,
+        section_order=section_order,
+        config=config_overrides,
     )
 
 

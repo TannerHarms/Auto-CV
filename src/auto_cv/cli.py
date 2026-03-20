@@ -136,6 +136,26 @@ section_order:
 #   description: "Experienced software engineer."
 """
 
+_INIT_HEADER = """\
+---
+section_order:
+  - summary
+  - experience
+  - education
+  - skills
+  - projects
+# photo: headshot.jpg
+# html_meta:
+#   title: "Your Name — Resume"
+#   description: "Experienced software engineer."
+---
+# Your Name
+*Software Engineer*
+
+you@example.com | +1-555-000-0000 | City, State
+[LinkedIn](https://linkedin.com/in/yourprofile) | [GitHub](https://github.com/yourhandle) | [yoursite.dev](https://yoursite.dev)
+"""
+
 def _generate_full_style_yaml(preset: str = "classic") -> str:
     """Generate a _style.yml with all configurable values populated from a preset."""
     from auto_cv.models.style import StyleConfig
@@ -249,7 +269,7 @@ def init(
     (path / "assets").mkdir()
 
     # Files
-    (path / "_config.yml").write_text(_INIT_CONFIG, encoding="utf-8")
+    (path / "header.md").write_text(_INIT_HEADER, encoding="utf-8")
     (path / "_style.yml").write_text(_generate_full_style_yaml("classic"), encoding="utf-8")
     (path / "sections" / "01-summary.md").write_text(_INIT_SUMMARY, encoding="utf-8")
     (path / "sections" / "02-experience.md").write_text(_INIT_EXPERIENCE, encoding="utf-8")
@@ -348,6 +368,25 @@ section_order:
 #   title: "Specific Role Title"
 """
 
+_PROJECT_HEADER_TEMPLATE = """\
+---
+include:
+  - summary
+  - experience
+  - education
+  - skills
+  - projects
+section_order:
+  - summary
+  - experience
+  - skills
+  - projects
+  - education
+---
+# To override the master title, uncomment below:
+# *Specific Role Title*
+"""
+
 
 @app.command("new-project")
 def new_project_cmd(
@@ -370,7 +409,7 @@ def new_project_cmd(
     project_dir.mkdir(parents=True)
     (project_dir / "sections").mkdir()
     (project_dir / "output").mkdir()
-    (project_dir / "_project.yml").write_text(_PROJECT_TEMPLATE, encoding="utf-8")
+    (project_dir / "header.md").write_text(_PROJECT_HEADER_TEMPLATE, encoding="utf-8")
 
     # Generate _style.yml with full defaults so users can customise per-project
     master_style_path = vault / "_master" / "_style.yml"
@@ -391,7 +430,7 @@ def new_project_cmd(
     )
 
     rprint(f"[green]✓[/green] Project created at [bold]{project_dir}[/bold]")
-    rprint(f"  Edit [bold]{project_dir / '_project.yml'}[/bold] to select sections.")
+    rprint(f"  Edit [bold]{project_dir / 'header.md'}[/bold] to select sections.")
     rprint(f"  Build with: [bold]auto-cv build {vault} -p {name}[/bold]")
 
 

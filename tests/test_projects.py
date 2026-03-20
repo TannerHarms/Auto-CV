@@ -129,6 +129,55 @@ def flat_vault(tmp_path):
     return vault
 
 
+@pytest.fixture
+def header_md_vault(tmp_path):
+    """Create a master vault using header.md instead of _config.yml."""
+    master = tmp_path / "_master"
+    master.mkdir()
+
+    (master / "header.md").write_text(
+        "---\n"
+        "section_order:\n"
+        "  - summary\n"
+        "  - experience\n"
+        "---\n"
+        "# Header Person\n"
+        "*Lead Engineer*\n"
+        "\n"
+        "hdr@example.com | +1-555-1234 | Portland, OR\n"
+        "[LinkedIn](https://linkedin.com/in/hdr-person) | [GitHub](https://github.com/hdrp)\n",
+        encoding="utf-8",
+    )
+    (master / "_style.yml").write_text("preset: classic\n", encoding="utf-8")
+    sections = master / "sections"
+    sections.mkdir()
+    (sections / "01-summary.md").write_text(
+        "---\ntype: summary\n---\n# Summary\n\nHeader vault summary.\n",
+        encoding="utf-8",
+    )
+    (sections / "02-experience.md").write_text(
+        "---\ntype: experience\n---\n# Experience\n\n"
+        "## Dev\n**Co** | Remote | 2020-01 – present\n\n- Worked\n",
+        encoding="utf-8",
+    )
+
+    # Project using header.md with title override
+    proj = tmp_path / "projects" / "hdr-proj"
+    proj.mkdir(parents=True)
+    (proj / "header.md").write_text(
+        "---\n"
+        "include:\n"
+        "  - 01-summary\n"
+        "section_order:\n"
+        "  - summary\n"
+        "---\n"
+        "*Backend Specialist*\n",
+        encoding="utf-8",
+    )
+
+    return tmp_path
+
+
 # ---------------------------------------------------------------------------
 # Detection
 # ---------------------------------------------------------------------------
@@ -227,6 +276,35 @@ def test_load_project_no_master(flat_vault):
 
 
 # ---------------------------------------------------------------------------
+# header.md format
+# ---------------------------------------------------------------------------
+
+def test_header_md_loads_config(header_md_vault):
+    """header.md should be parsed into ResumeConfig."""
+    resume, _ = load_vault(header_md_vault)
+    assert resume.config.name == "Header Person"
+    assert resume.config.title == "Lead Engineer"
+    assert resume.config.contact.email == "hdr@example.com"
+    assert resume.config.contact.phone == "+1-555-1234"
+    assert resume.config.contact.location == "Portland, OR"
+    assert resume.config.contact.linkedin == "hdr-person"
+    assert resume.config.contact.github == "hdrp"
+
+
+def test_header_md_section_order(header_md_vault):
+    resume, _ = load_vault(header_md_vault)
+    assert resume.config.section_order == ["summary", "experience"]
+
+
+def test_header_md_project_override(header_md_vault):
+    """Project header.md should override title from master."""
+    resume, _ = load_vault(header_md_vault, project="hdr-proj")
+    assert resume.config.title == "Backend Specialist"
+    assert resume.config.name == "Header Person"  # inherited
+    assert len(resume.sections) == 1
+
+
+# ---------------------------------------------------------------------------
 # CLI integration
 # ---------------------------------------------------------------------------
 
@@ -270,4 +348,4 @@ def test_cli_new_project(master_vault):
     project_dir = master_vault / "projects" / "qa-role"
     assert result.exit_code == 0
     assert project_dir.exists()
-    assert (project_dir / "_project.yml").exists()
+    assert (project_dir / "header.md").exists()
