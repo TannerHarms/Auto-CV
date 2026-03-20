@@ -5,43 +5,29 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.1.0] - 2026-03-19
+## [1.0.0] - 2025-07-15
 
 ### Added
 
-- Initial release of Auto CV
-- Python CLI for building CVs/resumes from Obsidian-style markdown vaults
-- Support for three output formats: HTML, DOCX, LaTeX/PDF
-- Multiple built-in style presets (Default, Awesome CV, Classic)
-- Obsidian plugin for building resumes directly from vault
-- Natural markdown body syntax (headers, metadata, bullets)
-- YAML frontmatter support for resume metadata
-- LLM agents for polish, tailoring, and layout suggestions
-- Full test suite (108 tests)
-- Comprehensive documentation and examples
+- **Nine style presets**: awesome-cv, classic, modern, minimal, academic, creative, elegant, executive, technical
+- **Preset-aware DOCX rendering**: each preset produces a distinctly styled Word document (headers, section headings, fonts, colours)
+- **Preset-aware LaTeX rendering**: all nine presets compile cleanly with preset-specific `\cvname`, `\cvaddress`, section headings, skill/award/service commands
+- **Six HTML layouts**: top-header, sidebar, cards, multi-page, latex-mirror, awesome-cv
+- **Six complete example vaults** with preview screenshots
+- **header.md format**: name, title, and contact info in natural markdown (replaces old `_config.yml`)
+- **Project-aware builds**: `auto-cv build vault -p project-name` for role-specific resumes
+- **GitHub Actions**: CI for Python tests, plugin build, and release workflow
+- **Obsidian plugin**: build modal with format/preset selection, auto-detect Python, progress tracking
+- **Release workflow**: tag-triggered GitHub release with plugin assets for Obsidian marketplace
 
 ### Features
 
-- **Markdown-based resume authoring** - Write your resume in natural markdown format
-- **Multiple output formats** - Generate HTML, DOCX, and LaTeX/PDF from one source
-- **Style presets** - Choose from built-in templates or create custom styles
-- **Obsidian integration** - Build resumes directly from your Obsidian vault
-- **Asset support** - Include images and custom CSS/JavaScript
-- **PDF output** - LaTeX compilation to professional PDF documents
-- **LLM enhancement** (optional) - Polish content, tailor to job postings, suggest layouts
-
-### Fixed
-
-- Improved error handling and user feedback
-- Better Python executable detection across platforms
-- Enhanced Obsidian plugin UI with better modals and notifications
+- Three output formats from one source: HTML, DOCX, LaTeX/PDF
+- Natural markdown body syntax (headers, bold metadata, bullets)
+- YAML frontmatter for section metadata and ordering
+- LLM agents (optional): polish, tailor, layout suggestions
+- Custom CSS/JS injection for HTML output
+- Asset support (photos, images)
+- Comprehensive test suite (142 tests)
 
 ## [Unreleased]
-
-### Planned
-
-- GitHub Actions CI/CD pipeline
-- Obsidian Community Plugins registry submission
-- Additional style presets
-- Template customization tools
-- Web-based editor (optional SaaS)

@@ -248,10 +248,10 @@ A markdown-to-resume generator supporting multiple output formats.
 **Pipe-delimited format:**
 
 ```markdown
-## Auto Resume
+## Auto CV
 **Python, Jinja2** | 2024
 
-https://github.com/user/auto-resume
+https://github.com/TannerHarms/Auto-CV
 
 - Supports multiple output formats
 ```

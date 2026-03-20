@@ -1,7 +1,7 @@
-# Auto Resume — Example Gallery
+# Auto CV — Example Gallery
 
 Six complete example vaults showcasing different presets, layouts, and content types.
-Each example is a self-contained vault you can build with `auto-resume build`.
+Each example is a self-contained vault you can build with `auto-cv build`.
 
 ---
 
@@ -34,7 +34,7 @@ Each example is a self-contained vault you can build with `auto-resume build`.
 **Build:**
 
 ```bash
-auto-resume build examples/software-engineer -f html -f latex -f docx
+auto-cv build examples/software-engineer -f html -f latex -f docx
 ```
 
 ---
@@ -50,7 +50,7 @@ auto-resume build examples/software-engineer -f html -f latex -f docx
 **Build:**
 
 ```bash
-auto-resume build examples/executive -f html -f latex -f docx
+auto-cv build examples/executive -f html -f latex -f docx
 ```
 
 ---
@@ -66,7 +66,7 @@ auto-resume build examples/executive -f html -f latex -f docx
 **Build:**
 
 ```bash
-auto-resume build examples/creative-designer -f html -f latex -f docx
+auto-cv build examples/creative-designer -f html -f latex -f docx
 ```
 
 ---
@@ -83,7 +83,7 @@ auto-resume build examples/creative-designer -f html -f latex -f docx
 **Build:**
 
 ```bash
-auto-resume build examples/academic-researcher -f html -f latex -f docx
+auto-cv build examples/academic-researcher -f html -f latex -f docx
 ```
 
 ---
@@ -99,7 +99,7 @@ auto-resume build examples/academic-researcher -f html -f latex -f docx
 **Build:**
 
 ```bash
-auto-resume build examples/new-graduate -f html -f latex -f docx
+auto-cv build examples/new-graduate -f html -f latex -f docx
 ```
 
 ---
@@ -115,7 +115,7 @@ auto-resume build examples/new-graduate -f html -f latex -f docx
 **Build:**
 
 ```bash
-auto-resume build examples/data-scientist -f html -f latex -f docx
+auto-cv build examples/data-scientist -f html -f latex -f docx
 ```
 
 ---
@@ -144,14 +144,14 @@ html:
   include_photo: true
 ```
 
-See `auto-resume style-schema` for the full list of configurable options.
+See `auto-cv style-schema` for the full list of configurable options.
 
 ## Building All Examples
 
 ```bash
 # Build all examples at once
 for dir in examples/*/; do
-  auto-resume build "$dir" -f html -f latex -f docx -o "$dir/output"
+  auto-cv build "$dir" -f html -f latex -f docx -o "$dir/output"
 done
 ```
 

@@ -5,7 +5,7 @@ An Obsidian plugin that allows you to build professional CVs and resumes directl
 ## Features
 
 - **Multiple Output Formats**: Generate resumes in HTML, DOCX, and LaTeX/PDF
-- **Style Presets**: Choose from built-in resume templates (Default, Awesome CV, Classic, Modern)
+- **Style Presets**: Choose from nine built-in resume styles (Classic, Modern, Minimal, Academic, Awesome-CV, Creative, Elegant, Executive, Technical)
 - **Vault Integration**: Build resumes directly from your Obsidian vault structure
 - **Easy Configuration**: Simple settings panel for Python path, default preset, and output folder
 - **No Server Required**: Runs locally on your machine using the Python CLI
@@ -21,12 +21,14 @@ An Obsidian plugin that allows you to build professional CVs and resumes directl
 ### 1. Install Python Package
 
 ```bash
-pip install auto-resume
+pip install auto-cv
 ```
 
 ### 2. Install Obsidian Plugin
 
-Option A: From Obsidian Community Plugins (coming soon)
+Option A: From Obsidian Community Plugins
+
+Search for **Auto CV** in Settings → Community Plugins → Browse.
 
 Option B: Manual Installation
 
@@ -79,8 +81,8 @@ Your Obsidian vault should follow this structure:
 
 ```
 vault/
-├── _config.yml          # Resume metadata
-├── _style.yml           # Style overrides (optional)
+├── header.md            # Name, contact, section ordering
+├── _style.yml           # Style preset + overrides (optional)
 ├── sections/            # Resume sections
 │   ├── 01-summary.md
 │   ├── 02-experience.md

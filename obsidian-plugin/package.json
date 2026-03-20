@@ -1,6 +1,6 @@
 {
   "name": "auto-cv-obsidian",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Build beautiful CVs and resumes from your Obsidian vault",
   "main": "main.js",
   "scripts": {
@@ -18,7 +18,7 @@
     "cv",
     "markdown"
   ],
-  "author": "Auto Resume Contributors",
+  "author": "Tanner Harms",
   "license": "MIT",
   "devDependencies": {
     "@types/node": "^20.17.0",

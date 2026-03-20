@@ -6,9 +6,23 @@ Build polished resumes from an **Obsidian-style markdown vault**. One command pr
 | --- | --- |
 | **LaTeX → PDF** | Structured LaTeX repo (`main.tex` + `resume.sty` + `sections/*.tex`), auto-compiled with `latexmk` |
 | **DOCX** | Word document built from scratch via `python-docx` — open and edit in Word/Google Docs |
-| **HTML** | Styled, multi-page website with three layout options, print stylesheet, and custom CSS/JS support |
+| **HTML** | Styled, multi-page website with six layout options, print stylesheet, and custom CSS/JS support |
+
+## Preview
+
+Nine built-in style presets — each produces matching output across all three formats:
+
+| ![Software Engineer (Modern)](examples/previews/software-engineer.png) | ![Executive](examples/previews/executive.png) | ![Creative Designer](examples/previews/creative-designer.png) |
+|:---:|:---:|:---:|
+| **Modern** | **Executive** | **Creative** |
+| ![Academic Researcher](examples/previews/academic-researcher.png) | ![New Graduate (Elegant)](examples/previews/new-graduate.png) | ![Data Scientist (Technical)](examples/previews/data-scientist.png) |
+| **Academic (Awesome-CV)** | **Elegant** | **Technical** |
+
+> See [examples/](examples/) for full example vaults you can build yourself.
 
 ## Quick Start
+
+### As a Python CLI
 
 ```bash
 # Install
@@ -17,19 +31,26 @@ pip install -e .
 # Scaffold a new vault
 auto-cv init my_cv
 
-# Edit your sections in my_resume/sections/*.md, then build:
-auto-resume build my_resume
+# Edit your sections in my_cv/sections/*.md, then build:
+auto-cv build my_cv
 
 # Outputs land in ./output/{latex,docx,html}/
 ```
 
+### As an Obsidian Plugin
+
+1. Install the **Auto CV** plugin from Obsidian Community Plugins
+2. Install the Python backend: `pip install auto-cv`
+3. Open a vault with `header.md` + `sections/` folder
+4. Run **Auto CV: Build Resume** from the command palette
+
 ## Vault Structure
 
-A vault is a directory with YAML config + markdown section files:
+A vault is a directory with a header file + markdown section files:
 
 ```text
-my_resume/
-├── _config.yml           # Name, contact info, section ordering
+my_cv/
+├── header.md             # Name, contact, section ordering (YAML frontmatter + markdown)
 ├── _style.yml            # Style preset + overrides (optional)
 ├── sections/
 │   ├── 01-summary.md
@@ -46,31 +67,28 @@ my_resume/
 └── resume.sty            # Overrides generated LaTeX style (optional)
 ```
 
-### `_config.yml`
+### `header.md`
 
-```yaml
-name: Jane Doe
-title: Software Engineer
-photo: headshot.jpg
+Your name, title, and contact information live in `header.md` — YAML frontmatter for metadata, markdown body for the header content:
 
-contact:
-  email: jane@example.com
-  phone: "+1-555-000-0000"
-  location: Austin, TX
-  linkedin: janedoe
-  github: janedoe
-  website: https://janedoe.dev
-
+```markdown
+---
 section_order:
   - summary
   - experience
   - education
   - skills
   - projects
-
 html_meta:
   title: "Jane Doe — Resume"
   description: "Full-stack software engineer."
+photo: headshot.jpg
+---
+# Jane Doe
+*Software Engineer*
+
+jane@example.com | +1-555-000-0000 | Austin, TX
+[LinkedIn](https://linkedin.com/in/janedoe) | [GitHub](https://github.com/janedoe) | [janedoe.dev](https://janedoe.dev)
 ```
 
 ### Section Files
@@ -136,7 +154,7 @@ Nine built-in presets are included:
 List available presets:
 
 ```bash
-auto-resume list-presets
+auto-cv list-presets
 ```
 
 ### `_style.yml`
@@ -185,7 +203,7 @@ preset: ./presets/my_theme.yml
 Dump the complete `StyleConfig` JSON schema for reference:
 
 ```bash
-auto-resume style-schema
+auto-cv style-schema
 ```
 
 ## HTML Layouts
@@ -250,7 +268,7 @@ Agents modify the resume model *before* rendering — the pipeline stays determi
 pip install -e ".[agents]"
 
 # Polish bullet points
-auto-resume build my_resume --polish
+auto-cv build my_cv --polish
 
 # Tailor to a job description
 auto-cv build my_cv --tailor-to job_posting.txt

@@ -5,7 +5,7 @@ main.js
 *.js.map
 
 # Obsidian
-.obsidian/plugins/auto-resume-obsidian/
+.obsidian/plugins/auto-cv-obsidian/
 dist/
 
 # Environment

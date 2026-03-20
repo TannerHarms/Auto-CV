@@ -13,7 +13,7 @@ from rich.console import Console
 from rich.table import Table
 
 app = typer.Typer(
-    name="auto-resume",
+    name="auto-cv",
     help="Build polished resumes from Obsidian-style markdown vaults.",
     add_completion=False,
 )
@@ -245,7 +245,7 @@ type: projects
 ---
 # Projects
 
-## [Auto Resume](https://github.com/you/auto-resume)
+## [Auto CV](https://github.com/TannerHarms/Auto-CV)
 Markdown-to-resume builder with LaTeX, DOCX, and HTML output.
 
 **Technologies:** Python, Jinja2, Pydantic

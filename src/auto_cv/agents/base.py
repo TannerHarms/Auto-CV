@@ -17,7 +17,7 @@ class BaseAgent(abc.ABC):
     """All agents implement this interface."""
 
     def __init__(self, *, model: str | None = None, **kwargs: Any) -> None:
-        self.model = model or os.environ.get("AUTO_RESUME_MODEL", "gpt-4o")
+        self.model = model or os.environ.get("AUTO_CV_MODEL", "gpt-4o")
         self.api_key = os.environ.get("OPENAI_API_KEY", "")
 
     @abc.abstractmethod
@@ -36,7 +36,7 @@ class BaseAgent(abc.ABC):
         except ImportError:
             raise ImportError(
                 "The 'openai' package is required for agents. "
-                "Install it with: pip install auto-resume[agents]"
+                "Install it with: pip install auto-cv[agents]"
             )
         if not self.api_key:
             raise ValueError(
