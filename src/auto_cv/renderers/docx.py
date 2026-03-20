@@ -1,13 +1,19 @@
-"""DOCX renderer — generates a .docx resume using python-docx."""
+"""DOCX renderer — generates a .docx resume using python-docx.
+
+Produces formatting that closely matches the awesome-cv LaTeX output:
+two-column entry layouts, matching font sizes, tight spacing, and
+accent-colored section rules.
+"""
 
 from __future__ import annotations
 
 from pathlib import Path
 
 from docx import Document
+from docx.enum.table import WD_TABLE_ALIGNMENT
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.oxml.ns import qn
-from docx.shared import Inches, Pt, RGBColor
+from docx.shared import Inches, Pt, RGBColor, Emu
 
 from auto_cv.models.resume import Resume, Section, SectionType
 from auto_cv.models.style import StyleConfig
@@ -17,6 +23,73 @@ from auto_cv.renderers.base import BaseRenderer
 def _hex_to_rgb(hex_color: str) -> RGBColor:
     h = hex_color.lstrip("#")
     return RGBColor(int(h[0:2], 16), int(h[2:4], 16), int(h[4:6], 16))
+
+
+def _parse_pt(val: str) -> float:
+    """Extract numeric pt value from a string like '10pt', '1.5mm', '0.5in'."""
+    s = val.strip().lower()
+    if s.endswith("mm"):
+        return float(s[:-2]) * 2.835
+    if s.endswith("cm"):
+        return float(s[:-2]) * 28.35
+    if s.endswith("in"):
+        return float(s[:-2]) * 72
+    return float(s.replace("pt", ""))
+
+
+def _set_paragraph_spacing(para, before: int = 0, after: int = 0, line: int | None = None) -> None:
+    """Set exact paragraph spacing in twips (1pt = 20 twips)."""
+    pPr = para._element.get_or_add_pPr()
+    spacing = pPr.makeelement(qn("w:spacing"), {})
+    spacing.set(qn("w:before"), str(before))
+    spacing.set(qn("w:after"), str(after))
+    if line is not None:
+        spacing.set(qn("w:line"), str(line))
+        spacing.set(qn("w:lineRule"), "exact")
+    pPr.append(spacing)
+
+
+def _set_cell_margins(cell, top: int = 0, bottom: int = 0, left: int = 0, right: int = 0) -> None:
+    """Set cell margins in twips."""
+    tc = cell._element
+    tcPr = tc.get_or_add_tcPr()
+    margins = tcPr.makeelement(qn("w:tcMar"), {})
+    for side, val in [("top", top), ("bottom", bottom), ("start", left), ("end", right)]:
+        m = margins.makeelement(qn(f"w:{side}"), {})
+        m.set(qn("w:w"), str(val))
+        m.set(qn("w:type"), "dxa")
+        margins.append(m)
+    tcPr.append(margins)
+
+
+def _hide_table_borders(table) -> None:
+    """Remove all borders from a Word table."""
+    tbl = table._tbl
+    tblPr = tbl.tblPr if tbl.tblPr is not None else tbl.makeelement(qn("w:tblPr"), {})
+    borders = tblPr.makeelement(qn("w:tblBorders"), {})
+    for edge in ("top", "left", "bottom", "right", "insideH", "insideV"):
+        el = borders.makeelement(qn(f"w:{edge}"), {
+            qn("w:val"): "none", qn("w:sz"): "0",
+            qn("w:space"): "0", qn("w:color"): "auto",
+        })
+        borders.append(el)
+    tblPr.append(borders)
+
+
+def _add_run(para, text: str, *, size: float = 10, bold: bool = False,
+             italic: bool = False, color: RGBColor | None = None,
+             small_caps: bool = False, font_name: str | None = None) -> None:
+    """Add a formatted run to a paragraph."""
+    run = para.add_run(text)
+    run.font.size = Pt(size)
+    run.bold = bold
+    run.italic = italic
+    if color:
+        run.font.color.rgb = color
+    if small_caps:
+        run.font.small_caps = True
+    if font_name:
+        run.font.name = font_name
 
 
 class DocxRenderer(BaseRenderer):
@@ -49,11 +122,18 @@ class DocxRenderer(BaseRenderer):
         section.left_margin = margin
         section.right_margin = margin
 
-        # Apply font defaults to document based on style
+        # Page-wide content width for table calculations
+        self._content_width = (
+            section.page_width - section.left_margin - section.right_margin
+        )
+
         doc_style = doc.styles["Normal"]
         doc_style.font.name = style.fonts.body
-        doc_style.font.size = Pt(float(style.fonts.size_base.replace("pt", "")))
+        doc_style.font.size = Pt(_parse_pt(style.fonts.size_base))
         doc_style.font.color.rgb = _hex_to_rgb(style.colors.text)
+        # Tight default paragraph spacing
+        doc_style.paragraph_format.space_before = Pt(0)
+        doc_style.paragraph_format.space_after = Pt(0)
 
     @staticmethod
     def _parse_margin(margin_str: str) -> Inches:
@@ -64,30 +144,89 @@ class DocxRenderer(BaseRenderer):
             return Inches(float(s[:-2]) / 25.4)
         if s.endswith("pt"):
             return Inches(float(s[:-2]) / 72)
-        # Default: assume inches
         return Inches(float(s.replace("in", "")))
+
+    # ------------------------------------------------------------------
+    # Two-column invisible table helper (matches LaTeX tabular* layout)
+    # ------------------------------------------------------------------
+
+    def _add_two_col_row(self, doc: Document, left_runs, right_runs,
+                         *, right_width_emu: int | None = None) -> None:
+        """Add a borderless 2-column table row.
+
+        *left_runs* and *right_runs* are lists of dicts with keys
+        accepted by _add_run (text, size, bold, italic, color, etc.).
+        """
+        right_w = right_width_emu or Inches(1.5)
+        left_w = self._content_width - right_w
+
+        table = doc.add_table(rows=1, cols=2)
+        table.alignment = WD_TABLE_ALIGNMENT.CENTER
+        _hide_table_borders(table)
+
+        # Remove default cell margins and table indent
+        tbl = table._tbl
+        tblPr = tbl.tblPr
+        # Zero table indent
+        ind = tblPr.makeelement(qn("w:tblInd"), {
+            qn("w:w"): "0", qn("w:type"): "dxa"
+        })
+        tblPr.append(ind)
+
+        row = table.rows[0]
+        left_cell = row.cells[0]
+        right_cell = row.cells[1]
+
+        # Set column widths
+        left_cell.width = Emu(left_w)
+        right_cell.width = Emu(right_w)
+
+        # Tight cell margins
+        for cell in (left_cell, right_cell):
+            _set_cell_margins(cell, top=0, bottom=0, left=0, right=0)
+
+        # Left cell content
+        p = left_cell.paragraphs[0]
+        p.alignment = WD_ALIGN_PARAGRAPH.LEFT
+        _set_paragraph_spacing(p, before=0, after=0)
+        for run_spec in left_runs:
+            _add_run(p, **run_spec)
+
+        # Right cell content
+        p = right_cell.paragraphs[0]
+        p.alignment = WD_ALIGN_PARAGRAPH.RIGHT
+        _set_paragraph_spacing(p, before=0, after=0)
+        for run_spec in right_runs:
+            _add_run(p, **run_spec)
 
     # ------------------------------------------------------------------
     # Header
     # ------------------------------------------------------------------
 
     def _render_header(self, doc: Document, resume: Resume, style: StyleConfig) -> None:
-        # Name
+        accent = _hex_to_rgb(style.colors.accent)
+        text_color = _hex_to_rgb(style.colors.text)
+
+        # Name — first name light, last name bold (matching awesome-cv header)
         p = doc.add_paragraph()
         p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-        run = p.add_run(resume.config.name)
-        run.bold = True
-        run.font.name = style.fonts.heading
-        run.font.size = Pt(float(style.fonts.size_name.replace("pt", "")))
-        run.font.color.rgb = _hex_to_rgb(style.colors.primary)
+        _set_paragraph_spacing(p, before=0, after=40)
+        name_parts = resume.config.name.rsplit(" ", 1)
+        first = name_parts[0] if len(name_parts) > 1 else ""
+        last = name_parts[-1]
+        if first:
+            _add_run(p, first + " ", size=32, color=text_color,
+                     font_name=style.fonts.heading)
+        _add_run(p, last, size=32, bold=True, color=text_color,
+                 font_name=style.fonts.heading)
 
-        # Title
+        # Title — small caps, accent color
         if resume.config.title:
             p = doc.add_paragraph()
             p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-            run = p.add_run(resume.config.title)
-            run.font.size = Pt(12)
-            run.font.color.rgb = _hex_to_rgb(style.colors.secondary)
+            _set_paragraph_spacing(p, before=0, after=40)
+            _add_run(p, resume.config.title, size=7.6, small_caps=True,
+                     color=accent, font_name=style.fonts.body)
 
         # Contact line
         contact = resume.config.contact
@@ -108,36 +247,35 @@ class DocxRenderer(BaseRenderer):
         if parts:
             p = doc.add_paragraph()
             p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-            run = p.add_run(" | ".join(parts))
-            run.font.size = Pt(9)
-            run.font.color.rgb = _hex_to_rgb(style.colors.text)
+            _set_paragraph_spacing(p, before=0, after=60)
+            _add_run(p, " | ".join(parts), size=6.8, color=text_color,
+                     font_name=style.fonts.heading)
 
     # ------------------------------------------------------------------
     # Sections
     # ------------------------------------------------------------------
 
     def _render_section(self, doc: Document, section: Section, style: StyleConfig) -> None:
-        # Section heading with colored underline
-        p = doc.add_paragraph()
-        run = p.add_run(section.title)
-        run.bold = True
-        run.font.name = style.fonts.heading
-        run.font.size = Pt(float(style.fonts.size_heading.replace("pt", "")))
-        run.font.color.rgb = _hex_to_rgb(style.colors.heading)
+        accent = _hex_to_rgb(style.colors.accent)
+        border_color = style.colors.accent.lstrip("#")
 
-        # Add bottom border to heading paragraph
+        # Section heading — accent text + colored bottom rule (matches awesome-cv \cvsection)
+        p = doc.add_paragraph()
+        _set_paragraph_spacing(p, before=int(_parse_pt(style.spacing.section_gap) * 20),
+                               after=int(_parse_pt(style.spacing.header_to_content) * 20))
+        _add_run(p, section.title, size=_parse_pt(style.fonts.size_heading),
+                 bold=True, color=accent, font_name=style.fonts.body)
+
+        # Bottom border in accent color
         pPr = p._element.get_or_add_pPr()
         pBdr = pPr.makeelement(qn("w:pBdr"), {})
         bottom = pBdr.makeelement(qn("w:bottom"), {
-            qn("w:val"): "single",
-            qn("w:sz"): "4",
-            qn("w:space"): "1",
-            qn("w:color"): style.colors.primary.lstrip("#"),
+            qn("w:val"): "single", qn("w:sz"): "4",
+            qn("w:space"): "1", qn("w:color"): border_color,
         })
         pBdr.append(bottom)
         pPr.append(pBdr)
 
-        # Dispatch to typed rendering
         handler = {
             SectionType.EXPERIENCE: self._render_experience,
             SectionType.EDUCATION: self._render_education,
@@ -148,7 +286,7 @@ class DocxRenderer(BaseRenderer):
             SectionType.AWARDS: self._render_awards,
             SectionType.SUMMARY: self._render_summary,
             SectionType.VOLUNTEER: self._render_experience,
-            SectionType.SERVICE: self._render_experience,
+            SectionType.SERVICE: self._render_service,
             SectionType.LANGUAGES: self._render_languages,
             SectionType.INTERESTS: self._render_skills,
             SectionType.REFERENCES: self._render_references,
@@ -156,208 +294,352 @@ class DocxRenderer(BaseRenderer):
 
         handler(doc, section, style)
 
+    # ------------------------------------------------------------------
+    # Experience / Volunteer
+    # ------------------------------------------------------------------
+
     def _render_experience(self, doc: Document, section: Section, style: StyleConfig) -> None:
-        for entry in section.experience_entries:
-            # Title line
-            p = doc.add_paragraph()
-            run = p.add_run(entry.title)
-            run.bold = True
-            run.font.size = Pt(11)
-            run.font.color.rgb = _hex_to_rgb(style.colors.heading)
+        accent = _hex_to_rgb(style.colors.accent)
+        dark = _hex_to_rgb(style.colors.text)
+        gray = _hex_to_rgb(style.colors.secondary)
+        entry_gap = int(_parse_pt(style.spacing.entry_gap) * 20)
 
-            if entry.dates:
-                run = p.add_run(f"  |  {entry.dates.display}")
-                run.font.size = Pt(9)
-                run.font.color.rgb = _hex_to_rgb(style.colors.secondary)
-
-            # Organization line
-            p = doc.add_paragraph()
-            run = p.add_run(entry.organization)
-            run.italic = True
-            run.font.color.rgb = _hex_to_rgb(style.colors.accent)
+        for i, entry in enumerate(section.experience_entries):
+            # Row 1: title (left) | location (right, accent)
+            left = [{"text": entry.title, "size": 10, "bold": True, "color": dark}]
+            right = []
             if entry.location:
-                run = p.add_run(f"  —  {entry.location}")
-                run.font.size = Pt(9)
-                run.font.color.rgb = _hex_to_rgb(style.colors.secondary)
+                right = [{"text": entry.location, "size": 9, "italic": True, "color": accent}]
+            self._add_two_col_row(doc, left, right)
 
-            # Highlights
+            # Row 2: organization (left, small-caps gray) | dates (right, gray)
+            left = [{"text": entry.organization, "size": 8, "small_caps": True, "color": gray}]
+            right = []
+            if entry.dates:
+                right = [{"text": entry.dates.display, "size": 8, "italic": True, "color": gray}]
+            self._add_two_col_row(doc, left, right)
+
+            # Bullet highlights
+            bullet_size = _parse_pt(style.fonts.size_bullet)
+            marker = "\u2013 " if style.spacing.bullet_marker == "dash" else "\u2022 "
             for h in entry.highlights:
-                p = doc.add_paragraph(style="List Bullet")
-                run = p.add_run(h)
-                run.font.size = Pt(10)
+                p = doc.add_paragraph()
+                p.paragraph_format.left_indent = Inches(0.25)
+                p.paragraph_format.first_line_indent = Inches(-0.15)
+                _set_paragraph_spacing(p, before=0, after=0)
+                _add_run(p, marker + h, size=bullet_size, color=dark)
+
+            # Entry gap spacer
+            if i < len(section.experience_entries) - 1:
+                p = doc.add_paragraph()
+                _set_paragraph_spacing(p, before=0, after=entry_gap)
+
+    # ------------------------------------------------------------------
+    # Education
+    # ------------------------------------------------------------------
 
     def _render_education(self, doc: Document, section: Section, style: StyleConfig) -> None:
-        for entry in section.education_entries:
-            p = doc.add_paragraph()
-            run = p.add_run(entry.degree)
-            run.bold = True
-            run.font.color.rgb = _hex_to_rgb(style.colors.heading)
+        accent = _hex_to_rgb(style.colors.accent)
+        dark = _hex_to_rgb(style.colors.text)
+        gray = _hex_to_rgb(style.colors.secondary)
+        entry_gap = int(_parse_pt(style.spacing.entry_gap) * 20)
 
-            if entry.dates:
-                run = p.add_run(f"  |  {entry.dates.display}")
-                run.font.size = Pt(9)
-                run.font.color.rgb = _hex_to_rgb(style.colors.secondary)
-
-            p = doc.add_paragraph()
-            run = p.add_run(entry.institution)
-            run.italic = True
-            run.font.color.rgb = _hex_to_rgb(style.colors.accent)
+        for i, entry in enumerate(section.education_entries):
+            # Row 1: degree | location
+            left = [{"text": entry.degree, "size": 10, "bold": True, "color": dark}]
+            right = []
             if entry.location:
-                run = p.add_run(f"  —  {entry.location}")
-                run.font.size = Pt(9)
-                run.font.color.rgb = _hex_to_rgb(style.colors.secondary)
+                right = [{"text": entry.location, "size": 9, "italic": True, "color": accent}]
+            self._add_two_col_row(doc, left, right)
 
+            # Row 2: institution | dates
+            left = [{"text": entry.institution, "size": 8, "small_caps": True, "color": gray}]
+            right = []
+            if entry.dates:
+                right = [{"text": entry.dates.display, "size": 8, "italic": True, "color": gray}]
+            self._add_two_col_row(doc, left, right)
+
+            # GPA and highlights
+            bullet_size = _parse_pt(style.fonts.size_bullet)
             if entry.gpa:
                 p = doc.add_paragraph()
-                run = p.add_run(f"GPA: {entry.gpa}")
-                run.font.size = Pt(10)
+                _set_paragraph_spacing(p, before=0, after=0)
+                p.paragraph_format.left_indent = Inches(0.25)
+                _add_run(p, f"GPA: {entry.gpa}", size=bullet_size, color=dark)
 
+            marker = "\u2013 " if style.spacing.bullet_marker == "dash" else "\u2022 "
             for h in entry.highlights:
-                p = doc.add_paragraph(style="List Bullet")
-                run = p.add_run(h)
-                run.font.size = Pt(10)
+                p = doc.add_paragraph()
+                p.paragraph_format.left_indent = Inches(0.25)
+                p.paragraph_format.first_line_indent = Inches(-0.15)
+                _set_paragraph_spacing(p, before=0, after=0)
+                _add_run(p, marker + h, size=bullet_size, color=dark)
+
+            if i < len(section.education_entries) - 1:
+                p = doc.add_paragraph()
+                _set_paragraph_spacing(p, before=0, after=entry_gap)
+
+    # ------------------------------------------------------------------
+    # Skills / Interests
+    # ------------------------------------------------------------------
 
     def _render_skills(self, doc: Document, section: Section, style: StyleConfig) -> None:
+        dark = _hex_to_rgb(style.colors.text)
+        text_color = _hex_to_rgb(style.colors.text)
+
         for cat in section.skill_categories:
-            p = doc.add_paragraph()
-            run = p.add_run(f"{cat.name}: ")
-            run.bold = True
-            run.font.size = Pt(10)
-            run = p.add_run(", ".join(cat.skills))
-            run.font.size = Pt(10)
+            # Skill label (bold) on left, skills on right — using table for alignment
+            left = [{"text": cat.name, "size": 10, "bold": True, "color": dark}]
+            right_text = ", ".join(cat.skills)
+            right = [{"text": right_text, "size": 9, "color": text_color}]
+            # Use a wider right column for skills
+            self._add_skill_row(doc, left, right)
+
+    def _add_skill_row(self, doc: Document, left_runs, right_runs) -> None:
+        """Skill-specific row: right-aligned label | left-aligned skills."""
+        label_w = Inches(1.5)
+        skills_w = self._content_width - label_w
+
+        table = doc.add_table(rows=1, cols=2)
+        table.alignment = WD_TABLE_ALIGNMENT.CENTER
+        _hide_table_borders(table)
+
+        tblPr = table._tbl.tblPr
+        ind = tblPr.makeelement(qn("w:tblInd"), {
+            qn("w:w"): "0", qn("w:type"): "dxa"
+        })
+        tblPr.append(ind)
+
+        row = table.rows[0]
+        left_cell = row.cells[0]
+        right_cell = row.cells[1]
+
+        left_cell.width = Emu(label_w)
+        right_cell.width = Emu(skills_w)
+
+        _set_cell_margins(left_cell, top=0, bottom=0, left=0, right=60)
+        _set_cell_margins(right_cell, top=0, bottom=0, left=60, right=0)
+
+        # Label: right-aligned
+        p = left_cell.paragraphs[0]
+        p.alignment = WD_ALIGN_PARAGRAPH.RIGHT
+        _set_paragraph_spacing(p, before=0, after=0)
+        for run_spec in left_runs:
+            _add_run(p, **run_spec)
+
+        # Skills: left-aligned
+        p = right_cell.paragraphs[0]
+        p.alignment = WD_ALIGN_PARAGRAPH.LEFT
+        _set_paragraph_spacing(p, before=0, after=0)
+        for run_spec in right_runs:
+            _add_run(p, **run_spec)
+
+    # ------------------------------------------------------------------
+    # Projects
+    # ------------------------------------------------------------------
 
     def _render_projects(self, doc: Document, section: Section, style: StyleConfig) -> None:
-        for entry in section.project_entries:
-            p = doc.add_paragraph()
-            run = p.add_run(entry.name)
-            run.bold = True
-            run.font.color.rgb = _hex_to_rgb(style.colors.heading)
+        accent = _hex_to_rgb(style.colors.accent)
+        dark = _hex_to_rgb(style.colors.text)
+        gray = _hex_to_rgb(style.colors.secondary)
+        entry_gap = int(_parse_pt(style.spacing.entry_gap) * 20)
+        bullet_size = _parse_pt(style.fonts.size_bullet)
 
+        for i, entry in enumerate(section.project_entries):
+            # Row 1: name | dates (if any)
+            left = [{"text": entry.name, "size": 10, "bold": True, "color": dark}]
+            right = []
             if entry.dates:
-                run = p.add_run(f"  |  {entry.dates.display}")
-                run.font.size = Pt(9)
-                run.font.color.rgb = _hex_to_rgb(style.colors.secondary)
+                right = [{"text": entry.dates.display, "size": 9, "italic": True, "color": accent}]
+            self._add_two_col_row(doc, left, right)
 
+            # Technologies line
             if entry.technologies:
                 p = doc.add_paragraph()
-                run = p.add_run(", ".join(entry.technologies))
-                run.italic = True
-                run.font.size = Pt(9)
-                run.font.color.rgb = _hex_to_rgb(style.colors.secondary)
+                _set_paragraph_spacing(p, before=0, after=0)
+                _add_run(p, ", ".join(entry.technologies), size=8,
+                         small_caps=True, color=gray)
 
+            # Description
             if entry.description:
                 p = doc.add_paragraph()
-                run = p.add_run(entry.description)
-                run.font.size = Pt(10)
+                _set_paragraph_spacing(p, before=0, after=0)
+                _add_run(p, entry.description, size=bullet_size, color=dark)
 
+            marker = "\u2013 " if style.spacing.bullet_marker == "dash" else "\u2022 "
             for h in entry.highlights:
-                p = doc.add_paragraph(style="List Bullet")
-                run = p.add_run(h)
-                run.font.size = Pt(10)
+                p = doc.add_paragraph()
+                p.paragraph_format.left_indent = Inches(0.25)
+                p.paragraph_format.first_line_indent = Inches(-0.15)
+                _set_paragraph_spacing(p, before=0, after=0)
+                _add_run(p, marker + h, size=bullet_size, color=dark)
+
+            if i < len(section.project_entries) - 1:
+                p = doc.add_paragraph()
+                _set_paragraph_spacing(p, before=0, after=entry_gap)
+
+    # ------------------------------------------------------------------
+    # Certifications
+    # ------------------------------------------------------------------
 
     def _render_certifications(self, doc: Document, section: Section, style: StyleConfig) -> None:
+        dark = _hex_to_rgb(style.colors.text)
+        accent = _hex_to_rgb(style.colors.accent)
+
         for entry in section.certification_entries:
-            p = doc.add_paragraph()
-            run = p.add_run(entry.name)
-            run.bold = True
-            run.font.color.rgb = _hex_to_rgb(style.colors.heading)
-
-            if entry.date:
-                run = p.add_run(f"  |  {entry.date}")
-                run.font.size = Pt(9)
-                run.font.color.rgb = _hex_to_rgb(style.colors.secondary)
-
+            # Single row: name + issuer (left) | date (right, accent)
+            left = [{"text": entry.name, "size": 10, "bold": True, "color": dark}]
             if entry.issuer:
-                p = doc.add_paragraph()
-                run = p.add_run(entry.issuer)
-                run.italic = True
-                run.font.size = Pt(10)
-                run.font.color.rgb = _hex_to_rgb(style.colors.accent)
+                left.append({"text": f" \u2013 {entry.issuer}", "size": 10, "color": dark})
+            right = []
+            if entry.date:
+                right = [{"text": entry.date, "size": 9, "italic": True, "color": accent}]
+            self._add_two_col_row(doc, left, right)
 
-            if entry.url:
-                p = doc.add_paragraph()
-                run = p.add_run(entry.url)
-                run.font.size = Pt(9)
-                run.font.color.rgb = _hex_to_rgb(style.colors.link)
+    # ------------------------------------------------------------------
+    # Publications
+    # ------------------------------------------------------------------
 
     def _render_publications(self, doc: Document, section: Section, style: StyleConfig) -> None:
-        for entry in section.publication_entries:
-            p = doc.add_paragraph()
-            run = p.add_run(entry.title)
-            run.bold = True
-            run.font.color.rgb = _hex_to_rgb(style.colors.heading)
+        dark = _hex_to_rgb(style.colors.text)
+        accent = _hex_to_rgb(style.colors.accent)
+        gray = _hex_to_rgb(style.colors.secondary)
+        entry_gap = int(_parse_pt(style.spacing.entry_gap) * 20)
 
+        for i, entry in enumerate(section.publication_entries):
+            # Row 1: title | date
+            left = [{"text": entry.title, "size": 10, "bold": True, "color": dark}]
+            right = []
             if entry.date:
-                run = p.add_run(f"  |  {entry.date}")
-                run.font.size = Pt(9)
-                run.font.color.rgb = _hex_to_rgb(style.colors.secondary)
+                right = [{"text": entry.date, "size": 9, "italic": True, "color": accent}]
+            self._add_two_col_row(doc, left, right)
 
-            if entry.venue:
-                p = doc.add_paragraph()
-                run = p.add_run(entry.venue)
-                run.italic = True
-                run.font.size = Pt(10)
-                run.font.color.rgb = _hex_to_rgb(style.colors.accent)
-
+            # Row 2: authors | venue
+            left = []
             if entry.authors:
+                left = [{"text": ", ".join(entry.authors), "size": 8,
+                         "small_caps": True, "color": gray}]
+            right = []
+            if entry.venue:
+                right = [{"text": entry.venue, "size": 8, "italic": True, "color": gray}]
+            if left or right:
+                self._add_two_col_row(doc, left, right)
+
+            if i < len(section.publication_entries) - 1:
                 p = doc.add_paragraph()
-                run = p.add_run(", ".join(entry.authors))
-                run.font.size = Pt(9)
+                _set_paragraph_spacing(p, before=0, after=entry_gap)
+
+    # ------------------------------------------------------------------
+    # Awards
+    # ------------------------------------------------------------------
 
     def _render_awards(self, doc: Document, section: Section, style: StyleConfig) -> None:
-        for entry in section.award_entries:
-            p = doc.add_paragraph()
-            run = p.add_run(entry.title)
-            run.bold = True
-            run.font.color.rgb = _hex_to_rgb(style.colors.heading)
+        dark = _hex_to_rgb(style.colors.text)
+        accent = _hex_to_rgb(style.colors.accent)
+        gray = _hex_to_rgb(style.colors.secondary)
+        entry_gap = int(_parse_pt(style.spacing.entry_gap) * 20)
+        bullet_size = _parse_pt(style.fonts.size_bullet)
 
-            if entry.date:
-                run = p.add_run(f"  |  {entry.date}")
-                run.font.size = Pt(9)
-                run.font.color.rgb = _hex_to_rgb(style.colors.secondary)
-
+        for i, entry in enumerate(section.award_entries):
+            # Title + issuer (left) | date (right, accent)
+            left = [{"text": entry.title, "size": 10, "bold": True, "color": dark}]
             if entry.issuer:
-                p = doc.add_paragraph()
-                run = p.add_run(entry.issuer)
-                run.italic = True
-                run.font.size = Pt(10)
-                run.font.color.rgb = _hex_to_rgb(style.colors.accent)
+                left.append({"text": f", {entry.issuer}", "size": 9, "color": gray})
+            right = []
+            if entry.date:
+                right = [{"text": entry.date, "size": 9, "italic": True, "color": accent}]
+            self._add_two_col_row(doc, left, right)
 
+            # Description
             if entry.description:
                 p = doc.add_paragraph()
-                run = p.add_run(entry.description)
-                run.font.size = Pt(10)
+                _set_paragraph_spacing(p, before=0, after=0)
+                _add_run(p, entry.description, size=bullet_size, color=dark)
+
+            if i < len(section.award_entries) - 1:
+                p = doc.add_paragraph()
+                _set_paragraph_spacing(p, before=0, after=entry_gap)
+
+    # ------------------------------------------------------------------
+    # Service
+    # ------------------------------------------------------------------
+
+    def _render_service(self, doc: Document, section: Section, style: StyleConfig) -> None:
+        dark = _hex_to_rgb(style.colors.text)
+        accent = _hex_to_rgb(style.colors.accent)
+        gray = _hex_to_rgb(style.colors.secondary)
+        entry_gap = int(_parse_pt(style.spacing.entry_gap) * 20)
+        bullet_size = _parse_pt(style.fonts.size_bullet)
+
+        for i, entry in enumerate(section.experience_entries):
+            # Title + org (left) | dates (right, accent)
+            left = [{"text": entry.title, "size": 10, "bold": True, "color": dark}]
+            if entry.organization:
+                left.append({"text": f", {entry.organization}", "size": 8,
+                             "small_caps": True, "color": gray})
+            right = []
+            if entry.dates:
+                right = [{"text": entry.dates.display, "size": 9, "italic": True, "color": accent}]
+            self._add_two_col_row(doc, left, right)
+
+            # Highlights
+            marker = "\u2013 " if style.spacing.bullet_marker == "dash" else "\u2022 "
+            for h in entry.highlights:
+                p = doc.add_paragraph()
+                p.paragraph_format.left_indent = Inches(0.25)
+                p.paragraph_format.first_line_indent = Inches(-0.15)
+                _set_paragraph_spacing(p, before=0, after=0)
+                _add_run(p, marker + h, size=bullet_size, color=dark)
+
+            if i < len(section.experience_entries) - 1:
+                p = doc.add_paragraph()
+                _set_paragraph_spacing(p, before=0, after=entry_gap)
+
+    # ------------------------------------------------------------------
+    # Summary
+    # ------------------------------------------------------------------
 
     def _render_summary(self, doc: Document, section: Section, style: StyleConfig) -> None:
         if section.raw_content.strip():
             p = doc.add_paragraph()
-            run = p.add_run(section.raw_content.strip())
-            run.font.size = Pt(10)
+            _set_paragraph_spacing(p, before=0, after=0)
+            _add_run(p, section.raw_content.strip(), size=9,
+                     color=_hex_to_rgb(style.colors.text))
+
+    # ------------------------------------------------------------------
+    # Languages
+    # ------------------------------------------------------------------
 
     def _render_languages(self, doc: Document, section: Section, style: StyleConfig) -> None:
+        dark = _hex_to_rgb(style.colors.text)
+        text_color = _hex_to_rgb(style.colors.text)
+
         for entry in section.language_entries:
-            p = doc.add_paragraph()
-            run = p.add_run(f"{entry.name}: ")
-            run.bold = True
-            run.font.size = Pt(10)
+            left = [{"text": entry.name, "size": 10, "bold": True, "color": dark}]
+            right = []
             if entry.proficiency:
-                run = p.add_run(entry.proficiency)
-                run.font.size = Pt(10)
+                right = [{"text": entry.proficiency, "size": 9, "color": text_color}]
+            self._add_skill_row(doc, left, right)
+
+    # ------------------------------------------------------------------
+    # References
+    # ------------------------------------------------------------------
 
     def _render_references(self, doc: Document, section: Section, style: StyleConfig) -> None:
-        for entry in section.reference_entries:
-            p = doc.add_paragraph()
-            run = p.add_run(entry.name)
-            run.bold = True
-            run.font.size = Pt(11)
-            run.font.color.rgb = _hex_to_rgb(style.colors.heading)
+        dark = _hex_to_rgb(style.colors.text)
+        accent = _hex_to_rgb(style.colors.accent)
+        gray = _hex_to_rgb(style.colors.secondary)
+        entry_gap = int(_parse_pt(style.spacing.entry_gap) * 20)
 
+        for i, entry in enumerate(section.reference_entries):
+            # Name + relationship
+            left = [{"text": entry.name, "size": 10, "bold": True, "color": dark}]
             if entry.relationship:
-                run = p.add_run(f"  —  {entry.relationship}")
-                run.italic = True
-                run.font.size = Pt(9)
-                run.font.color.rgb = _hex_to_rgb(style.colors.secondary)
+                left.append({"text": f" \u2013 {entry.relationship}", "size": 9,
+                             "italic": True, "color": gray})
+            self._add_two_col_row(doc, left, [])
 
+            # Title at Organization
             parts: list[str] = []
             if entry.title:
                 parts.append(entry.title)
@@ -365,11 +647,11 @@ class DocxRenderer(BaseRenderer):
                 parts.append(entry.organization)
             if parts:
                 p = doc.add_paragraph()
-                run = p.add_run(" at ".join(parts) if entry.title and entry.organization else parts[0])
-                run.italic = True
-                run.font.size = Pt(10)
-                run.font.color.rgb = _hex_to_rgb(style.colors.accent)
+                _set_paragraph_spacing(p, before=0, after=0)
+                text = " at ".join(parts) if entry.title and entry.organization else parts[0]
+                _add_run(p, text, size=8, small_caps=True, color=accent)
 
+            # Contact info
             contact_parts: list[str] = []
             if entry.email:
                 contact_parts.append(entry.email)
@@ -377,12 +659,21 @@ class DocxRenderer(BaseRenderer):
                 contact_parts.append(entry.phone)
             if contact_parts:
                 p = doc.add_paragraph()
-                run = p.add_run(" | ".join(contact_parts))
-                run.font.size = Pt(9)
+                _set_paragraph_spacing(p, before=0, after=0)
+                _add_run(p, " | ".join(contact_parts), size=8, color=gray)
+
+            if i < len(section.reference_entries) - 1:
+                p = doc.add_paragraph()
+                _set_paragraph_spacing(p, before=0, after=entry_gap)
+
+    # ------------------------------------------------------------------
+    # Fallback
+    # ------------------------------------------------------------------
 
     def _render_custom(self, doc: Document, section: Section, style: StyleConfig) -> None:
         if section.raw_content.strip():
             for line in section.raw_content.strip().split("\n"):
-                p = doc.add_paragraph()
-                run = p.add_run(line)
-                run.font.size = Pt(10)
+                if line.strip():
+                    p = doc.add_paragraph()
+                    _set_paragraph_spacing(p, before=0, after=0)
+                    _add_run(p, line, size=9, color=_hex_to_rgb(style.colors.text))
