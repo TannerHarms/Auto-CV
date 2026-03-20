@@ -1,8 +1,8 @@
 """DOCX renderer — generates a .docx resume using python-docx.
 
-Produces formatting that closely matches the awesome-cv LaTeX output:
-two-column entry layouts, matching font sizes, tight spacing, and
-accent-colored section rules.
+Produces preset-aware formatting that mirrors each LaTeX preset style:
+matching section headings, name rendering, entry layouts, and
+accent-colored decorations.
 """
 
 from __future__ import annotations
@@ -284,31 +284,84 @@ class DocxRenderer(BaseRenderer):
     # ------------------------------------------------------------------
 
     def _render_header(self, doc: Document, resume: Resume, style: StyleConfig) -> None:
+        preset = style.preset
         accent = _hex_to_rgb(style.colors.accent)
+        primary = _hex_to_rgb(style.colors.primary)
         text_color = _hex_to_rgb(style.colors.text)
+        secondary = _hex_to_rgb(style.colors.secondary)
+        heading_color = _hex_to_rgb(style.colors.heading)
 
-        # Name — first name light, last name bold (matching awesome-cv header)
-        p = doc.add_paragraph()
-        p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-        _set_paragraph_spacing(p, before=0, after=40)
         name_parts = resume.config.name.rsplit(" ", 1)
         first = name_parts[0] if len(name_parts) > 1 else ""
         last = name_parts[-1]
-        if first:
-            _add_run(p, first + " ", size=32, color=text_color,
-                     font_name=style.fonts.heading)
-        _add_run(p, last, size=32, bold=True, color=text_color,
-                 font_name=style.fonts.heading)
 
-        # Title — small caps, accent color
+        # --- Name ---
+        p = doc.add_paragraph()
+        p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        _set_paragraph_spacing(p, before=0, after=40)
+
+        if preset == "awesome-cv":
+            # First name light, last name bold
+            if first:
+                _add_run(p, first + " ", size=32, color=text_color,
+                         font_name=style.fonts.heading)
+            _add_run(p, last, size=32, bold=True, color=text_color,
+                     font_name=style.fonts.heading)
+        elif preset == "executive":
+            _add_run(p, resume.config.name, size=26, bold=True,
+                     small_caps=True, color=primary,
+                     font_name=style.fonts.heading)
+        elif preset == "modern":
+            _add_run(p, resume.config.name, size=28, bold=True,
+                     color=primary, font_name=style.fonts.heading)
+        elif preset == "creative":
+            _add_run(p, resume.config.name, size=36, bold=True,
+                     color=primary, font_name=style.fonts.heading)
+        elif preset == "elegant":
+            _add_run(p, resume.config.name, size=24, small_caps=True,
+                     color=primary, font_name=style.fonts.heading)
+        elif preset == "technical":
+            _add_run(p, resume.config.name, size=24, bold=True,
+                     color=primary, font_name=style.fonts.mono or style.fonts.heading)
+        elif preset == "academic":
+            _add_run(p, resume.config.name, size=20, bold=True,
+                     color=text_color, font_name=style.fonts.heading)
+        elif preset == "minimal":
+            _add_run(p, resume.config.name, size=22, small_caps=True,
+                     color=heading_color, font_name=style.fonts.heading)
+        else:
+            # classic / fallback
+            _add_run(p, resume.config.name, size=24, bold=True,
+                     color=primary, font_name=style.fonts.heading)
+
+        # --- Title ---
         if resume.config.title:
             p = doc.add_paragraph()
             p.alignment = WD_ALIGN_PARAGRAPH.CENTER
             _set_paragraph_spacing(p, before=0, after=40)
-            _add_run(p, resume.config.title, size=7.6, small_caps=True,
-                     color=accent, font_name=style.fonts.body)
+            if preset in ("awesome-cv",):
+                _add_run(p, resume.config.title, size=7.6, small_caps=True,
+                         color=accent, font_name=style.fonts.body)
+            elif preset == "executive":
+                _add_run(p, resume.config.title, size=12, italic=True,
+                         color=accent, font_name=style.fonts.body)
+            elif preset in ("modern", "creative"):
+                _add_run(p, resume.config.title, size=12,
+                         color=accent, font_name=style.fonts.heading)
+            elif preset == "elegant":
+                _add_run(p, resume.config.title, size=10, italic=True,
+                         color=accent, font_name=style.fonts.body)
+            elif preset == "technical":
+                _add_run(p, resume.config.title, size=10,
+                         color=accent, font_name=style.fonts.mono or style.fonts.heading)
+            elif preset == "academic":
+                _add_run(p, resume.config.title, size=10, italic=True,
+                         color=secondary, font_name=style.fonts.body)
+            else:
+                _add_run(p, resume.config.title, size=12, italic=True,
+                         color=secondary, font_name=style.fonts.body)
 
-        # Contact line — with clickable hyperlinks
+        # --- Contact ---
         contact = resume.config.contact
         contact_items: list[tuple[str, str | None]] = []  # (display, url|None)
         if contact.email:
@@ -333,45 +386,73 @@ class DocxRenderer(BaseRenderer):
             p = doc.add_paragraph()
             p.alignment = WD_ALIGN_PARAGRAPH.CENTER
             _set_paragraph_spacing(p, before=0, after=60)
+            contact_color = secondary if preset in ("executive", "elegant", "academic", "minimal") else text_color
+            contact_font = style.fonts.heading
+            contact_size = 6.8
+            if preset == "technical":
+                contact_font = style.fonts.mono or style.fonts.heading
+            elif preset in ("academic", "minimal"):
+                contact_size = 7
             for i, (display, url) in enumerate(contact_items):
                 if i > 0:
-                    _add_run(p, " | ", size=6.8, color=text_color,
-                             font_name=style.fonts.heading)
+                    _add_run(p, " | ", size=contact_size, color=contact_color,
+                             font_name=contact_font)
                 if url:
-                    _add_hyperlink(p, url, display, size=6.8,
-                                   color=text_color, font_name=style.fonts.heading)
+                    _add_hyperlink(p, url, display, size=contact_size,
+                                   color=contact_color, font_name=contact_font)
                 else:
-                    _add_run(p, display, size=6.8, color=text_color,
-                             font_name=style.fonts.heading)
+                    _add_run(p, display, size=contact_size, color=contact_color,
+                             font_name=contact_font)
 
     # ------------------------------------------------------------------
     # Sections
     # ------------------------------------------------------------------
 
     def _render_section(self, doc: Document, section: Section, style: StyleConfig) -> None:
+        preset = style.preset
         accent = _hex_to_rgb(style.colors.accent)
+        primary = _hex_to_rgb(style.colors.primary)
         gray = _hex_to_rgb(style.colors.secondary)
+        heading_color = _hex_to_rgb(style.colors.heading)
+        heading_size = _parse_pt(style.fonts.size_heading)
+        section_before = int(_parse_pt(style.spacing.section_gap) * 20)
+        section_after = int(_parse_pt(style.spacing.header_to_content) * 20)
 
-        # Section heading — accent text + gray rule from end of title to right margin
-        p = doc.add_paragraph()
-        _set_paragraph_spacing(p, before=int(_parse_pt(style.spacing.section_gap) * 20),
-                               after=int(_parse_pt(style.spacing.header_to_content) * 20))
-        _add_run(p, section.title, size=_parse_pt(style.fonts.size_heading),
-                 bold=True, color=accent, font_name=style.fonts.body)
+        title_text = section.title
 
-        # Right-aligned tab stop with underline leader for the section rule
-        _add_tab_stop(p, self._content_width, WD_TAB_ALIGNMENT.RIGHT)
-
-        # Gray-colored tab run with a solid underline to draw the section rule
-        gray_hex = f"{gray[0]:02X}{gray[1]:02X}{gray[2]:02X}"
-        run = p.add_run("\t")
-        run.font.color.rgb = gray
-        rPr = run._element.get_or_add_rPr()
-        u_el = rPr.makeelement(qn("w:u"), {
-            qn("w:val"): "thick",
-            qn("w:color"): gray_hex,
-        })
-        rPr.append(u_el)
+        if preset == "creative":
+            # Full-width colored banner with white uppercase text
+            self._render_section_creative(doc, title_text, primary, heading_size,
+                                          section_before, section_after, style)
+        elif preset == "executive":
+            # Double rule: thin above, heading, thick below
+            self._render_section_executive(doc, title_text, accent, heading_color,
+                                           heading_size, section_before, section_after, style)
+        elif preset == "modern":
+            # Left colored bar + uppercase heading
+            self._render_section_modern(doc, title_text, primary, heading_color,
+                                        heading_size, section_before, section_after, style)
+        elif preset == "elegant":
+            # Centered, thin lines above and below
+            self._render_section_elegant(doc, title_text, accent, heading_color,
+                                         heading_size, section_before, section_after, style)
+        elif preset == "technical":
+            # "> " prefix + dotted rule
+            self._render_section_technical(doc, title_text, accent, heading_color,
+                                           heading_size, section_before, section_after, style)
+        elif preset in ("academic", "classic"):
+            # Bold heading + full-width rule underneath
+            self._render_section_classic(doc, title_text, primary, heading_color,
+                                         heading_size, section_before, section_after, style,
+                                         uppercase=(preset == "academic"))
+        elif preset == "minimal":
+            # Simple heading + thin hairline underneath
+            self._render_section_minimal(doc, title_text, accent, heading_color,
+                                         heading_size, section_before, section_after, style)
+        else:
+            # awesome-cv / fallback: accent text + gray rule to right margin
+            self._render_section_awesome(doc, title_text, accent, gray,
+                                         heading_size, section_before, section_after, style)
 
         handler = {
             SectionType.EXPERIENCE: self._render_experience,
@@ -390,6 +471,169 @@ class DocxRenderer(BaseRenderer):
         }.get(section.section_type, self._render_custom)
 
         handler(doc, section, style)
+
+    # -- Section heading variants -----------------------------------------------
+
+    def _render_section_awesome(self, doc, title, accent, gray, size, before, after, style):
+        """awesome-cv: accent text + gray rule from end of title to right margin."""
+        p = doc.add_paragraph()
+        _set_paragraph_spacing(p, before=before, after=after)
+        _add_run(p, title, size=size, bold=True, color=accent,
+                 font_name=style.fonts.body)
+        _add_tab_stop(p, self._content_width, WD_TAB_ALIGNMENT.RIGHT)
+        gray_hex = f"{gray[0]:02X}{gray[1]:02X}{gray[2]:02X}"
+        run = p.add_run("\t")
+        run.font.color.rgb = gray
+        rPr = run._element.get_or_add_rPr()
+        u_el = rPr.makeelement(qn("w:u"), {
+            qn("w:val"): "thick", qn("w:color"): gray_hex})
+        rPr.append(u_el)
+
+    def _render_section_classic(self, doc, title, primary, heading_color, size,
+                                before, after, style, *, uppercase=False):
+        """classic/academic: bold heading + full-width rule underneath."""
+        p = doc.add_paragraph()
+        _set_paragraph_spacing(p, before=before, after=after)
+        text = title.upper() if uppercase else title
+        _add_run(p, text, size=size, bold=True, color=heading_color,
+                 font_name=style.fonts.body)
+        # Full-width rule below
+        rule = doc.add_paragraph()
+        _set_paragraph_spacing(rule, before=0, after=int(after * 0.5))
+        pPr = rule._element.get_or_add_pPr()
+        pBdr = pPr.makeelement(qn("w:pBdr"), {})
+        primary_hex = f"{primary[0]:02X}{primary[1]:02X}{primary[2]:02X}"
+        bottom = pBdr.makeelement(qn("w:bottom"), {
+            qn("w:val"): "single", qn("w:sz"): "6",
+            qn("w:space"): "1", qn("w:color"): primary_hex})
+        pBdr.append(bottom)
+        pPr.append(pBdr)
+
+    def _render_section_executive(self, doc, title, accent, heading_color, size,
+                                  before, after, style):
+        """executive: thin rule above, small-caps heading, thick rule below."""
+        accent_hex = f"{accent[0]:02X}{accent[1]:02X}{accent[2]:02X}"
+        # Thin rule above
+        rule_top = doc.add_paragraph()
+        _set_paragraph_spacing(rule_top, before=before, after=0)
+        pPr = rule_top._element.get_or_add_pPr()
+        pBdr = pPr.makeelement(qn("w:pBdr"), {})
+        bottom = pBdr.makeelement(qn("w:bottom"), {
+            qn("w:val"): "single", qn("w:sz"): "4",
+            qn("w:space"): "1", qn("w:color"): accent_hex})
+        pBdr.append(bottom)
+        pPr.append(pBdr)
+        # Heading text
+        p = doc.add_paragraph()
+        _set_paragraph_spacing(p, before=40, after=40)
+        _add_run(p, title, size=size, bold=True, small_caps=True,
+                 color=heading_color, font_name=style.fonts.body)
+        # Thick rule below
+        rule_bot = doc.add_paragraph()
+        _set_paragraph_spacing(rule_bot, before=0, after=after)
+        pPr = rule_bot._element.get_or_add_pPr()
+        pBdr = pPr.makeelement(qn("w:pBdr"), {})
+        bottom = pBdr.makeelement(qn("w:bottom"), {
+            qn("w:val"): "single", qn("w:sz"): "12",
+            qn("w:space"): "1", qn("w:color"): accent_hex})
+        pBdr.append(bottom)
+        pPr.append(pBdr)
+
+    def _render_section_modern(self, doc, title, primary, heading_color, size,
+                               before, after, style):
+        """modern: left colored bar + uppercase heading."""
+        p = doc.add_paragraph()
+        _set_paragraph_spacing(p, before=before, after=after)
+        primary_hex = f"{primary[0]:02X}{primary[1]:02X}{primary[2]:02X}"
+        # Left border as colored bar
+        pPr = p._element.get_or_add_pPr()
+        pBdr = pPr.makeelement(qn("w:pBdr"), {})
+        left = pBdr.makeelement(qn("w:left"), {
+            qn("w:val"): "single", qn("w:sz"): "18",
+            qn("w:space"): "4", qn("w:color"): primary_hex})
+        pBdr.append(left)
+        pPr.append(pBdr)
+        _add_run(p, title.upper(), size=size, bold=True,
+                 color=heading_color, font_name=style.fonts.heading)
+
+    def _render_section_creative(self, doc, title, primary, size, before, after, style):
+        """creative: full-width colored banner with white uppercase text."""
+        p = doc.add_paragraph()
+        _set_paragraph_spacing(p, before=before, after=after)
+        primary_hex = f"{primary[0]:02X}{primary[1]:02X}{primary[2]:02X}"
+        # Shading (colored background)
+        pPr = p._element.get_or_add_pPr()
+        shd = pPr.makeelement(qn("w:shd"), {
+            qn("w:val"): "clear", qn("w:color"): "auto",
+            qn("w:fill"): primary_hex})
+        pPr.append(shd)
+        _add_run(p, title.upper(), size=size, bold=True,
+                 color=RGBColor(0xFF, 0xFF, 0xFF), font_name=style.fonts.heading)
+
+    def _render_section_elegant(self, doc, title, accent, heading_color, size,
+                                before, after, style):
+        """elegant: centered, thin decorative lines above and below."""
+        accent_hex = f"{accent[0]:02X}{accent[1]:02X}{accent[2]:02X}"
+        # Thin rule above
+        rule_top = doc.add_paragraph()
+        _set_paragraph_spacing(rule_top, before=before, after=0)
+        pPr = rule_top._element.get_or_add_pPr()
+        pBdr = pPr.makeelement(qn("w:pBdr"), {})
+        bottom = pBdr.makeelement(qn("w:bottom"), {
+            qn("w:val"): "single", qn("w:sz"): "2",
+            qn("w:space"): "1", qn("w:color"): accent_hex})
+        pBdr.append(bottom)
+        pPr.append(pBdr)
+        # Centered heading
+        p = doc.add_paragraph()
+        p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        _set_paragraph_spacing(p, before=60, after=40)
+        _add_run(p, title, size=size, bold=True, small_caps=True,
+                 color=heading_color, font_name=style.fonts.body)
+        # Thin rule below
+        rule_bot = doc.add_paragraph()
+        _set_paragraph_spacing(rule_bot, before=0, after=after)
+        pPr = rule_bot._element.get_or_add_pPr()
+        pBdr = pPr.makeelement(qn("w:pBdr"), {})
+        bottom = pBdr.makeelement(qn("w:bottom"), {
+            qn("w:val"): "single", qn("w:sz"): "2",
+            qn("w:space"): "1", qn("w:color"): accent_hex})
+        pBdr.append(bottom)
+        pPr.append(pBdr)
+
+    def _render_section_technical(self, doc, title, accent, heading_color, size,
+                                  before, after, style):
+        """technical: '> ' prefix + dotted rule to right margin."""
+        p = doc.add_paragraph()
+        _set_paragraph_spacing(p, before=before, after=after)
+        mono = style.fonts.mono or style.fonts.heading
+        _add_run(p, "> ", size=size, bold=True, color=accent, font_name=mono)
+        _add_run(p, title.upper(), size=size, bold=True,
+                 color=heading_color, font_name=mono)
+        # Dotted rule after title
+        _add_tab_stop(p, self._content_width, WD_TAB_ALIGNMENT.RIGHT, leader="dot")
+        accent_hex = f"{accent[0]:02X}{accent[1]:02X}{accent[2]:02X}"
+        run = p.add_run("\t")
+        run.font.color.rgb = accent
+
+    def _render_section_minimal(self, doc, title, accent, heading_color, size,
+                                before, after, style):
+        """minimal: simple small-caps heading + thin hairline."""
+        p = doc.add_paragraph()
+        _set_paragraph_spacing(p, before=before, after=0)
+        _add_run(p, title.upper(), size=size, small_caps=True,
+                 color=heading_color, font_name=style.fonts.heading)
+        # Thin hairline
+        rule = doc.add_paragraph()
+        _set_paragraph_spacing(rule, before=0, after=after)
+        pPr = rule._element.get_or_add_pPr()
+        pBdr = pPr.makeelement(qn("w:pBdr"), {})
+        accent_hex = f"{accent[0]:02X}{accent[1]:02X}{accent[2]:02X}"
+        bottom = pBdr.makeelement(qn("w:bottom"), {
+            qn("w:val"): "single", qn("w:sz"): "2",
+            qn("w:space"): "1", qn("w:color"): accent_hex})
+        pBdr.append(bottom)
+        pPr.append(pBdr)
 
     # ------------------------------------------------------------------
     # Experience / Volunteer

@@ -41,13 +41,21 @@
 % ====================== STANDARD COMMAND INTERFACE ======================
 
 % --- Header commands ---
-\newcommand{\cvname}[1]{%
-  {\fontsize{24}{28}\selectfont\bfseries\color{primary} #1}%
+\newcommand{\acvHeaderAfterNameSkip}{2pt}
+\newcommand{\acvHeaderAfterPositionSkip}{2pt}
+\newcommand{\acvHeaderAfterAddressSkip}{2pt}
+\newcommand{\acvHeaderSocialSep}{\quad\textbar\quad}
+
+\newcommand{\cvname}[2]{%
+  {\fontsize{24}{28}\selectfont\bfseries\color{primary} #1 #2}%
   \vspace{2pt}%
 }
 \newcommand{\cvtitle}[1]{%
   {\large\color{secondary}\textit{#1}}%
   \vspace{4pt}%
+}
+\newcommand{\cvaddress}[1]{%
+  {\small\color{secondary} #1}%
 }
 \newcommand{\cvcontact}[1]{%
   {\small\color{textcolor} #1}%

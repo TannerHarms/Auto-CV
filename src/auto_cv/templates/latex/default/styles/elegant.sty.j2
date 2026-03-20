@@ -40,11 +40,19 @@
 
 % ====================== STANDARD COMMAND INTERFACE ======================
 
-\newcommand{\cvname}[1]{%
-  {\centering\fontsize{24}{28}\selectfont\scshape\color{primary} #1\par}%
+\newcommand{\acvHeaderAfterNameSkip}{2pt}
+\newcommand{\acvHeaderAfterPositionSkip}{2pt}
+\newcommand{\acvHeaderAfterAddressSkip}{2pt}
+\newcommand{\acvHeaderSocialSep}{\quad\textbar\quad}
+
+\newcommand{\cvname}[2]{%
+  {\centering\fontsize{24}{28}\selectfont\scshape\color{primary} #1 #2\par}%
 }
 \newcommand{\cvtitle}[1]{%
   {\centering\normalsize\itshape\color{accent} #1\par}%
+}
+\newcommand{\cvaddress}[1]{%
+  {\centering\small\color{secondary} #1\par}%
 }
 \newcommand{\cvcontact}[1]{%
   {\centering\small\color{secondary} #1\par}%
