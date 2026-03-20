@@ -74,7 +74,7 @@ class TestExperienceBody:
     def test_first_entry_dates(self):
         _, entries = parse_body("experience", self.CONTENT)
         assert entries[0]["start"] == "2022-03"
-        assert entries[0]["end"] == "present"
+        assert entries[0]["end"] == "Present"
 
     def test_highlights(self):
         _, entries = parse_body("experience", self.CONTENT)

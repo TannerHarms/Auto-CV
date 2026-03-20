@@ -271,7 +271,7 @@ def _parse_date_str(date_str: str) -> dict[str, str]:
             start = parts[0].strip()
             end = parts[1].strip()
             if end.lower() in ("present", "current", "now", ""):
-                return {"start": start, "end": "present"}
+                return {"start": start, "end": "Present"}
             return {"start": start, "end": end}
 
     return {"start": date_str.strip()}
