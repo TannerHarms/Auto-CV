@@ -7,6 +7,7 @@ accent-colored section rules.
 
 from __future__ import annotations
 
+import re
 from pathlib import Path
 
 from docx import Document
@@ -63,7 +64,7 @@ def _set_cell_margins(cell, top: int = 0, bottom: int = 0, left: int = 0, right:
 
 
 def _hide_table_borders(table) -> None:
-    """Remove all borders from a Word table."""
+    """Remove all borders from a Word table and its cells."""
     tbl = table._tbl
     tblPr = tbl.tblPr if tbl.tblPr is not None else tbl.makeelement(qn("w:tblPr"), {})
     borders = tblPr.makeelement(qn("w:tblBorders"), {})
@@ -74,6 +75,18 @@ def _hide_table_borders(table) -> None:
         })
         borders.append(el)
     tblPr.append(borders)
+    # Also clear cell-level borders
+    for row in table.rows:
+        for cell in row.cells:
+            tcPr = cell._element.get_or_add_tcPr()
+            cBdr = tcPr.makeelement(qn("w:tcBorders"), {})
+            for edge in ("top", "left", "bottom", "right"):
+                el = cBdr.makeelement(qn(f"w:{edge}"), {
+                    qn("w:val"): "none", qn("w:sz"): "0",
+                    qn("w:space"): "0", qn("w:color"): "auto",
+                })
+                cBdr.append(el)
+            tcPr.append(cBdr)
 
 
 def _add_run(para, text: str, *, size: float = 10, bold: bool = False,
@@ -90,6 +103,38 @@ def _add_run(para, text: str, *, size: float = 10, bold: bool = False,
         run.font.small_caps = True
     if font_name:
         run.font.name = font_name
+
+
+# Markdown → DOCX runs
+_MD_PATTERN = re.compile(
+    r"\*\*(.+?)\*\*"       # **bold**
+    r"|\*(.+?)\*"          # *italic*
+    r"|`(.+?)`"            # `code`
+    r"|\[(.+?)\]\((.+?)\)" # [text](url)
+)
+
+
+def _add_md_runs(para, text: str, *, size: float = 10,
+                 color: RGBColor | None = None,
+                 font_name: str | None = None) -> None:
+    """Parse simple markdown (bold, italic, code, links) into Word runs."""
+    pos = 0
+    for m in _MD_PATTERN.finditer(text):
+        # Plain text before this match
+        if m.start() > pos:
+            _add_run(para, text[pos:m.start()], size=size, color=color, font_name=font_name)
+        if m.group(1) is not None:          # **bold**
+            _add_run(para, m.group(1), size=size, bold=True, color=color, font_name=font_name)
+        elif m.group(2) is not None:        # *italic*
+            _add_run(para, m.group(2), size=size, italic=True, color=color, font_name=font_name)
+        elif m.group(3) is not None:        # `code`
+            _add_run(para, m.group(3), size=size, color=color, font_name=font_name)
+        elif m.group(4) is not None:        # [text](url)
+            _add_run(para, m.group(4), size=size, color=color, font_name=font_name)
+        pos = m.end()
+    # Trailing plain text
+    if pos < len(text):
+        _add_run(para, text[pos:], size=size, color=color, font_name=font_name)
 
 
 class DocxRenderer(BaseRenderer):
@@ -327,7 +372,8 @@ class DocxRenderer(BaseRenderer):
                 p.paragraph_format.left_indent = Inches(0.25)
                 p.paragraph_format.first_line_indent = Inches(-0.15)
                 _set_paragraph_spacing(p, before=0, after=0)
-                _add_run(p, marker + h, size=bullet_size, color=dark)
+                _add_run(p, marker, size=bullet_size, color=dark)
+                _add_md_runs(p, h, size=bullet_size, color=dark)
 
             # Entry gap spacer
             if i < len(section.experience_entries) - 1:
@@ -373,7 +419,8 @@ class DocxRenderer(BaseRenderer):
                 p.paragraph_format.left_indent = Inches(0.25)
                 p.paragraph_format.first_line_indent = Inches(-0.15)
                 _set_paragraph_spacing(p, before=0, after=0)
-                _add_run(p, marker + h, size=bullet_size, color=dark)
+                _add_run(p, marker, size=bullet_size, color=dark)
+                _add_md_runs(p, h, size=bullet_size, color=dark)
 
             if i < len(section.education_entries) - 1:
                 p = doc.add_paragraph()
@@ -388,15 +435,13 @@ class DocxRenderer(BaseRenderer):
         text_color = _hex_to_rgb(style.colors.text)
 
         for cat in section.skill_categories:
-            # Skill label (bold) on left, skills on right — using table for alignment
-            left = [{"text": cat.name, "size": 10, "bold": True, "color": dark}]
             right_text = ", ".join(cat.skills)
-            right = [{"text": right_text, "size": 9, "color": text_color}]
-            # Use a wider right column for skills
-            self._add_skill_row(doc, left, right)
+            self._add_skill_row(doc, cat.name, right_text,
+                                label_color=dark, text_color=text_color)
 
-    def _add_skill_row(self, doc: Document, left_runs, right_runs) -> None:
-        """Skill-specific row: right-aligned label | left-aligned skills."""
+    def _add_skill_row(self, doc: Document, label: str, skills_text: str,
+                       *, label_color: RGBColor, text_color: RGBColor) -> None:
+        """Skill-specific row: right-aligned label | left-aligned skills with markdown."""
         label_w = Inches(1.5)
         skills_w = self._content_width - label_w
 
@@ -424,15 +469,13 @@ class DocxRenderer(BaseRenderer):
         p = left_cell.paragraphs[0]
         p.alignment = WD_ALIGN_PARAGRAPH.RIGHT
         _set_paragraph_spacing(p, before=0, after=0)
-        for run_spec in left_runs:
-            _add_run(p, **run_spec)
+        _add_run(p, label, size=10, bold=True, color=label_color)
 
-        # Skills: left-aligned
+        # Skills: left-aligned, with markdown interpretation
         p = right_cell.paragraphs[0]
         p.alignment = WD_ALIGN_PARAGRAPH.LEFT
         _set_paragraph_spacing(p, before=0, after=0)
-        for run_spec in right_runs:
-            _add_run(p, **run_spec)
+        _add_md_runs(p, skills_text, size=9, color=text_color)
 
     # ------------------------------------------------------------------
     # Projects
@@ -472,7 +515,8 @@ class DocxRenderer(BaseRenderer):
                 p.paragraph_format.left_indent = Inches(0.25)
                 p.paragraph_format.first_line_indent = Inches(-0.15)
                 _set_paragraph_spacing(p, before=0, after=0)
-                _add_run(p, marker + h, size=bullet_size, color=dark)
+                _add_run(p, marker, size=bullet_size, color=dark)
+                _add_md_runs(p, h, size=bullet_size, color=dark)
 
             if i < len(section.project_entries) - 1:
                 p = doc.add_paragraph()
@@ -589,7 +633,8 @@ class DocxRenderer(BaseRenderer):
                 p.paragraph_format.left_indent = Inches(0.25)
                 p.paragraph_format.first_line_indent = Inches(-0.15)
                 _set_paragraph_spacing(p, before=0, after=0)
-                _add_run(p, marker + h, size=bullet_size, color=dark)
+                _add_run(p, marker, size=bullet_size, color=dark)
+                _add_md_runs(p, h, size=bullet_size, color=dark)
 
             if i < len(section.experience_entries) - 1:
                 p = doc.add_paragraph()
@@ -615,11 +660,8 @@ class DocxRenderer(BaseRenderer):
         text_color = _hex_to_rgb(style.colors.text)
 
         for entry in section.language_entries:
-            left = [{"text": entry.name, "size": 10, "bold": True, "color": dark}]
-            right = []
-            if entry.proficiency:
-                right = [{"text": entry.proficiency, "size": 9, "color": text_color}]
-            self._add_skill_row(doc, left, right)
+            self._add_skill_row(doc, entry.name, entry.proficiency or '',
+                                label_color=dark, text_color=text_color)
 
     # ------------------------------------------------------------------
     # References
