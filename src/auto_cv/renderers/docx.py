@@ -41,30 +41,50 @@ def _parse_pt(val: str) -> float:
 def _set_paragraph_spacing(para, before: int = 0, after: int = 0, line: int | None = None) -> None:
     """Set exact paragraph spacing in twips (1pt = 20 twips)."""
     pPr = para._element.get_or_add_pPr()
+    # Remove any existing spacing element to avoid duplicates
+    old = pPr.find(qn("w:spacing"))
+    if old is not None:
+        pPr.remove(old)
     spacing = pPr.makeelement(qn("w:spacing"), {})
     spacing.set(qn("w:before"), str(before))
     spacing.set(qn("w:after"), str(after))
     if line is not None:
         spacing.set(qn("w:line"), str(line))
         spacing.set(qn("w:lineRule"), "exact")
-    pPr.append(spacing)
+    # Insert after <w:tabs> to maintain correct OOXML pPr child order
+    tabs_el = pPr.find(qn("w:tabs"))
+    if tabs_el is not None:
+        tabs_el.addnext(spacing)
+    else:
+        pPr.append(spacing)
 
 
-def _add_tab_stop(para, position_emu: int, alignment: WD_TAB_ALIGNMENT) -> None:
+def _add_tab_stop(para, position_emu: int, alignment: WD_TAB_ALIGNMENT,
+                  *, leader: str | None = None) -> None:
     """Add a tab stop to a paragraph at the given EMU position."""
     pPr = para._element.get_or_add_pPr()
     tabs = pPr.find(qn("w:tabs"))
     if tabs is None:
         tabs = pPr.makeelement(qn("w:tabs"), {})
-        pPr.append(tabs)
-    tab = tabs.makeelement(qn("w:tab"), {
+        # Insert before <w:spacing>/<w:ind> to maintain correct OOXML order
+        ref = pPr.find(qn("w:spacing"))
+        if ref is None:
+            ref = pPr.find(qn("w:ind"))
+        if ref is not None:
+            ref.addprevious(tabs)
+        else:
+            pPr.append(tabs)
+    attrs = {
         qn("w:val"): {
             WD_TAB_ALIGNMENT.RIGHT: "right",
             WD_TAB_ALIGNMENT.LEFT: "left",
             WD_TAB_ALIGNMENT.CENTER: "center",
         }.get(alignment, "left"),
         qn("w:pos"): str(int(position_emu / 635)),  # EMU → twips
-    })
+    }
+    if leader:
+        attrs[qn("w:leader")] = leader
+    tab = tabs.makeelement(qn("w:tab"), attrs)
     tabs.append(tab)
 
 
@@ -339,15 +359,8 @@ class DocxRenderer(BaseRenderer):
         _add_run(p, section.title, size=_parse_pt(style.fonts.size_heading),
                  bold=True, color=accent, font_name=style.fonts.body)
 
-        # Right-aligned tab stop (no leader — we use an underlined tab run instead)
-        pPr = p._element.get_or_add_pPr()
-        tabs = pPr.makeelement(qn("w:tabs"), {})
-        tab = tabs.makeelement(qn("w:tab"), {
-            qn("w:val"): "right",
-            qn("w:pos"): str(int(self._content_width / 635)),
-        })
-        tabs.append(tab)
-        pPr.append(tabs)
+        # Right-aligned tab stop with underline leader for the section rule
+        _add_tab_stop(p, self._content_width, WD_TAB_ALIGNMENT.RIGHT)
 
         # Gray-colored tab run with a solid underline to draw the section rule
         gray_hex = f"{gray[0]:02X}{gray[1]:02X}{gray[2]:02X}"

@@ -212,13 +212,12 @@
        Skills — label | value layout matching \cvskillcat
        ===================================================================== */
     .skills-grid {
-      display: flex;
-      flex-direction: column;
-      gap: 1px;
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 1px 1em;
     }
     .skill-category {
-      display: flex;
-      gap: 1em;
+      display: contents;
       font-size: 9pt;
       line-height: 1.6;
     }
@@ -227,12 +226,13 @@
       font-size: 10pt;
       font-weight: 700;
       color: var(--acv-darktext);
-      min-width: var(--spacing-skill-label-width, 4.5cm);
       text-align: right;
-      flex-shrink: 0;
+      white-space: nowrap;
     }
     .skill-category .skill-list {
       color: var(--acv-text);
+      font-size: 9pt;
+      line-height: 1.6;
     }
 
     /* =====================================================================

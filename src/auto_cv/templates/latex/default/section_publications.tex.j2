@@ -2,6 +2,7 @@
 \section{<< section.title | escape_latex >>}
 
 <% for entry in section.publication_entries %>
+<% if not loop.first %>\vspace{<< style.spacing.entry_gap >>}<% endif %>
 \cvpub{<< entry.title | escape_latex >>}{<< entry.venue | escape_latex if entry.venue else '' >>}{<< entry.authors | join(', ') | escape_latex if entry.authors else '' >>}{<< entry.date | escape_latex if entry.date else '' >>}
 <% if entry.url %>
 \href{<< entry.url >>}{[link]}
@@ -11,5 +12,4 @@
   \item << entry.description | md_latex >>
 \end{itemize}
 <% endif %>
-
 <% endfor %>

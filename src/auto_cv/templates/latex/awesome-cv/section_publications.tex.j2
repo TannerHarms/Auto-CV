@@ -4,11 +4,12 @@
 \begin{cventries}
 
 <% for entry in section.publication_entries %>
+<% if not loop.first %>\vspace{<< style.spacing.entry_gap >>}<% endif %>
 \cventryshort
+{<< entry.authors | join(', ') | escape_latex if entry.authors else '' >>}
 {<< entry.title | escape_latex >>}
-{<< (entry.authors or '') | escape_latex >>}
-{<< (entry.venue or '') | escape_latex >>}
 {<< entry.date | escape_latex if entry.date else '' >>}
+{<< (entry.venue or '') | escape_latex >>}
 
 <% endfor %>
 \end{cventries}
