@@ -174,11 +174,12 @@ class DocxRenderer(BaseRenderer):
     # ------------------------------------------------------------------
 
     def _add_two_col_row(self, doc: Document, left_runs, right_runs,
-                         *, right_width_emu: int | None = None) -> None:
+                         *, right_width_emu: int | None = None):
         """Add a two-column line using a right-aligned tab stop.
 
         *left_runs* and *right_runs* are lists of dicts with keys
         accepted by _add_run (text, size, bold, italic, color, etc.).
+        Returns the paragraph so callers can adjust spacing.
         """
         p = doc.add_paragraph()
         _set_paragraph_spacing(p, before=0, after=0)
@@ -195,6 +196,8 @@ class DocxRenderer(BaseRenderer):
             p.add_run("\t")
             for run_spec in right_runs:
                 _add_run(p, **run_spec)
+
+        return p
 
     # ------------------------------------------------------------------
     # Header
@@ -314,23 +317,22 @@ class DocxRenderer(BaseRenderer):
             right = []
             if entry.dates:
                 right = [{"text": entry.dates.display, "size": 8, "italic": True, "color": gray}]
-            self._add_two_col_row(doc, left, right)
+            last_p = self._add_two_col_row(doc, left, right)
 
             # Bullet highlights
             bullet_size = _parse_pt(style.fonts.size_bullet)
             marker = "\u2013 " if style.spacing.bullet_marker == "dash" else "\u2022 "
             for h in entry.highlights:
-                p = doc.add_paragraph()
-                p.paragraph_format.left_indent = Inches(0.25)
-                p.paragraph_format.first_line_indent = Inches(-0.15)
-                _set_paragraph_spacing(p, before=0, after=0)
-                _add_run(p, marker, size=bullet_size, color=dark)
-                _add_md_runs(p, h, size=bullet_size, color=dark)
+                last_p = doc.add_paragraph()
+                last_p.paragraph_format.left_indent = Inches(0.25)
+                last_p.paragraph_format.first_line_indent = Inches(-0.15)
+                _set_paragraph_spacing(last_p, before=0, after=0)
+                _add_run(last_p, marker, size=bullet_size, color=dark)
+                _add_md_runs(last_p, h, size=bullet_size, color=dark)
 
-            # Entry gap spacer
+            # Entry gap: apply space-after on the last paragraph of this entry
             if i < len(section.experience_entries) - 1:
-                p = doc.add_paragraph()
-                _set_paragraph_spacing(p, before=0, after=entry_gap)
+                _set_paragraph_spacing(last_p, before=0, after=entry_gap)
 
     # ------------------------------------------------------------------
     # Education
@@ -355,28 +357,27 @@ class DocxRenderer(BaseRenderer):
             right = []
             if entry.dates:
                 right = [{"text": entry.dates.display, "size": 8, "italic": True, "color": gray}]
-            self._add_two_col_row(doc, left, right)
+            last_p = self._add_two_col_row(doc, left, right)
 
             # GPA and highlights
             bullet_size = _parse_pt(style.fonts.size_bullet)
             if entry.gpa:
-                p = doc.add_paragraph()
-                _set_paragraph_spacing(p, before=0, after=0)
-                p.paragraph_format.left_indent = Inches(0.25)
-                _add_run(p, f"GPA: {entry.gpa}", size=bullet_size, color=dark)
+                last_p = doc.add_paragraph()
+                _set_paragraph_spacing(last_p, before=0, after=0)
+                last_p.paragraph_format.left_indent = Inches(0.25)
+                _add_run(last_p, f"GPA: {entry.gpa}", size=bullet_size, color=dark)
 
             marker = "\u2013 " if style.spacing.bullet_marker == "dash" else "\u2022 "
             for h in entry.highlights:
-                p = doc.add_paragraph()
-                p.paragraph_format.left_indent = Inches(0.25)
-                p.paragraph_format.first_line_indent = Inches(-0.15)
-                _set_paragraph_spacing(p, before=0, after=0)
-                _add_run(p, marker, size=bullet_size, color=dark)
-                _add_md_runs(p, h, size=bullet_size, color=dark)
+                last_p = doc.add_paragraph()
+                last_p.paragraph_format.left_indent = Inches(0.25)
+                last_p.paragraph_format.first_line_indent = Inches(-0.15)
+                _set_paragraph_spacing(last_p, before=0, after=0)
+                _add_run(last_p, marker, size=bullet_size, color=dark)
+                _add_md_runs(last_p, h, size=bullet_size, color=dark)
 
             if i < len(section.education_entries) - 1:
-                p = doc.add_paragraph()
-                _set_paragraph_spacing(p, before=0, after=entry_gap)
+                _set_paragraph_spacing(last_p, before=0, after=entry_gap)
 
     # ------------------------------------------------------------------
     # Skills / Interests
@@ -396,9 +397,18 @@ class DocxRenderer(BaseRenderer):
         """Skill row: right-aligned label, then left-aligned skills text with markdown."""
         label_w = Inches(1.5)
         gap = Inches(0.1)
+        indent_twips = int((label_w + gap) / 635)  # EMU → twips
 
         p = doc.add_paragraph()
         _set_paragraph_spacing(p, before=0, after=0)
+
+        # Indent wrapped lines to the second column
+        pPr = p._element.get_or_add_pPr()
+        ind = pPr.makeelement(qn("w:ind"), {
+            qn("w:left"): str(indent_twips),
+            qn("w:hanging"): str(indent_twips),
+        })
+        pPr.append(ind)
 
         # Right-aligned tab stop at label width for the label
         _add_tab_stop(p, label_w, WD_TAB_ALIGNMENT.RIGHT)
@@ -430,33 +440,32 @@ class DocxRenderer(BaseRenderer):
             right = []
             if entry.dates:
                 right = [{"text": entry.dates.display, "size": 9, "italic": True, "color": accent}]
-            self._add_two_col_row(doc, left, right)
+            last_p = self._add_two_col_row(doc, left, right)
 
             # Technologies line
             if entry.technologies:
-                p = doc.add_paragraph()
-                _set_paragraph_spacing(p, before=0, after=0)
-                _add_run(p, ", ".join(entry.technologies), size=8,
+                last_p = doc.add_paragraph()
+                _set_paragraph_spacing(last_p, before=0, after=0)
+                _add_run(last_p, ", ".join(entry.technologies), size=8,
                          small_caps=True, color=gray)
 
             # Description
             if entry.description:
-                p = doc.add_paragraph()
-                _set_paragraph_spacing(p, before=0, after=0)
-                _add_run(p, entry.description, size=bullet_size, color=dark)
+                last_p = doc.add_paragraph()
+                _set_paragraph_spacing(last_p, before=0, after=0)
+                _add_run(last_p, entry.description, size=bullet_size, color=dark)
 
             marker = "\u2013 " if style.spacing.bullet_marker == "dash" else "\u2022 "
             for h in entry.highlights:
-                p = doc.add_paragraph()
-                p.paragraph_format.left_indent = Inches(0.25)
-                p.paragraph_format.first_line_indent = Inches(-0.15)
-                _set_paragraph_spacing(p, before=0, after=0)
-                _add_run(p, marker, size=bullet_size, color=dark)
-                _add_md_runs(p, h, size=bullet_size, color=dark)
+                last_p = doc.add_paragraph()
+                last_p.paragraph_format.left_indent = Inches(0.25)
+                last_p.paragraph_format.first_line_indent = Inches(-0.15)
+                _set_paragraph_spacing(last_p, before=0, after=0)
+                _add_run(last_p, marker, size=bullet_size, color=dark)
+                _add_md_runs(last_p, h, size=bullet_size, color=dark)
 
             if i < len(section.project_entries) - 1:
-                p = doc.add_paragraph()
-                _set_paragraph_spacing(p, before=0, after=entry_gap)
+                _set_paragraph_spacing(last_p, before=0, after=entry_gap)
 
     # ------------------------------------------------------------------
     # Certifications
@@ -492,7 +501,7 @@ class DocxRenderer(BaseRenderer):
             right = []
             if entry.date:
                 right = [{"text": entry.date, "size": 9, "italic": True, "color": accent}]
-            self._add_two_col_row(doc, left, right)
+            last_p = self._add_two_col_row(doc, left, right)
 
             # Row 2: authors | venue
             left = []
@@ -503,11 +512,10 @@ class DocxRenderer(BaseRenderer):
             if entry.venue:
                 right = [{"text": entry.venue, "size": 8, "italic": True, "color": gray}]
             if left or right:
-                self._add_two_col_row(doc, left, right)
+                last_p = self._add_two_col_row(doc, left, right)
 
             if i < len(section.publication_entries) - 1:
-                p = doc.add_paragraph()
-                _set_paragraph_spacing(p, before=0, after=entry_gap)
+                _set_paragraph_spacing(last_p, before=0, after=entry_gap)
 
     # ------------------------------------------------------------------
     # Awards
@@ -528,17 +536,16 @@ class DocxRenderer(BaseRenderer):
             right = []
             if entry.date:
                 right = [{"text": entry.date, "size": 9, "italic": True, "color": accent}]
-            self._add_two_col_row(doc, left, right)
+            last_p = self._add_two_col_row(doc, left, right)
 
             # Description
             if entry.description:
-                p = doc.add_paragraph()
-                _set_paragraph_spacing(p, before=0, after=0)
-                _add_run(p, entry.description, size=bullet_size, color=dark)
+                last_p = doc.add_paragraph()
+                _set_paragraph_spacing(last_p, before=0, after=0)
+                _add_run(last_p, entry.description, size=bullet_size, color=dark)
 
             if i < len(section.award_entries) - 1:
-                p = doc.add_paragraph()
-                _set_paragraph_spacing(p, before=0, after=entry_gap)
+                _set_paragraph_spacing(last_p, before=0, after=entry_gap)
 
     # ------------------------------------------------------------------
     # Service
@@ -560,21 +567,20 @@ class DocxRenderer(BaseRenderer):
             right = []
             if entry.dates:
                 right = [{"text": entry.dates.display, "size": 9, "italic": True, "color": accent}]
-            self._add_two_col_row(doc, left, right)
+            last_p = self._add_two_col_row(doc, left, right)
 
             # Highlights
             marker = "\u2013 " if style.spacing.bullet_marker == "dash" else "\u2022 "
             for h in entry.highlights:
-                p = doc.add_paragraph()
-                p.paragraph_format.left_indent = Inches(0.25)
-                p.paragraph_format.first_line_indent = Inches(-0.15)
-                _set_paragraph_spacing(p, before=0, after=0)
-                _add_run(p, marker, size=bullet_size, color=dark)
-                _add_md_runs(p, h, size=bullet_size, color=dark)
+                last_p = doc.add_paragraph()
+                last_p.paragraph_format.left_indent = Inches(0.25)
+                last_p.paragraph_format.first_line_indent = Inches(-0.15)
+                _set_paragraph_spacing(last_p, before=0, after=0)
+                _add_run(last_p, marker, size=bullet_size, color=dark)
+                _add_md_runs(last_p, h, size=bullet_size, color=dark)
 
             if i < len(section.experience_entries) - 1:
-                p = doc.add_paragraph()
-                _set_paragraph_spacing(p, before=0, after=entry_gap)
+                _set_paragraph_spacing(last_p, before=0, after=entry_gap)
 
     # ------------------------------------------------------------------
     # Summary
@@ -615,7 +621,7 @@ class DocxRenderer(BaseRenderer):
             if entry.relationship:
                 left.append({"text": f" \u2013 {entry.relationship}", "size": 9,
                              "italic": True, "color": gray})
-            self._add_two_col_row(doc, left, [])
+            last_p = self._add_two_col_row(doc, left, [])
 
             # Title at Organization
             parts: list[str] = []
@@ -624,10 +630,10 @@ class DocxRenderer(BaseRenderer):
             if entry.organization:
                 parts.append(entry.organization)
             if parts:
-                p = doc.add_paragraph()
-                _set_paragraph_spacing(p, before=0, after=0)
+                last_p = doc.add_paragraph()
+                _set_paragraph_spacing(last_p, before=0, after=0)
                 text = " at ".join(parts) if entry.title and entry.organization else parts[0]
-                _add_run(p, text, size=8, small_caps=True, color=accent)
+                _add_run(last_p, text, size=8, small_caps=True, color=accent)
 
             # Contact info
             contact_parts: list[str] = []
@@ -636,13 +642,12 @@ class DocxRenderer(BaseRenderer):
             if entry.phone:
                 contact_parts.append(entry.phone)
             if contact_parts:
-                p = doc.add_paragraph()
-                _set_paragraph_spacing(p, before=0, after=0)
-                _add_run(p, " | ".join(contact_parts), size=8, color=gray)
+                last_p = doc.add_paragraph()
+                _set_paragraph_spacing(last_p, before=0, after=0)
+                _add_run(last_p, " | ".join(contact_parts), size=8, color=gray)
 
             if i < len(section.reference_entries) - 1:
-                p = doc.add_paragraph()
-                _set_paragraph_spacing(p, before=0, after=entry_gap)
+                _set_paragraph_spacing(last_p, before=0, after=entry_gap)
 
     # ------------------------------------------------------------------
     # Fallback
