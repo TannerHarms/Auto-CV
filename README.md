@@ -259,7 +259,9 @@ auto-cv list-presets          # Show available style presets
 auto-cv style-schema          # Print StyleConfig JSON schema
 ```
 
-## LLM Agents (Optional)
+## LLM Agents (Optional) — Under Construction
+
+> **Note:** The agents feature is functional but still under active development. APIs and behaviour may change in future releases.
 
 Agents modify the resume model *before* rendering — the pipeline stays deterministic.
 
