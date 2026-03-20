@@ -28,16 +28,20 @@
 % --- Spacing ---
 \RequirePackage{enumitem}
 \setlist[itemize]{nosep, left=0pt .. 1.5em, label={\color{accent}\textbullet}}
+\RequirePackage{array}
 \RequirePackage{parskip}
 \RequirePackage{titlesec}
 
 % --- Section: colored banner box across full width ---
+\newcommand{\cvSectionBanner}[1]{%
+  \colorbox{primary}{\parbox{\dimexpr\textwidth-2\fboxsep\relax}{\strut\color{white}\MakeUppercase{#1}}}%
+  \vspace{2pt}%
+}
 \titleformat{\section}
   {\large\bfseries\sffamily}
   {}
   {0pt}
-  {\colorbox{primary}{\parbox{\dimexpr\textwidth-2\fboxsep\relax}{\strut\color{white}\MakeUppercase{#1}}}\vspace{2pt}}
-  []
+  {\cvSectionBanner}
 \titlespacing{\section}{0pt}{<< style.spacing.section_gap >>}{6pt}
 
 % ====================== STANDARD COMMAND INTERFACE ======================
@@ -82,6 +86,53 @@
 
 \newcommand{\cvskillcat}[2]{%
   \textcolor{accent}{\bfseries #1}\hspace{6pt}{#2}\\[4pt]%
+}
+
+\newcommand*{\skilltypestyle}[1]{{\bfseries\sffamily\color{accent} #1}}
+\newcommand*{\skillsetstyle}[1]{{\sffamily\color{textcolor} #1}}
+\newlength{\skillcatlabelwidth}
+\setlength{\skillcatlabelwidth}{<< style.spacing.skill_label_width >>}
+
+\newcommand{\cvskill}[3]{%
+  \vspace{-2.0mm}%
+  \setlength\tabcolsep{0pt}%
+  \setlength{\extrarowheight}{0pt}%
+  \def\arraystretch{0.6}%
+  \begin{tabular*}{\textwidth}{@{} >{\raggedleft\arraybackslash}p{#1} @{\hspace{2ex}} >{\raggedright\arraybackslash}p{\dimexpr\textwidth-#1-2ex\relax} @{}}%
+    \skilltypestyle{#2} & \skillsetstyle{#3} \\%
+  \end{tabular*}%
+  \def\arraystretch{1}%
+}
+
+\newcommand{\cvlang}[3]{%
+  \vspace{-2.0mm}%
+  \setlength\tabcolsep{0pt}%
+  \setlength{\extrarowheight}{0pt}%
+  \def\arraystretch{0.6}%
+  \begin{tabular*}{\textwidth}{@{} >{\raggedleft\arraybackslash}p{#1} @{\hspace{2ex}} >{\raggedright\arraybackslash}p{\dimexpr\textwidth-#1-2ex\relax} @{}}%
+    \skilltypestyle{#2} & \skillsetstyle{#3} \\%
+  \end{tabular*}%
+  \def\arraystretch{1}%
+}
+
+\newcommand{\cvawardcompact}[2]{%
+  {\bfseries\color{accent} #1}\hfill{\small\color{secondary} #2}\par%
+}
+
+\newcommand{\cvawardexpressive}[4]{%
+  \vspace{<< style.spacing.entry_gap >>}%
+  {\bfseries\color{accent} #1}\ifx&#4&\else\hfill{\small\color{secondary} #4}\fi\par%
+  \ifx&#2&\else{\bfseries\color{headingcolor} #2}\fi%
+  \ifx&#3&\else\hfill{\small\color{secondary} #3}\fi%
+  \vspace{2pt}\par%
+}
+
+\newcommand{\cvservice}[4]{%
+  \vspace{<< style.spacing.entry_gap >>}%
+  {\bfseries\color{accent} #1}\ifx&#2&\else{, \color{secondary}#2}\fi%
+  \ifx&#3&\else\hfill{\small\color{secondary} #3}\fi\par%
+  \ifx&#4&\else{\small\color{textcolor} #4}\fi%
+  \vspace{2pt}\par%
 }
 
 \newcommand{\cvproject}[3]{%

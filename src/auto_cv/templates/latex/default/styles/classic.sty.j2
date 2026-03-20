@@ -26,6 +26,7 @@
 % --- Spacing ---
 \RequirePackage{enumitem}
 \setlist[itemize]{nosep, left=0pt .. 1.5em, label=\textbullet}
+\RequirePackage{array}
 \RequirePackage{parskip}
 \RequirePackage{titlesec}
 
@@ -85,6 +86,53 @@
 % --- Skills ---
 \newcommand{\cvskillcat}[2]{%
   {\bfseries #1:} #2\\[2pt]%
+}
+
+\newcommand*{\skilltypestyle}[1]{{\bfseries\color{headingcolor} #1}}
+\newcommand*{\skillsetstyle}[1]{{\color{textcolor} #1}}
+\newlength{\skillcatlabelwidth}
+\setlength{\skillcatlabelwidth}{<< style.spacing.skill_label_width >>}
+
+\newcommand{\cvskill}[3]{%
+  \vspace{-2.0mm}%
+  \setlength\tabcolsep{0pt}%
+  \setlength{\extrarowheight}{0pt}%
+  \def\arraystretch{0.6}%
+  \begin{tabular*}{\textwidth}{@{} >{\raggedleft\arraybackslash}p{#1} @{\hspace{2ex}} >{\raggedright\arraybackslash}p{\dimexpr\textwidth-#1-2ex\relax} @{}}%
+    \skilltypestyle{#2} & \skillsetstyle{#3} \\%
+  \end{tabular*}%
+  \def\arraystretch{1}%
+}
+
+\newcommand{\cvlang}[3]{%
+  \vspace{-2.0mm}%
+  \setlength\tabcolsep{0pt}%
+  \setlength{\extrarowheight}{0pt}%
+  \def\arraystretch{0.6}%
+  \begin{tabular*}{\textwidth}{@{} >{\raggedleft\arraybackslash}p{#1} @{\hspace{2ex}} >{\raggedright\arraybackslash}p{\dimexpr\textwidth-#1-2ex\relax} @{}}%
+    \skilltypestyle{#2} & \skillsetstyle{#3} \\%
+  \end{tabular*}%
+  \def\arraystretch{1}%
+}
+
+\newcommand{\cvawardcompact}[2]{%
+  {\bfseries\color{headingcolor} #1}\hfill{\small\color{secondary} #2}\par%
+}
+
+\newcommand{\cvawardexpressive}[4]{%
+  \vspace{<< style.spacing.entry_gap >>}%
+  {\bfseries\color{headingcolor} #1}\ifx&#4&\else\hfill{\small\color{secondary} #4}\fi\par%
+  \ifx&#2&\else{\itshape\color{accent} #2}\fi%
+  \ifx&#3&\else\hfill{\small\color{secondary} #3}\fi%
+  \vspace{2pt}\par%
+}
+
+\newcommand{\cvservice}[4]{%
+  \vspace{<< style.spacing.entry_gap >>}%
+  {\bfseries\color{headingcolor} #1}\ifx&#2&\else{, \color{secondary}#2}\fi%
+  \ifx&#3&\else\hfill{\small\color{secondary} #3}\fi\par%
+  \ifx&#4&\else{\small\color{textcolor} #4}\fi%
+  \vspace{2pt}\par%
 }
 
 % --- Projects ---
