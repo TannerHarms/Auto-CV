@@ -1,11 +1,10 @@
 {
-  "id": "auto-cv-obsidian",
+  "id": "auto-cv",
   "name": "Auto CV",
   "version": "1.0.0",
-  "minAppVersion": "1.0.0",
-  "description": "Build beautiful CVs and resumes from your Obsidian vault. Export to HTML, DOCX, and PDF with customizable styles.",
+  "minAppVersion": "1.4.0",
+  "description": "Build polished resumes and CVs from Markdown. Export to HTML, DOCX, and LaTeX/PDF with nine style presets.",
   "author": "Tanner Harms",
   "authorUrl": "https://github.com/TannerHarms/Auto-CV",
-  "fundingUrl": "https://github.com/TannerHarms/Auto-CV",
   "isDesktopOnly": true
 }

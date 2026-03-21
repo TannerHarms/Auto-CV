@@ -41,9 +41,9 @@ export class BuildModal extends Modal {
     let selectedFormats = [...this.defaultFormats];
     let selectedOutputPath = this.defaultOutputPath;
 
-    contentEl.createEl('h2', { text: 'Build Resume/CV' });
+    contentEl.createEl('h2', { text: 'Build resume/CV' });
 
-    contentEl.createEl('h3', { text: 'Output Formats' });
+    contentEl.createEl('h3', { text: 'Output formats' });
     const formatsContainer = contentEl.createDiv({ cls: 'format-checkboxes' });
     for (const fmt of ['html', 'docx', 'latex']) {
       const label = formatsContainer.createEl('label', { cls: 'checkbox-label' });
@@ -56,7 +56,7 @@ export class BuildModal extends Modal {
       label.createSpan({ text: fmt === 'latex' ? 'LaTeX/PDF' : fmt.toUpperCase() });
     }
 
-    contentEl.createEl('h3', { text: 'Output Directory' });
+    contentEl.createEl('h3', { text: 'Output directory' });
     new Setting(contentEl)
       .setName('Path')
       .setDesc('Relative to vault root')
@@ -91,7 +91,7 @@ export class ProgressModal extends Modal {
 
   onOpen() {
     const { contentEl } = this;
-    contentEl.createEl('h2', { text: '⏳ Building Resume/CV' });
+    contentEl.createEl('h2', { text: '⏳ Building resume/CV' });
     this.statusEl = contentEl.createEl('p', { text: this.message, cls: 'progress-message' });
     contentEl.createDiv({ cls: 'progress-spinner' });
   }
@@ -284,7 +284,7 @@ export class BuildWizard extends Modal {
     const { contentEl } = this;
     contentEl.empty();
 
-    contentEl.createEl('h2', { text: 'Build Resume/CV' });
+    contentEl.createEl('h2', { text: 'Build resume/CV' });
     this.renderStepIndicator(contentEl);
 
     const body = contentEl.createDiv({ cls: 'wizard-body' });
@@ -319,7 +319,7 @@ export class BuildWizard extends Modal {
   // -------------------------------------------------------------------------
 
   private renderProjectStep(container: HTMLElement) {
-    container.createEl('h3', { text: 'Choose Project' });
+    container.createEl('h3', { text: 'Choose project' });
 
     // Existing projects
     if (this.config.projects.length > 0) {
@@ -398,7 +398,7 @@ export class BuildWizard extends Modal {
   // -------------------------------------------------------------------------
 
   private renderSectionsStep(container: HTMLElement) {
-    container.createEl('h3', { text: 'Select Sections to Include' });
+    container.createEl('h3', { text: 'Select sections to include' });
     container.createEl('p', {
       text: 'Check the sections to include and drag to reorder.',
       cls: 'wizard-hint',
@@ -469,14 +469,14 @@ export class BuildWizard extends Modal {
   private renderStyleStep(container: HTMLElement) {
     // Title override
     new Setting(container)
-      .setName('Job Title')
+      .setName('Job title')
       .setDesc('Override the title for this project')
       .addText(t => t.setPlaceholder('e.g. Senior Software Engineer')
         .setValue(this.titleOverride)
         .onChange(v => { this.titleOverride = v; }));
 
     // Preset selection
-    container.createEl('h3', { text: 'Style Preset' });
+    container.createEl('h3', { text: 'Style preset' });
     const presetGrid = container.createDiv({ cls: 'wizard-preset-grid' });
     const presetNames = Object.keys(this.config.presets);
 
@@ -525,7 +525,7 @@ export class BuildWizard extends Modal {
     const bodyFont = this.fontOverrides.body || preset?.fonts?.body || 'Georgia';
 
     new Setting(customDiv)
-      .setName('Heading Font')
+      .setName('Heading font')
       .addDropdown(d => {
         for (const f of COMMON_FONTS) d.addOption(f, f);
         d.setValue(headingFont);
@@ -534,7 +534,7 @@ export class BuildWizard extends Modal {
       });
 
     new Setting(customDiv)
-      .setName('Body Font')
+      .setName('Body font')
       .addDropdown(d => {
         for (const f of COMMON_FONTS) d.addOption(f, f);
         d.setValue(bodyFont);
@@ -547,19 +547,19 @@ export class BuildWizard extends Modal {
     const sectionGap = this.spacingOverrides.section_gap || preset?.spacing?.section_gap || '12pt';
 
     new Setting(customDiv)
-      .setName('Page Margin')
+      .setName('Page margin')
       .addText(t => t.setValue(margin).setPlaceholder('0.75in')
         .onChange(v => { if (v) this.spacingOverrides.page_margin = v; }));
 
     new Setting(customDiv)
-      .setName('Section Gap')
+      .setName('Section gap')
       .addText(t => t.setValue(sectionGap).setPlaceholder('12pt')
         .onChange(v => { if (v) this.spacingOverrides.section_gap = v; }));
 
     // HTML Layout
     const currentLayout = this.htmlLayout || preset?.html?.layout || 'top-header';
     new Setting(customDiv)
-      .setName('HTML Layout')
+      .setName('HTML layout')
       .addDropdown(d => {
         for (const l of HTML_LAYOUTS) d.addOption(l.value, l.label);
         d.setValue(currentLayout);
@@ -600,7 +600,7 @@ export class BuildWizard extends Modal {
   // -------------------------------------------------------------------------
 
   private renderOutputStep(container: HTMLElement) {
-    container.createEl('h3', { text: 'Output Settings' });
+    container.createEl('h3', { text: 'Output settings' });
 
     // Format checkboxes
     const formatsDiv = container.createDiv({ cls: 'format-checkboxes' });
@@ -617,7 +617,7 @@ export class BuildWizard extends Modal {
 
     // Output path
     new Setting(container)
-      .setName('Output Directory')
+      .setName('Output directory')
       .setDesc('Relative to vault root (auto-resolves for projects)')
       .addText(t => t.setPlaceholder('output').setValue(this.outputPath)
         .onChange(v => { this.outputPath = v || 'output'; }));

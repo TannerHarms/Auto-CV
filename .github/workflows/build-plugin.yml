@@ -39,7 +39,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: auto-cv-obsidian
+          name: auto-cv
           path: |
             obsidian-plugin/main.js
             obsidian-plugin/manifest.json

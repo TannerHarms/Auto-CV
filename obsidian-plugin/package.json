@@ -1,5 +1,5 @@
 {
-  "name": "auto-cv-obsidian",
+  "name": "auto-cv",
   "version": "1.0.0",
   "description": "Build beautiful CVs and resumes from your Obsidian vault",
   "main": "main.js",

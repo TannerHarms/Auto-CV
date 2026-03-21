@@ -93,16 +93,16 @@ This installs the Python package in development mode, so your plugin can call it
 
 ```powershell
 # After building
-copy main.js your-vault/.obsidian/plugins/auto-cv-obsidian/
-copy manifest.json your-vault/.obsidian/plugins/auto-cv-obsidian/
-copy styles.css your-vault/.obsidian/plugins/auto-cv-obsidian/
+copy main.js your-vault/.obsidian/plugins/auto-cv/
+copy manifest.json your-vault/.obsidian/plugins/auto-cv/
+copy styles.css your-vault/.obsidian/plugins/auto-cv/
 ```
 
 ```bash
 # macOS/Linux
-cp main.js ~/your-vault/.obsidian/plugins/auto-cv-obsidian/
-cp manifest.json ~/your-vault/.obsidian/plugins/auto-cv-obsidian/
-cp styles.css ~/your-vault/.obsidian/plugins/auto-cv-obsidian/
+cp main.js ~/your-vault/.obsidian/plugins/auto-cv/
+cp manifest.json ~/your-vault/.obsidian/plugins/auto-cv/
+cp styles.css ~/your-vault/.obsidian/plugins/auto-cv/
 ```
 
 ## Key Source Files
@@ -269,7 +269,7 @@ This creates `main.js` and validates TypeScript.
 
 ```bash
 # Create a zip with plugin files for distribution
-zip -r auto-cv-obsidian.zip manifest.json main.js styles.css
+zip -r auto-cv.zip manifest.json main.js styles.css
 ```
 
 ## Contributing

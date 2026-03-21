@@ -2,7 +2,7 @@
  * Plugin settings and settings tab.
  */
 
-import { App, Plugin, PluginSettingTab, Setting } from 'obsidian';
+import { App, Notice, Plugin, PluginSettingTab, Setting } from 'obsidian';
 import { detectPythonExecutable } from './utils';
 import { applyDetectedPythonPath, toggleFormatSelection } from './settings-helpers';
 
@@ -36,11 +36,9 @@ export class AutoResumeSettingTab extends PluginSettingTab {
 
     containerEl.empty();
 
-    containerEl.createEl('h2', { text: 'Auto CV Settings' });
-
     // Python executable path
     const pythonSetting = new Setting(containerEl)
-      .setName('Python Executable')
+      .setName('Python executable')
       .setDesc('Path to the Python executable (leave blank to auto-detect)')
       .addText((text) =>
         text
@@ -69,14 +67,14 @@ export class AutoResumeSettingTab extends PluginSettingTab {
             await this.plugin.saveSettings();
             applyDetectedPythonPath(containerEl, pythonPath);
           } catch (e) {
-            alert(`Failed to detect Python: ${(e as Error).message}`);
+            new Notice(`Failed to detect Python: ${(e as Error).message}`, 8000);
           }
         })
     );
 
     // Default output folder
     new Setting(containerEl)
-      .setName('Default Output Folder')
+      .setName('Default output folder')
       .setDesc('Default folder for resume output (relative to vault root)')
       .addText((text) =>
         text
@@ -89,9 +87,10 @@ export class AutoResumeSettingTab extends PluginSettingTab {
       );
 
     // Default formats
-    containerEl.createEl('h3', { text: 'Default Output Formats' });
-    const formatsDesc = containerEl.createEl('p');
-    formatsDesc.setText('Select which formats to generate by default');
+    new Setting(containerEl)
+      .setName('Default output formats')
+      .setDesc('Select which formats to generate by default')
+      .setHeading();
 
     const formats = ['html', 'docx', 'latex'];
     for (const fmt of formats) {

@@ -47,9 +47,9 @@ npm run dev  # for development
 npm run build  # for production
 
 # Copy the plugin to your Obsidian plugins folder
-# On Windows: $HOME/.obsidian/plugins/auto-cv-obsidian
-# On macOS: ~/.obsidian/plugins/auto-cv-obsidian
-# On Linux: ~/.config/obsidian/plugins/auto-cv-obsidian
+# On Windows: $HOME/.obsidian/plugins/auto-cv
+# On macOS: ~/.obsidian/plugins/auto-cv
+# On Linux: ~/.config/obsidian/plugins/auto-cv
 ```
 
 ## Configuration

@@ -76,7 +76,7 @@ Pop-Location
 Pop-Location
 
 Write-Step "Copying plugin files into vault"
-$pluginDest = Join-Path $VaultPath ".obsidian\plugins\auto-cv-obsidian"
+$pluginDest = Join-Path $VaultPath ".obsidian\plugins\auto-cv"
 New-Item -ItemType Directory -Path $pluginDest -Force | Out-Null
 
 $pluginMain = Join-Path $pluginRoot "main.js"

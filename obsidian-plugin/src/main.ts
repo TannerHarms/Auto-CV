@@ -84,19 +84,16 @@ export default class AutoResumePlugin extends Plugin {
     // Register "Build Resume" command
     this.addCommand({
       id: 'build-resume',
-      name: 'Build Resume/CV',
+      name: 'Build resume/CV',
       callback: () => this.openBuildModal(),
     });
 
     // Add ribbon icon
-    this.addRibbonIcon('file-text', 'Build Resume/CV', () => this.openBuildModal());
+    this.addRibbonIcon('file-text', 'Build resume/CV', () => this.openBuildModal());
 
-    console.log('Auto CV plugin loaded');
   }
 
-  onunload() {
-    console.log('Auto CV plugin unloaded');
-  }
+  onunload() {}
 
   async loadSettings() {
     this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
