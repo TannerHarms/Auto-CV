@@ -37,6 +37,11 @@
 are pure functions of (Resume, StyleConfig) → output files. This separation must
 be preserved across all phases.
 
+**Agent interface contract:** `BaseAgent.process(resume, **kwargs) -> Resume`.
+All agents that transform resumes extend this ABC. Agents that produce *other*
+artifacts (cover letters, vault files) should not extend `BaseAgent` — they use
+the shared LLM client utility directly (see Technical Notes).
+
 ---
 
 ## Phase 1 — Standalone Project Builds
@@ -204,6 +209,18 @@ Density maps to style overrides that the agent sets on the Resume:
 
 #### 2c. GenerateAgent Design
 
+`GenerateAgent` extends `BaseAgent` (Resume → Resume) and **subsumes** the
+existing `TailorAgent` and `LayoutAgent` for the `generate` workflow. It
+performs selection, ordering, and optional text tuning in a single LLM call
+rather than chaining separate agents. The existing `--polish`, `--tailor-to`,
+and `--suggest-layout` flags on the `build` command remain as the lightweight
+à la carte pipeline.
+
+| Workflow | Agents used |
+|----------|-------------|
+| `build --polish --tailor-to` | TailorAgent → PolishAgent (unchanged) |
+| `generate` | GenerateAgent (does selection + ordering + optional tuning) |
+
 ```python
 class GenerateAgent(BaseAgent):
     """Selects and optionally tunes master vault content for a target role."""
@@ -238,7 +255,7 @@ class GenerateAgent(BaseAgent):
     "projects": ["Auto CV", "Infrastructure Monitor"]
   },
   "bullet_selections": {
-    "Senior Platform Engineer@Acme Corp": [0, 1, 3],
+    "Senior Platform Engineer@Acme Corp": [0, 1, 3],   // 0-based indices into that entry's highlights
     "DevOps Lead@StartupCo": [0, 2]
   },
   "rewrites": {
@@ -402,9 +419,16 @@ Similar flows for: Projects, Certifications, Publications, Awards, Languages.
 
 #### 3b. InterviewAgent Design
 
+`InterviewAgent` does **not** extend `BaseAgent` — its interface is multi-turn
+conversation, not `Resume → Resume`. It uses the shared `LLMClient` utility
+(see Technical Notes) for LLM communication.
+
 ```python
-class InterviewAgent(BaseAgent):
+class InterviewAgent:
     """Conversational agent that generates master vault sections from Q&A."""
+
+    def __init__(self, *, model: str | None = None):
+        self._llm = LLMClient(model=model)
 
     def interview_section(
         self,
@@ -515,9 +539,15 @@ class CoverLetter(BaseModel):
 
 #### 4b. CoverLetterAgent
 
+`CoverLetterAgent` does **not** extend `BaseAgent` — it returns a `CoverLetter`,
+not a `Resume`. It uses the shared `LLMClient` utility for LLM communication.
+
 ```python
-class CoverLetterAgent(BaseAgent):
-    def process(self, resume: Resume, **kwargs) -> CoverLetter:
+class CoverLetterAgent:
+    def __init__(self, *, model: str | None = None):
+        self._llm = LLMClient(model=model)
+
+    def compose(self, resume: Resume, **kwargs) -> CoverLetter:
         job_description: str = kwargs["job_description"]
         company_name: str = kwargs.get("company_name", "")
         tone: str = kwargs.get("tone", "professional")  # professional|warm|concise
@@ -727,6 +757,27 @@ if early feedback collection is desired.
 ---
 
 ## Technical Notes
+
+### LLM Client Extraction
+
+Phases 3 and 4 introduce agents that don't conform to the `BaseAgent` interface
+(`Resume → Resume`). Before starting Phase 3, extract the LLM plumbing from
+`BaseAgent` into a standalone utility:
+
+```python
+class LLMClient:
+    """Shared LLM communication — used by all agents."""
+    def __init__(self, *, model: str | None = None):
+        self.model = model or os.environ.get("AUTO_CV_MODEL", "gpt-4o")
+        self.api_key = os.environ.get("OPENAI_API_KEY", "")
+
+    def chat(self, system: str, user: str, *, temperature: float = 0.3) -> str: ...
+    def chat_multi(self, messages: list[dict], *, temperature: float = 0.3) -> str: ...
+```
+
+`BaseAgent` delegates to `LLMClient` internally. Non-BaseAgent classes
+(`InterviewAgent`, `CoverLetterAgent`) instantiate `LLMClient` directly.
+`chat_multi()` supports multi-turn conversations needed by `InterviewAgent`.
 
 ### LLM Provider Flexibility
 
