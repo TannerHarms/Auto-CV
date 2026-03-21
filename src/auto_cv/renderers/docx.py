@@ -11,7 +11,7 @@ import re
 from pathlib import Path
 
 from docx import Document
-from docx.enum.text import WD_ALIGN_PARAGRAPH, WD_TAB_ALIGNMENT
+from docx.enum.text import WD_ALIGN_PARAGRAPH, WD_BREAK, WD_TAB_ALIGNMENT
 from docx.oxml.ns import qn
 from docx.shared import Inches, Pt, RGBColor
 from docx.opc.constants import RELATIONSHIP_TYPE as RT
@@ -195,8 +195,34 @@ class DocxRenderer(BaseRenderer):
         for section in resume.ordered_sections():
             self._render_section(doc, section, style)
 
+        # Auto CV attribution — remove this block to hide
+        self._render_attribution(doc, style)
+
         doc.save(str(out_path))
         return out_path
+
+    # ------------------------------------------------------------------
+    # Attribution
+    # ------------------------------------------------------------------
+
+    def _render_attribution(self, doc: Document, style: StyleConfig) -> None:
+        """Add an attribution page. Delete this page in Word to remove."""
+        # Page break
+        bp = doc.add_paragraph()
+        bp.runs[0].add_break(WD_BREAK.PAGE) if bp.runs else bp.add_run().add_break(WD_BREAK.PAGE)
+        _set_paragraph_spacing(bp, before=0, after=0)
+
+        # Vertical centering via spacer
+        spacer = doc.add_paragraph()
+        _set_paragraph_spacing(spacer, before=6000, after=0)
+
+        para = doc.add_paragraph()
+        para.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        font_name = style.fonts.body
+        gray = RGBColor(0x99, 0x99, 0x99)
+        _add_run(para, "Resume formatted and compiled by ", size=9, color=gray, font_name=font_name)
+        _add_hyperlink(para, "https://github.com/TannerHarms/Auto-CV", "Auto CV",
+                       size=9, color=gray, font_name=font_name)
 
     # ------------------------------------------------------------------
     # Page setup
