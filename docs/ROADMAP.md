@@ -299,7 +299,7 @@ def generate(
     vault: Path,
     format: list[OutputFormat] = [...],
     output: Path = Path("output"),
-    project: str | None = None,        # Target project to create/update
+    save_as: str | None = None,         # Save selection as a named project
     job_file: list[Path] | None = None, # One or more job description files
     oversight: AgentOversight = AgentOversight.SELECT_ONLY,
     max_pages: int | None = None,
@@ -312,7 +312,9 @@ The `generate` command:
 1. Loads the full `_master` vault (all sections, all entries)
 2. Reads job description files (if any)
 3. Runs `GenerateAgent.process()` with oversight and constraints
-4. Optionally saves the selection as a new project `header.md`
+4. If `--save-as <name>` is given, writes the agent's selections to
+   `projects/<name>/header.md` (with `include:` and `section_order:` lists)
+   so the project can be re-built later without the agent
 5. Renders output
 
 #### 2f. Obsidian Plugin Integration
@@ -417,6 +419,21 @@ For each section type, the agent follows a structured interview:
 
 Similar flows for: Projects, Certifications, Publications, Awards, Languages.
 
+**Header (always first):**
+```
+→ What is your full name?
+→ Professional title? (e.g. "Senior Software Engineer")
+→ Email address?
+→ Phone number? (optional)
+→ Location? (e.g. "San Francisco, CA")
+→ LinkedIn URL? (optional)
+→ GitHub URL? (optional)
+→ Personal website? (optional)
+```
+
+The interview writes `header.md` (name + contact YAML frontmatter) before
+proceeding to section files.
+
 #### 3b. InterviewAgent Design
 
 `InterviewAgent` does **not** extend `BaseAgent` — its interface is multi-turn
@@ -439,26 +456,32 @@ class InterviewAgent:
         # Builds prompt with section format spec + user answers
         # Returns markdown content ready to write to file
 
-    def suggest_next_question(
+    def next_question(
         self,
         section_type: SectionType,
         answers_so_far: list[dict],
-    ) -> str:
-        """Return the next question to ask based on what's been answered."""
+    ) -> str | None:
+        """Return the next question (deterministic template lookup, no LLM call).
+        Returns None when all questions for this section type are answered."""
 ```
 
-The agent is **not** a single `.process()` call — it's a multi-turn conversation.
+`next_question()` is **pure template logic** — no LLM call. Each `SectionType`
+has a static question list (see §3a). The LLM is only invoked in
+`interview_section()` to convert freeform answers into structured markdown.
+This keeps the interview fast and predictable (no API latency per question).
+
 The UI (CLI or Obsidian) drives the loop:
 
 ```
 while not done:
-    question = agent.suggest_next_question(section_type, answers)
-    answer = get_user_input(question)
-    answers.append({"q": question, "a": answer})
-    if answer signals "done" or "next section":
+    question = agent.next_question(section_type, answers)
+    if question is None:
         markdown = agent.interview_section(section_type, answers)
         write_section_file(markdown)
         move to next section
+        continue
+    answer = get_user_input(question)
+    answers.append({"q": question, "a": answer})
 ```
 
 #### 3c. CLI Interactive Mode
@@ -760,9 +783,9 @@ if early feedback collection is desired.
 
 ### LLM Client Extraction
 
-Phases 3 and 4 introduce agents that don't conform to the `BaseAgent` interface
-(`Resume → Resume`). Before starting Phase 3, extract the LLM plumbing from
-`BaseAgent` into a standalone utility:
+Extract the LLM plumbing from `BaseAgent` into a standalone utility **during
+Phase 2**. `GenerateAgent` uses it internally (via `BaseAgent`), and Phases 3-4
+will use it directly for non-BaseAgent agents:
 
 ```python
 class LLMClient:
