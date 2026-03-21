@@ -1,0 +1,14 @@
+# Minimal preset — maximum whitespace, clean black/gray, understated
+preset: minimal
+
+colors:
+  primary: "#2E3440"
+  accent: "#4C566A"
+  heading: "#2E3440"
+
+fonts:
+  body: "Helvetica Neue"
+
+html:
+  layout: top-header
+  include_photo: false

@@ -1,0 +1,17 @@
+# Classic preset — serif type, conservative slate/blue, traditional layout
+preset: classic
+
+# Earthy Brandybuck tones
+colors:
+  primary: "#3B4252"
+  accent: "#5E81AC"
+  heading: "#3B4252"
+  link: "#5E81AC"
+
+fonts:
+  heading: "Georgia"
+  body: "Garamond"
+
+html:
+  layout: top-header
+  include_photo: false

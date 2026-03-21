@@ -1,6 +1,6 @@
 # Auto CV — Example Gallery
 
-Six complete example vaults showcasing different presets, layouts, and content types.
+Eight complete example vaults showcasing different presets, layouts, and content types.
 Each example is an artificial résumé/CV for a member of the **Fellowship of the Ring** — written as if they were applying for their role on the quest.
 Every example is a self-contained vault you can build with `auto-cv build`.
 
@@ -117,6 +117,38 @@ auto-cv build examples/new-graduate -f html -f latex -f docx
 
 ```bash
 auto-cv build examples/data-scientist -f html -f latex -f docx
+```
+
+---
+
+### 7. Project Manager — `classic` preset, top-header layout
+
+![Project Manager Preview](previews/project-manager.png)
+
+**Profile:** Meriadoc "Merry" Brandybuck, Tactical Operations Coordinator & Esquire of Rohan (Buckland, The Shire)
+**Preset:** `classic` with slate/blue tones
+**Layout:** Top-header, no photo — traditional and authoritative
+**Sections:** Summary, Experience, Education, Skills, Projects, Certifications
+**Build:**
+
+```bash
+auto-cv build examples/project-manager -f html -f latex -f docx
+```
+
+---
+
+### 8. Consultant — `minimal` preset, top-header layout
+
+![Consultant Preview](previews/consultant.png)
+
+**Profile:** Peregrin "Pippin" Took, Diplomatic Liaison & Guard of the Citadel (Tuckborough, The Shire)
+**Preset:** `minimal` with clean black/gray palette
+**Layout:** Top-header, no photo — understated and modern
+**Sections:** Summary, Experience, Education, Skills, Projects, Certifications
+**Build:**
+
+```bash
+auto-cv build examples/consultant -f html -f latex -f docx
 ```
 
 ---
