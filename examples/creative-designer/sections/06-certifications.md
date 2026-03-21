@@ -5,12 +5,12 @@ order: 6
 
 # Certifications
 
-## Google UX Design Professional Certificate
+## Grandmaster Archer Certification
 
-**Issuer:** Google / Coursera
-**Date:** 2022-11
+**Issuer:** Elven Martial Arts Council
+**Date:** 500 T.A.
 
-## Certified Accessibility Specialist (CPAC)
+## Certified Master Bowyer
 
-**Issuer:** IAAP
-**Date:** 2023-06
+**Issuer:** Woodland Realm Artisan Guild
+**Date:** 300 T.A.

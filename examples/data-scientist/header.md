@@ -8,12 +8,12 @@ section_order:
   - publications
   - certifications
 html_meta:
-  title: "Raj Mehta — Senior Data Scientist & ML Engineer"
-  description: "ML engineer building production systems at the intersection of NLP and recommendation."
+  title: "Samwise Gamgee — Agricultural Data Analyst & Provisions Specialist"
+  description: "Master gardener and logistics expert specialising in crop yield optimisation and expedition provisioning."
 photo: headshot.svg
 ---
-# Raj Mehta
-*Senior Data Scientist & ML Engineer*
+# Samwise Gamgee
+*Agricultural Data Analyst & Provisions Specialist*
 
-raj.mehta@example.com | +1-206-555-0184 | Seattle, WA
-[LinkedIn](https://linkedin.com/in/rajmehta-ml) | [GitHub](https://github.com/rmehta-ml) | [rajmehta.ai](https://rajmehta.ai)
+sam.gamgee@shire-post.me | 3 Bagshot Row, Hobbiton, The Shire
+[ShireNet](https://shirenet.me/samgamgee) | [GardenHub](https://gardenhub.me/samwise) | [gamgee.garden](https://gamgee.garden)

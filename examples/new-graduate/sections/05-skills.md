@@ -5,18 +5,18 @@ order: 5
 
 # Skills
 
-## Languages
+## Languages & Literacy
 
-- Python, TypeScript, Java, Rust, C, SQL, HTML/CSS
+- Westron (native), Sindarin (conversational), Quenya (reading), Tengwar script, Cirth runes
 
-## Frameworks & Libraries
+## Research & Scholarship
 
-- React, Next.js, FastAPI, Spring Boot, Express.js
+- Manuscript transcription, archival cataloguing, Elvish translation, cartography
 
-## Infrastructure
+## Practical Arts
 
-- PostgreSQL, Redis, Docker, GitHub Actions, AWS (EC2, S3, Lambda)
+- Estate management, event coordination, cooking, gardening
 
-## Concepts
+## Personal Qualities
 
-- Distributed Systems, REST/gRPC APIs, CRDTs, Test-Driven Development, Agile/Scrum
+- Resilience under pressure, stealth, courage, compassion, resistance to corrupting influence

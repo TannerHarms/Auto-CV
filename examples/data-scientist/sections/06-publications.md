@@ -5,20 +5,20 @@ order: 6
 
 # Publications
 
-## Attention-Weighted Two-Tower Models for Large-Scale Product Recommendation
+## Soil Rotation Strategies for Sustained Potato Yield in Shire Loam
 
-**Authors:** R. Mehta, L. Zhang, S. Kumar
-**Venue:** RecSys 2023 (ACM Conference on Recommender Systems)
-**Date:** 2023
+**Authors:** S. Gamgee, H. Gamgee
+**Venue:** Hobbiton Agricultural Quarterly, Vol. 38
+**Date:** 3012 T.A.
 
-## Real-Time Feature Engineering for Online Recommendation at Scale
+## Companion Planting Effects on Tomato Blight Resistance: A 5-Year Field Study
 
-**Authors:** R. Mehta, J. Alvarez
-**Venue:** KDD 2022 (ACM SIGKDD)
-**Date:** 2022
+**Authors:** S. Gamgee
+**Venue:** Proceedings of the Shire Farmers' Guild, Annual Review
+**Date:** 3010 T.A.
 
-## Clinical Named Entity Recognition with Active Learning and BioBERT
+## Caloric Requirements for Multi-Race Expedition Provisioning: A Practical Guide
 
-**Authors:** R. Mehta, A. Patel, K. Rao
-**Venue:** NAACL 2021 (Clinical NLP Workshop)
-**Date:** 2021
+**Authors:** S. Gamgee
+**Venue:** Fellowship Field Notes (Internal Report)
+**Date:** 3018 T.A.

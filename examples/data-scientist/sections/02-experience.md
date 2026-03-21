@@ -5,36 +5,36 @@ order: 2
 
 # Experience
 
-## 1. Senior Data Scientist
+## 1. Head Gardener & Agricultural Analyst
 
-**Company:** Cascade Commerce
-**Location:** Seattle, WA
-**Dates:** 2021-06 – present
+**Company:** Baggins Estate, Bag End
+**Location:** Hobbiton, The Shire
+**Dates:** 3005 T.A. – present
 
-- Own end-to-end ML pipeline for product recommendation engine serving 15M daily active users
-- Improved click-through rate by 18% and revenue-per-session by 12% through transformer-based ranking model
-- Built real-time feature store on Apache Flink processing 500K events/second with <50ms latency
-- Designed A/B testing framework adopted across 4 product teams, running 30+ concurrent experiments
-- Mentor 3 junior data scientists and lead weekly ML paper reading group
+- Manage all grounds including vegetable gardens, flower beds, and ornamental hedges across 2 acres
+- Improved overall crop yield by 30% through systematic soil testing and rotation scheduling
+- Built seasonal planting model tracking 40+ varieties across 3 growing zones with weather adjustment
+- Designed irrigation system reducing water usage by 25% during dry summers
+- Supply provisions for all household events including Bilbo's legendary 111th birthday party
 
-## 2. Data Scientist
+## 2. Apprentice Gardener
 
-**Company:** HealthBridge Analytics
-**Location:** Seattle, WA
-**Dates:** 2019-01 – 2021-05
+**Company:** Gaffer Gamgee & Sons, Garden Services
+**Location:** Hobbiton, The Shire
+**Dates:** 2998 T.A. – 3005 T.A.
 
-- Developed NLP pipeline for clinical note extraction achieving 94% F1 on named entity recognition
-- Built patient readmission prediction model deployed across 12 hospital partners, reducing 30-day readmissions by 8%
-- Created automated model monitoring dashboard tracking drift, bias, and performance degradation
-- Collaborated with clinical teams to ensure HIPAA-compliant data pipelines and model explainability
+- Trained under Hamfast "The Gaffer" Gamgee in traditional Shire gardening methods
+- Maintained 15+ client gardens across Hobbiton and Bywater
+- Developed pest monitoring system tracking aphid, slug, and caterpillar populations weekly
+- Created composting schedule that reduced fertiliser costs by 40% across all client properties
 
-## 3. Machine Learning Engineer
+## 3. Provisions Coordinator
 
-**Company:** Veritas Financial Technologies
-**Location:** New York, NY
-**Dates:** 2017-07 – 2018-12
+**Company:** Hobbiton Harvest Festival Committee
+**Location:** Hobbiton, The Shire
+**Dates:** 3000 T.A. – 3018 T.A.
 
-- Built gradient-boosted fraud detection model processing 2M+ transactions/day with 97.3% precision
-- Reduced false positive rate by 40% through feature engineering and ensemble methods
-- Deployed models via Docker + Kubernetes with automated retraining on weekly cadence
-- Implemented model versioning and experiment tracking using MLflow
+- Planned and sourced provisions for annual festival serving 500+ hobbits
+- Managed vendor relationships with 20+ farms and bakeries across the Shire
+- Coordinated storage, transport, and freshness logistics for perishable goods
+- Zero waste incidents across 18 consecutive festivals

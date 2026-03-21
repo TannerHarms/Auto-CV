@@ -5,18 +5,17 @@ order: 8
 
 # Certifications & Training
 
-## Responsible Conduct of Research
+## Authorised Wielder of Glamdring
 
-**Issuer:** MIT Office of Research
-**Date:** 2023
-**URL:** <https://research.mit.edu/rcr>
+**Issuer:** House of Elrond, Rivendell
+**Date:** 2941 T.A.
 
-## High-Performance Computing Workshop
+## Certified Palantír Handler (Restricted)
 
-**Issuer:** XSEDE / ACCESS
-**Date:** 2021
+**Issuer:** The White Council
+**Date:** 2463 T.A.
 
-## Advanced Quantum Information Science
+## Advanced Eagle-Summoning Protocol
 
-**Issuer:** Kavli Institute for Theoretical Physics
-**Date:** 2020
+**Issuer:** Gwaihir the Windlord, Eagles of Manwë
+**Date:** 1100 T.A.

@@ -5,32 +5,32 @@ order: 4
 
 # Experience
 
-## 1. Software Engineering Intern
+## 1. Master of Bag End (Estate Manager)
 
-**Company:** Stripe
-**Location:** San Francisco, CA (Remote)
-**Dates:** 2024-06 – 2024-08
+**Company:** Baggins Estate
+**Location:** Hobbiton, The Shire
+**Dates:** 3001 T.A. – 3018 T.A.
 
-- Built internal tool for automated merchant risk assessment, reducing manual review queue by 35%
-- Contributed to payments API reliability initiative, increasing uptime SLA from 99.95% to 99.99%
-- Wrote comprehensive integration tests covering 40+ edge cases in payment flow
+- Managed household operations, tenant relations, and property maintenance for Bag End
+- Administered estate finances inherited from Bilbo Baggins
+- Coordinated annual events including harvest feasts and Yule celebrations
 
-## 2. Software Engineering Intern
+## 2. Research Assistant to Bilbo Baggins
 
-**Company:** Mailchimp (Intuit)
-**Location:** Atlanta, GA
-**Dates:** 2023-05 – 2023-08
+**Company:** Bag End Academy
+**Location:** Hobbiton, The Shire
+**Dates:** 2995 T.A. – 3001 T.A.
 
-- Developed React components for email template builder used by 500K+ small businesses
-- Improved template rendering performance by 25% through virtual DOM optimisation
-- Participated in Intuit's Design for Delight programme
+- Assisted with translation and transcription of Elvish texts and historical documents
+- Organised research materials for Bilbo's ongoing memoir revisions
+- Accompanied Bilbo to Elven gatherings near the Woody End, taking field notes
 
-## 3. Undergraduate Teaching Assistant — CS 2110
+## 3. Volunteer Shire Postal Courier
 
-**Company:** Georgia Institute of Technology
-**Location:** Atlanta, GA
-**Dates:** 2023-01 – 2025-05
+**Company:** Shire Postal Service
+**Location:** Hobbiton, The Shire
+**Dates:** 2990 T.A. – 2995 T.A.
 
-- Led weekly recitation sections for 30 students in Computer Organisation & Programming
-- Held 4 office hours/week, graded assignments, and wrote autograder test cases
-- Received 4.8/5.0 student evaluation rating across 4 semesters
+- Delivered mail across Bywater, Hobbiton, and Overhill routes
+- Maintained 99.5% on-time delivery rate across 3 Farthings
+- Named Courier of the Season twice (Spring 2992, Autumn 2993)

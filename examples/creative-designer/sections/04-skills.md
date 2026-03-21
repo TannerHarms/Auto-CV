@@ -5,18 +5,18 @@ order: 4
 
 # Skills
 
-## Design
+## Craftsmanship
 
-- User Research, Wireframing, Prototyping, Interaction Design, Visual Design, Motion Graphics
+- Bow Making, Fletching, Woodcarving, Leatherwork, Metalwork, Enchantment Integration
 
-## Tools
+## Materials
 
-- Figma, Sketch, Adobe Creative Suite, Principle, After Effects, Framer
+- Mallorn, Yew, Silver Birch, Mithril, Spider Silk, Elven Rope, Living Wood
 
-## Development
+## Combat Arts
 
-- HTML, CSS, JavaScript, React (basic), Storybook, Git
+- Archery (Grandmaster), Dual-Blade Fighting, Aerial Acrobatics, Mounted Combat
 
-## Strategy
+## Design Philosophy
 
-- Design Thinking, Brand Strategy, A/B Testing, Analytics, Accessibility (WCAG 2.1)
+- Sustainable Forestry, Organic Form Language, Biomimicry, Aesthetic-Function Balance

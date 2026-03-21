@@ -5,26 +5,29 @@ order: 4
 
 # Projects
 
-## [cascade-recsys](https://github.com/rmehta-ml/cascade-recsys)
+## Bag End Crop Yield Optimisation Programme
 
-Open-source two-tower recommendation system with contrastive learning and real-time serving.
-**Technologies:** PyTorch, FAISS, Redis, FastAPI
+Systematic overhaul of the Bag End vegetable gardens using data-driven soil analysis and crop rotation.
+**Technologies:** Soil pH testing, companion planting matrices, seasonal growth tracking
 
-- 2,100+ GitHub stars
-- Used as reference implementation in O'Reilly "Recommendation Systems in Practice" book
+- Increased tomato yield by 45% and potato yield by 30% over 3 seasons
+- Identified optimal planting dates for 40+ varieties based on 10 years of historical weather data
+- Results adopted by 8 neighbouring gardens in Hobbiton
 
-## [clinical-ner](https://github.com/rmehta-ml/clinical-ner)
+## Fellowship Provisions Calculator
 
-Fine-tuned BioBERT model for clinical named entity recognition with active learning loop.
-**Technologies:** Hugging Face Transformers, Prodigy, spaCy, FastAPI
+Complete provisioning plan for a 9-member expedition from Rivendell to Mordor through hostile territory.
+**Technologies:** Caloric needs modelling, terrain-based consumption rates, resupply point mapping
 
-- Achieves 94% F1 on i2b2 2010 benchmark
-- Active learning loop reduces annotation cost by 60%
+- Calculated daily rations for diverse metabolisms (hobbit, human, elf, dwarf, wizard)
+- Modelled 90-day supply chain with weight constraints (40 lbs per pack)
+- Included emergency reserves and forage probability estimates per terrain type
 
-## [drift-monitor](https://github.com/rmehta-ml/drift-monitor)
+## Shire Almanac Data Archive
 
-Lightweight model monitoring library detecting data drift, concept drift, and prediction drift.
-**Technologies:** Python, NumPy, Plotly, Prometheus
+Digitised 50 years of Shire agricultural almanac records into structured, queryable format.
+**Technologies:** Manual transcription, cross-referencing, trend analysis
 
-- Statistical tests: KS, PSI, Jensen-Shannon divergence
-- Prometheus/Grafana integration for production alerting
+- Compiled weather, soil, and yield data from 200+ farms across 4 Farthings
+- Identified 7-year drought cycle enabling early warning for lean harvests
+- Reference dataset used by Hobbiton Farmers' Guild for seasonal planning

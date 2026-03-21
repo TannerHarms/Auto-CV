@@ -5,18 +5,18 @@ order: 5
 
 # Technical Skills
 
-## Programming
+## Arcane Arts
 
-- Python, Julia, Fortran, C++, MATLAB, Bash
+- Flame conjuration, light-weaving, ward-crafting, shadow banishment, firework design
 
-## Computational Methods
+## Ring-Lore & Artefact Analysis
 
-- Density Functional Theory (VASP, Quantum ESPRESSO), Tight-Binding Models, DMRG, Tensor Networks
+- Rings of Power theory, corrupted-artefact identification, palantír handling, Morgoth-era relic dating
 
-## Scientific Computing
+## Diplomacy & Intelligence
 
-- MPI, OpenMP, SLURM, Jupyter, NumPy, SciPy, QuTiP, ITensor
+- Multi-racial alliance building, covert intelligence gathering, threat assessment, council facilitation
 
-## Writing & Presentation
+## Field Research
 
-- LaTeX, Matplotlib, Inkscape, Beamer, Overleaf
+- Long-range reconnaissance, wilderness survival, mounted patrol (equestrian: Shadowfax-class), cartography

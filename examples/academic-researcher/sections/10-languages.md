@@ -5,7 +5,10 @@ order: 10
 
 # Languages
 
-- **English** — Native
-- **Spanish** — Native
-- **French** — Intermediate (B2)
-- **German** — Basic (A2)
+- **Westron (Common Speech)** — Native fluency
+- **Sindarin** — Native fluency
+- **Quenya** — Native fluency
+- **Khuzdul** — Proficient (scholarly)
+- **Rohirric** — Conversational
+- **Black Speech** — Reading comprehension (research purposes only)
+- **Entish** — Basic (extremely slow)

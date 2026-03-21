@@ -5,4 +5,4 @@ order: 1
 
 # Research Interests
 
-Theoretical and computational condensed matter physics with focus on topological phases, quantum transport in low-dimensional systems, and non-equilibrium dynamics. Expertise in density functional theory (DFT), tight-binding models, and tensor network methods. Seeking faculty positions to establish an independent research programme bridging quantum materials theory and experiment.
+Ring-lore and artefact dynamics, shadow containment theory, pyrotechnic enchantment design, and Free Peoples alliance strategy. Two millennia of field research across Middle-earth with emphasis on Morgoth-era relics, Rings of Power binding mechanics, and Istari intervention methodology. Seeking appointment as Guide and Wizard on the Fellowship of the Ring to apply ring-lore expertise toward the destruction of the One Ring.

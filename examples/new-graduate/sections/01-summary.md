@@ -5,4 +5,4 @@ order: 1
 
 # Summary
 
-Recent Computer Science graduate from Georgia Tech with strong foundations in full-stack development, algorithms, and systems programming. Completed 3 software engineering internships and contribute actively to open-source projects. Eager to join a team where I can grow as an engineer while building products that make a difference.
+Recent graduate of Bag End Academy with a strong foundation in Elvish languages, Shire history, and cartography, trained under renowned adventurer Bilbo Baggins. Completed independent study in the geography of Middle-earth, encounter protocol, and foreign cultures. Eager to apply courage, resilience, and ring-lore knowledge as Ring-Bearer on the Fellowship of the Ring to safeguard the Free Peoples.

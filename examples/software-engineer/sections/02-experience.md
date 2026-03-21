@@ -5,34 +5,34 @@ order: 2
 
 # Experience
 
-## 1. Senior Software Engineer
+## 1. Senior Structural Engineer
 
-**Company:** Streamline Technologies
-**Location:** San Francisco, CA
-**Dates:** 2022-01 – present
+**Company:** Erebor Royal Works
+**Location:** Erebor, Lonely Mountain
+**Dates:** 2941 T.A. – present
 
-- Designed event-driven order processing pipeline handling 4M+ daily transactions on Kafka and Go
-- Led migration from monolithic REST API to gRPC microservices, reducing p99 latency by 45%
-- Built real-time anomaly detection sidecar using OpenTelemetry and Prometheus, cutting MTTR by 60%
-- Mentored 4 engineers through structured 1:1s, two promoted to senior within 18 months
+- Led reconstruction of the Front Gate and Great Hall following the Battle of Five Armies
+- Designed earthquake-resistant vault system protecting 40,000+ tonnes of treasury assets
+- Built real-time structural monitoring network using resonance crystals, reducing collapse risk by 85%
+- Mentored 12 apprentice engineers; four achieved Master Mason certification within 20 years
 
-## 2. Software Engineer
+## 2. Mining Systems Engineer
 
-**Company:** Nexus Cloud
-**Location:** San Francisco, CA
-**Dates:** 2020-03 – 2021-12
+**Company:** Iron Hills Engineering Corps
+**Location:** Iron Hills, Rhovanion
+**Dates:** 2911 T.A. – 2941 T.A.
 
-- Developed multi-tenant storage API serving 2,000+ enterprise customers on AWS S3 and DynamoDB
-- Implemented rate limiting and circuit-breaker patterns reducing cascading failures by 80%
-- Created internal CLI tool for infrastructure provisioning, adopted by 30+ engineers
-- Contributed to open-source Go libraries for distributed tracing
+- Developed multi-level ventilation system serving 3,000+ miners across 47 active shafts
+- Implemented reinforced buttress patterns reducing tunnel collapses by 92%
+- Created standardised mine cart rail gauge adopted across all Dwarven realms
+- Contributed to open-source blast pattern library for controlled demolition
 
-## 3. Software Engineer
+## 3. Structural Apprentice
 
-**Company:** DataPipe Inc.
-**Location:** Oakland, CA
-**Dates:** 2018-06 – 2020-02
+**Company:** Glóin & Sons Stoneworks
+**Location:** Blue Mountains, Ered Luin
+**Dates:** 2879 T.A. – 2911 T.A.
 
-- Built ETL pipelines processing 500GB/day of clickstream data using Apache Beam and Python
-- Designed schema evolution strategy for Avro-encoded Kafka topics, eliminating breaking changes
-- Automated infrastructure-as-code with Terraform, reducing provisioning time from 2 days to 15 minutes
+- Built load-bearing archways processing structural loads of 500+ tonnes per span
+- Designed drainage schema for underground waterways, eliminating flooding in lower galleries
+- Automated quarry extraction with lever-and-pulley systems, reducing stone-cutting time by 70%

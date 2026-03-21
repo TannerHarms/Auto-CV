@@ -5,12 +5,20 @@ order: 5
 
 # Education
 
-## 1. B.S. Computer Science
+## 1. Master of Structural Engineering
 
-**Institution:** University of California, Berkeley
-**Location:** Berkeley, CA
-**Dates:** 2014-08 – 2018-05
-**GPA:** 3.7
+**Institution:** Khazad-dûm Royal Academy of Engineering
+**Location:** Moria, Misty Mountains
+**Dates:** 2860 T.A. – 2879 T.A.
 
-- Dean's List 6 semesters
-- Teaching assistant for CS 61B (Data Structures)
+- Highest Honours in Advanced Stonecraft and Load Analysis
+- Thesis: "Mithril-Reinforced Arch Geometries for Deep Excavation"
+
+## 2. Apprentice Certificate in Mining & Metallurgy
+
+**Institution:** Blue Mountains Trade Guild
+**Location:** Ered Luin
+**Dates:** 2845 T.A. – 2860 T.A.
+
+- First in class for Ore Identification and Alloy Composition
+- Guild Prize for innovative bellows design

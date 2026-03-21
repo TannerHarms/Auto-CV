@@ -5,21 +5,21 @@ order: 3
 
 # Education
 
-## 1. Master of Business Administration
+## 1. Advanced Studies in Lore, Statecraft & Warfare
 
-**Institution:** The Wharton School, University of Pennsylvania
-**Location:** Philadelphia, PA
-**Dates:** 2009-08 – 2011-05
+**Institution:** House of Elrond, Rivendell
+**Location:** Imladris, Eriador
+**Dates:** 2933 T.A. – 2951 T.A.
 
-- Concentration in Strategy and Operations Management
-- Palmer Scholar (Top 5% of class)
+- Mentored by Lord Elrond Half-elven in diplomacy, history, and Elvish languages
+- Top marks in Strategic Command and Ancient Lore of the Rings of Power
 
-## 2. B.A. Economics
+## 2. Foundational Training in Arms & Letters
 
-**Institution:** Georgetown University
-**Location:** Washington, DC
-**Dates:** 2003-08 – 2007-05
-**GPA:** 3.85
+**Institution:** Rivendell House of Learning
+**Location:** Imladris, Eriador
+**Dates:** 2917 T.A. – 2933 T.A.
 
-- Magna Cum Laude
-- Captain, Women's Rowing Team
+- Raised as "Estel" under Elrond’s guardianship
+- Mastered Sindarin, Quenya, Westron, Haradric, and Black Speech (reading only)
+- Captain of the youth guard training cohort

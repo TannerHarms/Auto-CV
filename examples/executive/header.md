@@ -6,11 +6,11 @@ section_order:
   - skills
   - awards
 html_meta:
-  title: "Margaret S. Whitfield — VP Operations & Strategy"
-  description: "C-suite operations leader with 18 years driving growth at Fortune 500 companies."
+  title: "Aragorn son of Arathorn — Chieftain of the Dúnedain"
+  description: "Seasoned military commander and heir to the throne of Gondor with 60+ years of strategic leadership."
 ---
-# Margaret S. Whitfield
-*Vice President, Operations & Strategy*
+# Aragorn II Elessar
+*Chieftain of the Dúnedain & Heir of Isildur*
 
-m.whitfield@example.com | +1-212-555-0198 | New York, NY
-[LinkedIn](https://linkedin.com/in/margaretwhitfield)
+strider@rangers.nth | Rivendell, Eriador
+[LinkedIn](https://linkedin.com/in/aragorn-elessar)

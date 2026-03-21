@@ -5,4 +5,4 @@ order: 1
 
 # Summary
 
-Backend-focused software engineer with 6 years of experience designing and scaling distributed systems. Deep expertise in Go and Python, with a track record of building fault-tolerant services that handle millions of requests per day. Passionate about clean API design, observability, and mentoring engineers.
+Master structural engineer with 140 years of experience designing and reinforcing subterranean infrastructure. Deep expertise in mithril alloy systems and load-bearing stonework, with a track record of building fault-tolerant mine shafts that withstand seismic activity and dragon fire. Passionate about clean architectural design, materials integrity, and mentoring apprentice stonemasons.

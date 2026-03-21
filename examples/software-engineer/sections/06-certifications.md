@@ -5,12 +5,17 @@ order: 6
 
 # Certifications
 
-## AWS Solutions Architect – Professional
+## Master Mason — First Class
 
-**Issuer:** Amazon Web Services
-**Date:** 2023-04
+**Issuer:** Dwarven Guild of Stonemasons
+**Date:** 2890 T.A.
 
-## Certified Kubernetes Administrator (CKA)
+## Certified Mithril Metallurgist
 
-**Issuer:** Cloud Native Computing Foundation
-**Date:** 2022-09
+**Issuer:** Erebor Royal Forge Authority
+**Date:** 2943 T.A.
+
+## Controlled Demolition Specialist
+
+**Issuer:** Iron Hills Mining Safety Board
+**Date:** 2920 T.A.

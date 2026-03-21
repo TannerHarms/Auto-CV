@@ -7,12 +7,12 @@ section_order:
   - education
   - certifications
 html_meta:
-  title: "Alex Chen — Senior Software Engineer"
-  description: "Backend-focused engineer with 6 years building distributed systems."
+  title: "Gimli son of Glóin — Senior Structural Engineer"
+  description: "Dwarven engineer with decades of experience in subterranean infrastructure and mithril systems."
 photo: headshot.svg
 ---
-# Alex Chen
-*Senior Software Engineer*
+# Gimli son of Glóin
+*Senior Structural & Mining Engineer*
 
-alex.chen@example.com | +1-415-555-0142 | San Francisco, CA
-[LinkedIn](https://linkedin.com/in/alexchen-dev) | [GitHub](https://github.com/achen-dev) | [alexchen.dev](https://alexchen.dev)
+gimli@erebor.dw | Erebor, Lonely Mountain
+[StoneCraft](https://linkedin.com/in/gimli-axebearer) | [ForgeHub](https://github.com/gimli-stonecraft) | [gimli.erebor.dw](https://gimli.erebor.dw)

@@ -5,27 +5,30 @@ order: 9
 
 # Professional Service
 
-## Peer Reviewer
+## White Council Member & Senior Advisor
 
-**Organization:** American Physical Society (PRL, PRB)
-**Dates:** 2022-01 – present
-**Location:** Remote
+**Organization:** The White Council
+**Dates:** 2463 T.A. – present
+**Location:** Rivendell / Lothlórien
 
-- Reviewed 12+ manuscripts for Physical Review Letters and Physical Review B
+- Advocated for pre-emptive action against Dol Guldur (overruled by Saruman until 2941 T.A.)
+- Provided threat intelligence on Ring-wraith activity and Mordor mobilisation
 
-## Graduate Admissions Committee Member
+## Shire Welfare & Hobbit Mentorship
 
-**Organization:** Stanford University, Dept. of Physics
-**Dates:** 2020-09 – 2022-05
-**Location:** Stanford, CA
+**Organization:** Independent Pro Bono
+**Dates:** 2680 T.A. – present
+**Location:** The Shire
 
-- Evaluated 150+ applications per cycle; advocated for holistic review criteria
+- Maintained protective watch over the Shire for over 300 years
+- Mentored Bilbo and Frodo Baggins on courage, lore, and the wider world
+- Organised annual fireworks displays fostering community spirit
 
-## Science Outreach Volunteer
+## Ranger Coordination & Northern Watch
 
-**Organization:** MIT Science Policy Initiative
-**Dates:** 2023-01 – present
-**Location:** Cambridge, MA
+**Organization:** Dúnedain Rangers of the North
+**Dates:** 2953 T.A. – present
+**Location:** Eriador
 
-- Led physics demonstrations at local high schools reaching 500+ students
-- Organised "Physics for Everyone" public lecture series
+- Coordinated intelligence-sharing between Rangers and Elven outposts
+- Advised Aragorn son of Arathorn on lineage, destiny, and leadership preparation

@@ -5,22 +5,22 @@ order: 3
 
 # Technical Skills
 
-## ML / AI
+## Agricultural Analytics
 
-- PyTorch, TensorFlow, scikit-learn, Hugging Face Transformers, XGBoost, LightGBM, spaCy
+- Soil fertility modelling, crop rotation optimisation, yield forecasting, pest population tracking, weather pattern analysis
 
-## Data Engineering
+## Provisioning & Logistics
 
-- Apache Spark, Apache Flink, Airflow, dbt, Kafka, Delta Lake
+- Expedition supply planning, caloric needs calculation, perishable preservation, weight-to-nutrition ratio analysis, route-based consumption modelling
 
-## Languages
+## Horticultural Methods
 
-- Python, SQL, Scala, R, Bash
+- Companion planting, grafting, composting, irrigation design, seed selection, hedge-craft, tree management
 
-## Infrastructure
+## Culinary Arts
 
-- AWS (SageMaker, EMR, Redshift, S3), Docker, Kubernetes, MLflow, Weights & Biases
+- Field cooking, preservation (smoking, salting, drying), recipe optimisation, herb identification, multi-course meal planning
 
-## Techniques
+## Data Collection & Reporting
 
-- NLP, Recommender Systems, Time Series, A/B Testing, Causal Inference, Feature Engineering
+- Manual field surveys, tally systems, seasonal record-keeping, almanac cross-referencing, oral report delivery

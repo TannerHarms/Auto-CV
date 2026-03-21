@@ -5,18 +5,18 @@ order: 3
 
 # Technical Skills
 
-## Languages
+## Materials
 
-- Go, Python, TypeScript, SQL, Bash
+- Mithril, Adamant, Galvorn, Iron, Steel, Granite, Marble, Obsidian
 
-## Frameworks & Tools
+## Structural Methods
 
-- gRPC, Kafka, Redis, PostgreSQL, DynamoDB, Elasticsearch
+- Load-Bearing Arch Design, Seismic Reinforcement, Ventilation Systems, Hydraulic Drainage
 
-## Cloud & DevOps
+## Tools & Equipment
 
-- AWS (ECS, Lambda, S3, SQS), Kubernetes, Terraform, Docker, GitHub Actions
+- War Axe (combat-rated), Pickaxe (precision), Forge Hammer, Theodolite, Plumb Line, Blast Charges
 
-## Observability
+## Monitoring & Safety
 
-- OpenTelemetry, Prometheus, Grafana, Datadog, PagerDuty
+- Resonance Crystal Networks, Canary Systems, Gas Detection Runes, Structural Stress Analysis

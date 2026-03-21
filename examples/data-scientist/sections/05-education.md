@@ -5,20 +5,21 @@ order: 5
 
 # Education
 
-## 1. M.S. Computer Science (Machine Learning Specialisation)
+## 1. Advanced Apprenticeship in Horticulture & Agricultural Science
 
-**Institution:** University of Washington
-**Location:** Seattle, WA
-**Dates:** 2015-09 – 2017-06
+**Institution:** Gaffer Gamgee School of Practical Gardening
+**Location:** Hobbiton, The Shire
+**Dates:** 2998 T.A. – 3005 T.A.
 
-- Thesis: "Attention-Based Neural Architectures for Sequential Recommendation"
-- Research assistant in UW NLP Lab
+- Thesis: "Companion Planting Strategies for Maximising Shire Root Vegetable Yields"
+- Advisor: Hamfast "The Gaffer" Gamgee
 
-## 2. B.Tech. Computer Science and Engineering
+## 2. General Studies & Practical Arts
 
-**Institution:** Indian Institute of Technology Bombay
-**Location:** Mumbai, India
-**Dates:** 2011-07 – 2015-05
-**GPA:** 9.1/10.0
+**Institution:** Hobbiton Village School
+**Location:** Hobbiton, The Shire
+**Dates:** 2990 T.A. – 2998 T.A.
+**GPA:** Distinction in Botany & Cookery
 
-- Institute Silver Medal (Top 2% of graduating class)
+- Top marks in Herbalism and Kitchen Science
+- Won Young Gardener of the Year (2997 T.A.)

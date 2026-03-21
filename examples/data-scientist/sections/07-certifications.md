@@ -5,17 +5,17 @@ order: 7
 
 # Certifications
 
-## AWS Machine Learning Specialty
+## Master Gardener, First Class
 
-**Issuer:** Amazon Web Services
-**Date:** 2023-03
+**Issuer:** Shire Horticultural Society
+**Date:** 3008 T.A.
 
-## TensorFlow Developer Certificate
+## Certified Provisions Planner
 
-**Issuer:** Google
-**Date:** 2021-11
+**Issuer:** Hobbiton Harvest Festival Committee
+**Date:** 3005 T.A.
 
-## Databricks Certified Associate Developer for Apache Spark
+## Advanced Herbalism & Plant Identification
 
-**Issuer:** Databricks
-**Date:** 2020-06
+**Issuer:** Bywater Botanical Society
+**Date:** 3003 T.A.

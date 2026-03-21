@@ -5,25 +5,25 @@ order: 3
 
 # Featured Work
 
-## [Luminary Design System](https://nakamuradesign.co/case-study/lds)
+## Galadhrim Longbow System
 
-End-to-end design system serving 6 product teams with shared tokens, components, and documentation.
-**Technologies:** Figma, Storybook, React, CSS Custom Properties
+End-to-end weapon system serving 6 Elven garrison companies with shared components, string types, and field documentation.
+**Technologies:** Mallorn Wood, Mithril Inlay, Spider Silk, Enchantment Binding
 
-- Reduced design-to-dev handoff time by 50%
-- Achieved 100% WCAG 2.1 AA compliance across all components
+- Reduced restring time by 50%
+- Achieved 100% accuracy at 300 metres in field trials
 
-## [BrightPath Onboarding Redesign](https://nakamuradesign.co/case-study/onboarding)
+## Mirkwood Canopy Bridge Network
 
-Research-driven redesign of SaaS onboarding that dramatically improved conversion.
-**Technologies:** Figma, Maze, Hotjar, Lottie
+Research-driven redesign of inter-tree bridge system that dramatically improved troop movement speed.
+**Technologies:** Silver Birch, Elven Rope, Resonance Anchors
 
-- 42% reduction in drop-off rate
-- Featured in UX Collective as a case study
+- 42% reduction in transit time across northern perimeter
+- Featured in Elven Architecture Quarterly as a case study
 
-## [Evergreen Brand Identity](https://nakamuradesign.co/case-study/evergreen)
+## Ithilien Garden Restoration
 
-Complete brand identity for a sustainable fashion startup — logo, type system, color palette, packaging.
-**Technologies:** Illustrator, InDesign, Figma
+Complete landscape and structural design for restoring Ithilien’s gardens after the War of the Ring.
+**Technologies:** Living Wood Sculpture, Water Channelling, Seed Enchantment
 
-- Brand launch reached 1M+ social impressions in first month
+- Garden opening attracted 1,000+ visitors in first month across three races

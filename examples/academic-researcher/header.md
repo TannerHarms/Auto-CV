@@ -11,13 +11,13 @@ section_order:
   - volunteer
   - languages
 metadata:
-  quote: "Investigating topological phases of quantum matter"
+  quote: "All we have to decide is what to do with the time that is given us"
 html_meta:
-  title: "Dr. Elena Vasquez — Condensed Matter Physics"
-  description: "Postdoctoral researcher specialising in topological materials and quantum transport."
+  title: "Gandalf the Grey — Istari Scholar & Loremaster"
+  description: "Wizard and emissary of the Valar specialising in ring-lore, shadow dynamics, and Free Peoples diplomacy."
 ---
-# Dr. Elena Vasquez
-*Postdoctoral Research Fellow — Condensed Matter Physics*
+# Gandalf the Grey
+*Istari Scholar & Loremaster of the Free Peoples*
 
-e.vasquez@example.edu | +1-617-555-0237 | Cambridge, MA
-[LinkedIn](https://linkedin.com/in/elena-vasquez-phd) | [GitHub](https://github.com/evasquez-physics) | [evasquez.physics.mit.edu](https://evasquez.physics.mit.edu)
+mithrandir@greyhavens.me | Valinor Express 7740 | Hobbiton, The Shire
+[ORCID](https://orcid.org/0000-GREY-0001) | [ScholarStone](https://scholar.me.org/gandalf) | [gandalf.grey.me](https://gandalf.grey.me)

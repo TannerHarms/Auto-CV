@@ -5,11 +5,11 @@ order: 5
 
 # Education
 
-## 1. B.F.A. Graphic Design
+## 1. Master of Artisan Craft
 
-**Institution:** Rhode Island School of Design (RISD)
-**Location:** Providence, RI
-**Dates:** 2012-09 – 2016-05
+**Institution:** Woodland Realm Academy of Arts
+**Location:** Mirkwood, Rhovanion
+**Dates:** 100 T.A. – 200 T.A.
 
-- President's Honor List
-- Senior thesis exhibited at RISD Museum
+- King’s Honour List
+- Senior thesis exhibited at the Hall of the Elvenking

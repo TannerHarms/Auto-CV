@@ -5,13 +5,12 @@ order: 6
 
 # Certifications
 
-## AWS Cloud Practitioner
+## Shire Postal Courier License
 
-**Issuer:** Amazon Web Services
-**Date:** 2024-02
+**Issuer:** Shire Postal Service, Michel Delving
+**Date:** 2990 T.A.
 
-## freeCodeCamp Full Stack Development
+## Bag End Estate Stewardship Certificate
 
-**Issuer:** freeCodeCamp
-**Date:** 2022-08
-**URL:** <https://freecodecamp.org/certification/sokafor>
+**Issuer:** Hobbiton Township Council
+**Date:** 3001 T.A.

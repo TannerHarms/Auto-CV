@@ -7,11 +7,11 @@ section_order:
   - skills
   - certifications
 html_meta:
-  title: "Sam Okafor — Software Developer"
-  description: "Recent CS graduate passionate about full-stack development and open source."
+  title: "Frodo Baggins — Aspiring Ring-Bearer"
+  description: "Young hobbit of the Shire seeking his first quest beyond the borders of the known."
 ---
-# Sam Okafor
-*Software Developer — Recent Graduate*
+# Frodo Baggins
+*Aspiring Adventurer — Recent Graduate*
 
-sam.okafor@example.com | +1-404-555-0163 | Atlanta, GA
-[LinkedIn](https://linkedin.com/in/samokafor) | [GitHub](https://github.com/sokafor-dev)
+frodo.baggins@shire-post.me | Bag End, Hobbiton, The Shire
+[ScholarStone](https://scholar.me.org/underhill) | [Shire Directory](https://shire.me/frodo-baggins)

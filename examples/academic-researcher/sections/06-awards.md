@@ -6,36 +6,36 @@ display: expressive
 
 # Honours & Awards
 
-## NSF Postdoctoral Research Fellowship
+## Bearer of Narya, the Ring of Fire
 
-**Issuer:** National Science Foundation
-**Date:** 2022
-**Location:** Arlington, VA
+**Issuer:** Círdan the Shipwright
+**Date:** 1000 T.A.
+**Location:** Grey Havens, Lindon
 
-- Competitive fellowship supporting independent postdoctoral research in condensed matter theory
-- Funded 2-year appointment at MIT with full salary and $85K research budget
+- Entrusted with one of the Three Elven Rings upon arrival in Middle-earth
+- Narya kindles courage and resistance against tyranny and despair
 
-## Stanford Graduate Fellowship
+## Appointment to the Order of the Istari
 
-**Issuer:** Stanford University
-**Date:** 2017
-**Location:** Stanford, CA
+**Issuer:** The Valar (Manwë Súlimo)
+**Date:** Before 1000 T.A.
+**Location:** Valinor, Aman
 
-- Three-year merit-based fellowship covering full tuition and stipend
-- Awarded to top 10% of incoming PhD cohort in the School of Humanities & Sciences
+- Selected as one of five Maiar emissaries to counter the shadow of Sauron
+- Ranked third by the Valar; considered wisest by many of the Eldar
 
-## Barry M. Goldwater Scholarship
+## Victor of the Battle of Five Armies
 
-**Issuer:** Barry Goldwater Scholarship Foundation
-**Date:** 2016
-**Location:** Washington, DC
+**Issuer:** Kingdom of Erebor, Kingdom of Dale
+**Date:** 2941 T.A.
+**Location:** Erebor, Lonely Mountain
 
-- National scholarship for outstanding undergraduates in STEM research
+- Instrumental strategist in the allied victory against goblin and warg forces
 
-## Outstanding Undergraduate Research Prize
+## Liberator of Dol Guldur
 
-**Issuer:** University of Colorado Boulder, Dept. of Physics
-**Date:** 2017
-**Location:** Boulder, CO
+**Issuer:** The White Council
+**Date:** 2941 T.A.
+**Location:** Dol Guldur, Southern Mirkwood
 
-- Departmental award for senior thesis on Floquet engineering of optical lattices
+- Led the Council assault that drove the Necromancer from his southern fortress

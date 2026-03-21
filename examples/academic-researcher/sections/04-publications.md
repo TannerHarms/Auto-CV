@@ -5,32 +5,32 @@ order: 4
 
 # Selected Publications
 
-## Disorder-Induced Topological Transitions in Monolayer Transition Metal Dichalcogenides
+## On the Rings of Power: Binding Mechanics and Corruption Dynamics
 
-**Authors:** E. Vasquez, J. Park, S. Raghu
-**Venue:** Physical Review Letters 131, 056401
-**Date:** 2023
+**Authors:** Gandalf the Grey, Elrond Half-elven
+**Venue:** Proceedings of the White Council, Vol. XII
+**Date:** 2951 T.A.
 
-## Efficient Tensor Network Methods for Two-Dimensional Topological Phases
+## The Necromancer of Dol Guldur: Field Report and Threat Assessment
 
-**Authors:** E. Vasquez, S. Raghu
-**Venue:** Physical Review B 107, 115132
-**Date:** 2023
+**Authors:** Gandalf the Grey
+**Venue:** White Council Archives (Classified)
+**Date:** 2941 T.A.
 
-## Floquet Engineering of Anomalous Hall Effect in Graphene Superlattices
+## Pyrotechnic Enchantment: Theory and Practice of Celebratory Fire-Working
 
-**Authors:** E. Vasquez, M. Chen, J. Park, S. Raghu
-**Venue:** Physical Review Letters 128, 176404
-**Date:** 2022
+**Authors:** Gandalf the Grey
+**Venue:** Hobbiton Journal of Applied Festivity, 3rd Ed.
+**Date:** 2965 T.A.
 
-## Non-Equilibrium Phase Diagram of Driven Kitaev Chains
+## Isildur's Scroll and the Inscription of the One: A Palaeographic Analysis
 
-**Authors:** E. Vasquez, S. Raghu
-**Venue:** Physical Review B 104, 235140
-**Date:** 2021
+**Authors:** Gandalf the Grey
+**Venue:** Archives of Minas Tirith, Restricted Section
+**Date:** 2850 T.A.
 
-## Floquet Topological Phases in Shaken Optical Lattices
+## Long-Range Communication via Palantíri: Risks of Corruption and Interception
 
-**Authors:** E. Vasquez, R. Thompson, A. Rey
-**Venue:** Physical Review A 99, 043624
-**Date:** 2019
+**Authors:** Gandalf the Grey, Saruman the White
+**Venue:** Istari Working Papers, No. 7
+**Date:** 2759 T.A.

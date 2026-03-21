@@ -5,4 +5,4 @@ order: 1
 
 # About Me
 
-Award-winning UX designer and brand strategist with 8+ years shaping digital products used by millions. I bring a research-driven, empathy-first approach to design — from early discovery and user interviews through high-fidelity prototyping and design-system architecture. Experienced leading cross-functional design teams and evangelising design thinking at the organisational level.
+Master bowyer and Elven artisan with over 2,000 years shaping weapons, armour, and architectural works of enduring beauty. I bring an instinct-driven, nature-first approach to design — from initial wood selection and grain analysis through final lacquer and enchantment binding. Experienced leading Elven craft guilds and evangelising sustainable forestry at the realm level. My work balances lethal precision with aesthetic grace.

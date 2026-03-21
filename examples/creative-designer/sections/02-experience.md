@@ -5,34 +5,34 @@ order: 2
 
 # Experience
 
-## 1. Senior UX Designer
+## 1. Master Bowyer & Royal Artisan
 
-**Company:** Luminary Digital
-**Location:** Los Angeles, CA
-**Dates:** 2021-04 – present
+**Company:** Woodland Realm Artisan Guild
+**Location:** Mirkwood, Rhovanion
+**Dates:** 1500 T.A. – present
 
-- Lead design for flagship SaaS platform serving 2M+ monthly active users
-- Built and maintained a Figma-based design system with 400+ components adopted across 6 product teams
-- Conducted 120+ user interviews and usability tests, driving a 34% increase in task completion rate
-- Collaborated with engineering to implement accessible, WCAG 2.1 AA-compliant interfaces
+- Lead artisan for the King’s armoury, crafting bows wielded by 5,000+ Elven warriors
+- Built and maintained a pattern library of 400+ bow designs optimised across 6 wood species
+- Conducted 200+ field tests in varied terrain, driving a 34% increase in effective range
+- Collaborated with enchantment weavers to implement silent-draw bowstring technology
 
-## 2. UX Designer
+## 2. Architectural Designer
 
-**Company:** BrightPath Media
-**Location:** San Francisco, CA
-**Dates:** 2018-09 – 2021-03
+**Company:** Lothlórien Canopy Works
+**Location:** Caras Galadhon, Lothlórien
+**Dates:** 800 T.A. – 1500 T.A.
 
-- Redesigned onboarding flow reducing drop-off by 42% and increasing trial-to-paid conversion by 28%
-- Created brand identity and visual language for 3 product launches, each reaching 500K+ users
-- Facilitated design sprints with stakeholders from product, engineering, and marketing
-- Produced motion design prototypes using After Effects and Principle for investor demos
+- Redesigned flet (tree platform) support system reducing construction time by 42%
+- Created the signature Lothlórien spiral staircase aesthetic adopted across all mallorn trees
+- Facilitated design sessions with Lord Celeborn and Lady Galadriel on realm beautification
+- Produced decorative metalwork prototypes for the Mirror Garden
 
-## 3. Junior Designer
+## 3. Apprentice Craftsman
 
-**Company:** Mosaic Creative Agency
-**Location:** Portland, OR
-**Dates:** 2016-06 – 2018-08
+**Company:** Thranduil’s Court Workshop
+**Location:** Woodland Realm, Mirkwood
+**Dates:** 200 T.A. – 800 T.A.
 
-- Designed marketing sites, email templates, and social media assets for 20+ B2C clients
-- Developed wireframes and interactive prototypes for mobile apps using Sketch and InVision
-- Won agency-wide "Rising Star" award for client rebrand project exceeding engagement KPIs by 60%
+- Crafted decorative arrow shafts, quivers, and leather goods for 20+ noble houses
+- Developed wireframe prototypes for new bridge designs using willow and silver birch
+- Won guild-wide “Rising Star” award for spider silk bowstring innovation exceeding durability targets by 60%

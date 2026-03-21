@@ -5,36 +5,35 @@ order: 2
 
 # Research Experience
 
-## 1. Postdoctoral Research Fellow
+## 1. Senior Istari Emissary & Field Researcher
 
-**Company:** Massachusetts Institute of Technology, Department of Physics
-**Location:** Cambridge, MA
-**Dates:** 2022-09 – present
+**Company:** Order of the Istari, Circles of the Valar
+**Location:** Middle-earth (itinerant)
+**Dates:** 1000 T.A. – present
 
-- Developing first-principles framework for predicting topological invariants in disordered systems
-- Published 4 first-author papers in Physical Review Letters and Physical Review B
-- Mentoring 2 graduate students on computational methods for quantum transport
-- Secured $85K NSF supplemental grant for high-performance computing resources
-- Presented invited talks at APS March Meeting (2023, 2024) and Gordon Research Conference
+- Conducted 2,000+ years of continuous field research on shadow dynamics and Morgoth-era artefacts
+- Identified Bilbo Baggins' ring as the One Ring of Sauron through archival research at Minas Tirith
+- Organised and led the Quest of Erebor (2941 T.A.), recovering Lonely Mountain from dragon occupation
+- Maintained intelligence networks across all Free Peoples, from the Shire to Gondor
+- Advised kings, stewards, and council leaders on threat assessment and containment strategy
 
-## 2. Graduate Research Assistant
+## 2. Visiting Scholar & Councillor
 
-**Company:** Stanford University, SLAC National Accelerator Laboratory
-**Location:** Stanford, CA
-**Dates:** 2017-09 – 2022-08
+**Company:** The White Council, House of Elrond
+**Location:** Rivendell, Eriador
+**Dates:** 2463 T.A. – present
 
-- Completed PhD thesis: "Topological Phase Transitions in Driven Quantum Systems"
-- Developed novel tensor network algorithm reducing computation time by 10x for 2D systems
-- Performed tight-binding and DFT calculations on high-performance computing clusters
-- Published 6 peer-reviewed papers (3 first-author) with 180+ total citations
-- Organised weekly condensed matter seminar series for 2 years
+- Co-founded the White Council to coordinate Istari and Elven response to the Necromancer threat
+- Led the assault on Dol Guldur (2941 T.A.), driving out the Necromancer (revealed as Sauron)
+- Presented findings on Ring-wraith resurgence and Mordor remilitarisation at 6 Council sessions
+- Collaborated with Elrond and Galadriel on palantír corruption analysis
 
-## 3. Undergraduate Research Assistant
+## 3. Apprentice Scholar
 
-**Company:** University of Colorado Boulder, JILA
-**Location:** Boulder, CO
-**Dates:** 2015-06 – 2017-05
+**Company:** Halls of Nienna, Valinor
+**Location:** Valinor, Aman
+**Dates:** Before T.A. 1000
 
-- Simulated ultracold atomic systems using QuTiP and custom Fortran codes
-- Co-authored paper in Physical Review A on Floquet engineering of optical lattices
-- Awarded departmental Outstanding Undergraduate Research Prize
+- Studied under Nienna the Compassionate, developing expertise in grief, endurance, and hope
+- Mastered foundational flame-craft and light manipulation under Varda's tutelage
+- Selected by Manwë for deployment to Middle-earth as bearer of the Secret Fire

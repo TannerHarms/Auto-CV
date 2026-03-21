@@ -7,16 +7,16 @@ order: 4
 
 ## Leadership
 
-- P&L Management, Executive Communication, Board Relations, M&A Integration
+- Multi-Kingdom Alliance Building, Strategic Command, Diplomacy, Morale & Inspiration
 
-## Operations
+## Military
 
-- Supply Chain Optimisation, Lean Six Sigma (Black Belt), Process Engineering, Vendor Management
+- Cavalry Tactics, Siege Defence, Naval Assault, Guerrilla Warfare, Counter-Intelligence
 
-## Strategy
+## Survival & Fieldcraft
 
-- Digital Transformation, Market Expansion, Competitive Analysis, Change Management
+- Wilderness Navigation, Tracking, Herb-Lore (Athelas specialist), Field Medicine
 
-## Technology
+## Languages & Lore
 
-- SAP S/4HANA, Salesforce, Tableau, Power BI, Microsoft 365
+- Sindarin, Quenya, Westron, Rohirric, Haradric, Ancient Númenórean History

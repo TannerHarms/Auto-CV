@@ -5,45 +5,45 @@ order: 2
 
 # Professional Experience
 
-## 1. Vice President, Operations
+## 1. Chieftain of the Dúnedain
 
-**Company:** Meridian Global Industries
-**Location:** New York, NY
-**Dates:** 2019-03 – present
+**Company:** Rangers of the North
+**Location:** Eriador
+**Dates:** 2933 T.A. – present
 
-- Lead operations across 12 facilities in 4 countries with 2,400 employees and $540M annual budget
-- Spearheaded supply chain restructuring that reduced logistics costs by $47M annually
-- Directed post-acquisition integration of two companies, achieving synergy targets 6 months ahead of schedule
-- Established enterprise-wide continuous improvement programme yielding 22% productivity increase
-- Present quarterly business reviews to the Board of Directors and CEO
+- Command 600+ Rangers patrolling a territory spanning the Shire to the Misty Mountains
+- Maintained covert defence of the Shire for 17 years with zero civilian awareness of threat level
+- Coordinated intelligence network with Gandalf the Grey, providing early warning of Sauron’s movements
+- Personally led 40+ deep-reconnaissance missions into Mordor, Rhovanion, and Harad
+- Present strategic assessments to the Council of Elrond and allied leadership
 
-## 2. Senior Director, Strategy & Transformation
+## 2. Captain, Gondorian Expeditionary Forces (under alias “Thorongil”)
 
-**Company:** Atlantic Consumer Group
-**Location:** New York, NY
-**Dates:** 2015-06 – 2019-02
+**Company:** Kingdom of Gondor
+**Location:** Minas Tirith & Pelargir, Gondor
+**Dates:** 2957 T.A. – 2980 T.A.
 
-- Built and led 40-person strategy team responsible for $200M digital transformation roadmap
-- Launched direct-to-consumer channel generating $85M in first-year revenue
-- Negotiated 3 strategic partnerships that expanded market reach into 8 new international markets
-- Reduced customer churn by 18% through data-driven retention programme
+- Led surprise naval assault on Umbar, destroying a Corsair fleet and securing southern sea lanes for 20+ years
+- Built and led a 2,000-strong strike force achieving a 94% mission success rate
+- Advised Steward Ecthelion II on defence policy, strengthening Gondor’s eastern border garrisons by 40%
+- Earned loyalty of Gondorian soldiers despite operating under pseudonym
 
-## 3. Director, Operations Excellence
+## 3. Ranger of the Wild / Special Operations
 
-**Company:** Vanguard Manufacturing Corp.
-**Location:** Philadelphia, PA
-**Dates:** 2011-01 – 2015-05
+**Company:** Dúnedain Rangers & Allied Forces
+**Location:** Rohan, Gondor, Harad
+**Dates:** 2953 T.A. – 2957 T.A.
 
-- Managed Lean Six Sigma deployment across 6 production sites, saving $31M over 4 years
-- Redesigned warehouse logistics network, cutting order fulfilment time from 5 days to 1.5 days
-- Led cross-functional team of 80 through ISO 9001 recertification with zero non-conformances
+- Served under King Thengel of Rohan as cavalry officer and strategic adviser
+- Conducted long-range reconnaissance across the Dead Marshes and Ithilien
+- Developed counter-insurgency tactics against Orc raiding parties, reducing border incursions by 65%
 
-## 4. Operations Manager
+## 4. Ranger Apprentice
 
-**Company:** Prestige Logistics Solutions
-**Location:** Philadelphia, PA
-**Dates:** 2007-08 – 2010-12
+**Company:** Rivendell Intelligence Service
+**Location:** Rivendell, Eriador
+**Dates:** 2951 T.A. – 2953 T.A.
 
-- Oversaw daily operations for 3 distribution centres processing 15,000+ orders/day
-- Implemented automated inventory management system reducing stockouts by 65%
-- Achieved 99.4% on-time delivery rate, up from 91%
+- Trained under Elladan and Elrohir in advanced tracking, survival, and combat techniques
+- Completed first solo patrol of the East Road within 6 months of deployment
+- Achieved 99.4% threat interception rate along the Bruinen River corridor

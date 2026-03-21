@@ -311,10 +311,10 @@ class TestDocxFormatRegression:
     def test_experience_dates_right_aligned(self):
         """Experience entries should have right-aligned tab with date on right side."""
         full_text = "\n".join(p.text for p in self.doc.paragraphs)
-        assert "Postdoctoral Research Fellow" in full_text
+        assert "Senior Istari Emissary" in full_text
         found = False
         for p in self.doc.paragraphs:
-            if "Postdoctoral Research Fellow" in p.text and self._has_tab_run(p):
+            if "Senior Istari Emissary" in p.text and self._has_tab_run(p):
                 tab_defs = self._tab_defs(p)
                 right_tabs = [td for td in tab_defs if td[0] == 'right']
                 assert right_tabs, "Experience entry should have right-aligned tab stop"
@@ -325,7 +325,7 @@ class TestDocxFormatRegression:
     def test_publication_authors_present(self):
         """Publications should include authors in the output."""
         full_text = "\n".join(p.text for p in self.doc.paragraphs)
-        assert "E. Vasquez" in full_text, "Publication authors should appear in DOCX"
+        assert "Gandalf the Grey" in full_text, "Publication authors should appear in DOCX"
 
 
 class TestLatexFormatRegression:
@@ -359,7 +359,7 @@ class TestLatexFormatRegression:
                 pub_tex = content
                 break
         assert pub_tex is not None
-        assert "E. Vasquez" in pub_tex, "Author names should appear in publications .tex"
+        assert "Gandalf the Grey" in pub_tex, "Author names should appear in publications .tex"
 
     def test_skills_have_category_spacing(self):
         """Skills should have vertical space between different categories."""

@@ -3,25 +3,24 @@ type: projects
 order: 7
 ---
 
-# Research Software
+# Research Projects
 
-## TopoNet
+## One Ring Identification & Provenance Study
 
-**URL:** <https://github.com/evasquez-physics/toponet>
-**Dates:** 2021-03 – present
-**Technologies:** Python, Julia, MPI, HDF5
-**Description:** Open-source toolkit for computing topological invariants in disordered lattice systems.
+**Dates:** 2845 T.A. – 3018 T.A.
+**Technologies:** Archival palaeography, flame-assay inscription reveal, hobbit field interviews
+**Description:** Multi-century research programme to identify Bilbo Baggins' ring as Sauron's One Ring.
 
-- Implements Bott index and Chern marker algorithms for 2D and 3D systems
-- Scales to 10⁶-site lattices via distributed MPI parallelism
-- 120+ GitHub stars; adopted by 3 external research groups
+- Cross-referenced Isildur's scroll with 14 Gondorian archives and 3 Elven libraries
+- Developed flame-assay technique revealing invisible Tengwar inscription
+- Confirmed ring identity via inscription match and behavioural corruption analysis
 
-## Floquet-DMRG
+## Gandalf's Grand Fireworks Programme
 
-**Dates:** 2019-09 – 2022-05
-**Technologies:** Julia, ITensor, SLURM
-**Description:** Density matrix renormalisation group extension for periodically driven Hamiltonians.
+**Dates:** 2685 T.A. – present
+**Technologies:** Pyrotechnic enchantment, colour-flame alchemy, shaped-charge star design
+**Description:** Ongoing research and development of enchanted fireworks for Shire celebrations.
 
-- Novel time-periodic MPS compression scheme reducing bond dimension by 40%
-- Benchmarked against exact diagonalisation on Kitaev chain models
-- Released as open-source supplement to PRB publication
+- Designed 200+ unique pyrotechnic compositions displayed at Bilbo's 111th birthday party
+- Pioneered dragon-shaped firework achieving autonomous 30-second flight
+- Most celebrated fireworks programme in Shire history spanning 300+ years

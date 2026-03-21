@@ -5,18 +5,18 @@ order: 4
 
 # Projects
 
-## [go-taskqueue](https://github.com/achen-dev/go-taskqueue)
+## Glittering Caves Expansion
 
-A lightweight, Redis-backed distributed task queue library for Go with at-least-once delivery guarantees.
-**Technologies:** Go, Redis, Protocol Buffers
+Led the engineering survey and structural plan for expanding the Glittering Caves of Aglarond into a Dwarven colony.
+**Technologies:** Mithril Reinforcement, Resonance Mapping, Hydraulic Drainage
 
-- 1,200+ GitHub stars, used in production by 3 companies
-- Supports delayed tasks, dead-letter queues, and priority scheduling
+- Mapped 12 km of previously unexplored cavern systems
+- Designed load-bearing pillar network preserving natural crystal formations
 
-## [infra-dash](https://github.com/achen-dev/infra-dash)
+## Helm's Deep Fortification Retrofit
 
-Real-time infrastructure monitoring dashboard built with Next.js and WebSocket streaming.
-**Technologies:** TypeScript, Next.js, WebSocket, D3.js
+Post-battle structural assessment and reinforcement of the Deeping Wall and Hornburg.
+**Technologies:** Granite, Iron Banding, Blast-Resistant Mortar
 
-- Visualises Kubernetes pod health, resource utilisation, and deployment status
-- Used internally by 40+ engineers at Streamline Technologies
+- Reinforced breach point to withstand 3x original blast rating
+- Installed drainage system preventing future culvert vulnerabilities

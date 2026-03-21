@@ -5,22 +5,22 @@ order: 2
 
 # Education
 
-## 1. B.S. Computer Science
+## 1. Independent Studies in Lore & Languages
 
-**Institution:** Georgia Institute of Technology
-**Location:** Atlanta, GA
-**Dates:** 2021-08 – 2025-05
-**GPA:** 3.82
+**Institution:** Bag End Academy (Private Tutelage under Bilbo Baggins)
+**Location:** Hobbiton, The Shire
+**Dates:** 2989 T.A. – 3001 T.A.
 
-- Concentration in Systems & Architecture
-- Dean's List 7 of 8 semesters
-- Relevant coursework: Distributed Systems, Database Design, Machine Learning, Computer Networks, Operating Systems
+- Intensive study of Elvish (Sindarin and Quenya), runic scripts, and mapcraft
+- Completed survey of "There and Back Again" primary sources and field notes
+- Relevant coursework: Geography of Middle-earth, Foreign Cultures & Customs, Elvish Poetry, Survival Basics
 
-## 2. Study Abroad — Computer Science
+## 2. Primary Education
 
-**Institution:** ETH Zürich
-**Location:** Zürich, Switzerland
-**Dates:** 2024-01 – 2024-06
+**Institution:** Hobbiton Grammar School
+**Location:** Hobbiton, The Shire
+**Dates:** 2975 T.A. – 2989 T.A.
+**GPA:** Top of Class
 
-- Advanced algorithms and formal methods courses
-- Collaborative research project on distributed consensus protocols
+- Letters & Rhetoric prize (2988 T.A.)
+- Excelled in reading, writing, botany, and local history

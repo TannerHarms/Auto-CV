@@ -28,9 +28,9 @@ spacing:
   bullet_after: "1.5mm"
   bullet_marker: "dash"
 
-# Point to the font directory containing Roboto + Source Sans Pro
-latex:
-  font_dir: "D:/OneDrive/Personal/Work Related/Resume and CV/Resume_Generator/Versions/2024 - PhD/fonts"
+# Point to a local font directory containing Roboto + Source Sans Pro (uncomment and set your path)
+# latex:
+#   font_dir: "/path/to/fonts"
 
 html:
   layout: awesome-cv

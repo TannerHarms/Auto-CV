@@ -1,7 +1,8 @@
 # Auto CV — Example Gallery
 
 Six complete example vaults showcasing different presets, layouts, and content types.
-Each example is a self-contained vault you can build with `auto-cv build`.
+Each example is an artificial résumé/CV for a member of the **Fellowship of the Ring** — written as if they were applying for their role on the quest.
+Every example is a self-contained vault you can build with `auto-cv build`.
 
 ---
 
@@ -27,7 +28,7 @@ Each example is a self-contained vault you can build with `auto-cv build`.
 
 ![Software Engineer Preview](previews/software-engineer.png)
 
-**Profile:** Alex Chen, Senior Software Engineer (San Francisco)
+**Profile:** Gimli son of Glóin, Senior Structural & Mining Engineer (Erebor)
 **Preset:** `modern` with blue/cyan customisation
 **Layout:** Sidebar with photo
 **Sections:** Summary, Experience, Skills, Projects, Education, Certifications
@@ -43,7 +44,7 @@ auto-cv build examples/software-engineer -f html -f latex -f docx
 
 ![Executive Preview](previews/executive.png)
 
-**Profile:** Margaret S. Whitfield, VP Operations (New York)
+**Profile:** Aragorn II Elessar, Chieftain of the Dúnedain & Heir of Isildur (Rivendell)
 **Preset:** `executive` with gold border accents
 **Layout:** Top-header, no photo — formal and authoritative
 **Sections:** Summary, Experience, Education, Skills, Awards
@@ -59,7 +60,7 @@ auto-cv build examples/executive -f html -f latex -f docx
 
 ![Creative Designer Preview](previews/creative-designer.png)
 
-**Profile:** Priya Nakamura, Senior UX Designer (Los Angeles)
+**Profile:** Legolas Greenleaf, Master Bowyer & Elven Artisan (Mirkwood)
 **Preset:** `creative` with coral/teal/purple palette
 **Layout:** Cards grid with photo — portfolio-style
 **Sections:** Summary, Experience, Featured Work, Skills, Education, Certifications
@@ -75,10 +76,10 @@ auto-cv build examples/creative-designer -f html -f latex -f docx
 
 ![Academic Researcher Preview](previews/academic-researcher.png)
 
-**Profile:** Dr. Elena Vasquez, Postdoctoral Fellow (Cambridge, MA)
+**Profile:** Gandalf the Grey, Istari Scholar & Loremaster (The Shire / Middle-earth)
 **Preset:** `awesome-cv` with emerald green accent
 **Layout:** Top-header (awesome-cv XeLaTeX class for PDF)
-**Sections:** Research Interests, Experience, Education, Publications, Skills, Awards
+**Sections:** Research Interests, Experience, Education, Publications, Skills, Awards, Projects, Certifications, Service, Languages
 **Note:** PDF output requires XeLaTeX with Roboto & Source Sans Pro fonts
 **Build:**
 
@@ -92,7 +93,7 @@ auto-cv build examples/academic-researcher -f html -f latex -f docx
 
 ![New Graduate Preview](previews/new-graduate.png)
 
-**Profile:** Sam Okafor, Recent CS Graduate (Atlanta)
+**Profile:** Frodo Baggins, Aspiring Adventurer — Recent Graduate (Hobbiton, The Shire)
 **Preset:** `elegant` with plum/purple customisation
 **Layout:** Top-header, no photo — clean and polished
 **Sections:** Summary, Education, Projects, Experience, Skills, Certifications
@@ -108,7 +109,7 @@ auto-cv build examples/new-graduate -f html -f latex -f docx
 
 ![Data Scientist Preview](previews/data-scientist.png)
 
-**Profile:** Raj Mehta, Senior Data Scientist (Seattle)
+**Profile:** Samwise Gamgee, Agricultural Data Analyst & Provisions Specialist (Hobbiton, The Shire)
 **Preset:** `technical` with blue-green palette
 **Layout:** Sidebar with photo
 **Sections:** Summary, Experience, Skills, Projects, Education, Publications, Certifications
