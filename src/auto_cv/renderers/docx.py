@@ -161,25 +161,31 @@ def _add_hyperlink(para, url: str, text: str, *, size: float = 10,
 
 def _add_md_runs(para, text: str, *, size: float = 10,
                  color: RGBColor | None = None,
-                 font_name: str | None = None) -> None:
+                 font_name: str | None = None,
+                 small_caps: bool = False) -> None:
     """Parse simple markdown (bold, italic, code, links) into Word runs."""
     pos = 0
     for m in _MD_PATTERN.finditer(text):
         # Plain text before this match
         if m.start() > pos:
-            _add_run(para, text[pos:m.start()], size=size, color=color, font_name=font_name)
+            _add_run(para, text[pos:m.start()], size=size, color=color, font_name=font_name,
+                     small_caps=small_caps)
         if m.group(1) is not None:          # **bold**
-            _add_run(para, m.group(1), size=size, bold=True, color=color, font_name=font_name)
+            _add_run(para, m.group(1), size=size, bold=True, color=color, font_name=font_name,
+                     small_caps=small_caps)
         elif m.group(2) is not None:        # *italic*
-            _add_run(para, m.group(2), size=size, italic=True, color=color, font_name=font_name)
+            _add_run(para, m.group(2), size=size, italic=True, color=color, font_name=font_name,
+                     small_caps=small_caps)
         elif m.group(3) is not None:        # `code`
-            _add_run(para, m.group(3), size=size, color=color, font_name=font_name)
+            _add_run(para, m.group(3), size=size, color=color, font_name=font_name,
+                     small_caps=small_caps)
         elif m.group(4) is not None:        # [text](url)
             _add_hyperlink(para, m.group(5), m.group(4), size=size, color=color, font_name=font_name)
         pos = m.end()
     # Trailing plain text
     if pos < len(text):
-        _add_run(para, text[pos:], size=size, color=color, font_name=font_name)
+        _add_run(para, text[pos:], size=size, color=color, font_name=font_name,
+             small_caps=small_caps)
 
 
 class DocxRenderer(BaseRenderer):
@@ -396,6 +402,8 @@ class DocxRenderer(BaseRenderer):
             contact_items.append((contact.phone, None))
         if contact.location:
             contact_items.append((contact.location, None))
+        for item in contact.extras:
+            contact_items.append((item, None))
         if contact.linkedin:
             contact_items.append(
                 (f"linkedin.com/in/{contact.linkedin}",
@@ -836,7 +844,7 @@ class DocxRenderer(BaseRenderer):
             if entry.description:
                 last_p = doc.add_paragraph()
                 _set_paragraph_spacing(last_p, before=0, after=0)
-                _add_run(last_p, entry.description, size=bullet_size, color=dark)
+                _add_md_runs(last_p, entry.description, size=bullet_size, color=dark)
 
             marker = "\u2013 " if style.spacing.bullet_marker == "dash" else "\u2022 "
             for h in entry.highlights:
@@ -887,15 +895,16 @@ class DocxRenderer(BaseRenderer):
             last_p = self._add_two_col_row(doc, left, right)
 
             # Row 2: authors | venue
-            left = []
-            if entry.authors:
-                left = [{"text": ", ".join(entry.authors), "size": 8,
-                         "small_caps": True, "color": gray}]
-            right = []
-            if entry.venue:
-                right = [{"text": entry.venue, "size": 8, "italic": True, "color": gray}]
-            if left or right:
-                last_p = self._add_two_col_row(doc, left, right)
+            if entry.authors or entry.venue:
+                last_p = doc.add_paragraph()
+                _set_paragraph_spacing(last_p, before=0, after=0)
+                _add_tab_stop(last_p, self._content_width, WD_TAB_ALIGNMENT.RIGHT)
+                if entry.authors:
+                    _add_md_runs(last_p, ", ".join(entry.authors), size=8,
+                                 color=gray, small_caps=True)
+                if entry.venue:
+                    last_p.add_run("\t")
+                    _add_run(last_p, entry.venue, size=8, italic=True, color=gray)
 
             # Description
             if entry.description:
@@ -933,7 +942,7 @@ class DocxRenderer(BaseRenderer):
             if entry.description:
                 last_p = doc.add_paragraph()
                 _set_paragraph_spacing(last_p, before=0, after=0)
-                _add_run(last_p, entry.description, size=bullet_size, color=dark)
+                _add_md_runs(last_p, entry.description, size=bullet_size, color=dark)
 
             if i < len(section.award_entries) - 1:
                 _set_paragraph_spacing(last_p, before=0, after=entry_gap)

@@ -117,7 +117,17 @@ class LatexRenderer(BaseRenderer):
         )
         env.filters["escape_latex"] = _escape_latex
         env.filters["md_latex"] = _md_to_latex
+        env.filters["strip_bullet"] = lambda s: re.sub(r"^\s*[-*]\s+", "", s)
+        env.filters["split_emdash"] = lambda s: (
+            {"name": s.split(" — ", 1)[0], "date": s.split(" — ", 1)[1]}
+            if " — " in s
+            else {"name": s.split(" – ", 1)[0], "date": s.split(" – ", 1)[1]}
+            if " – " in s
+            else {"name": s, "date": ""}
+        )
         env.tests["starts_with_bold"] = lambda s: isinstance(s, str) and s.strip().startswith("**")
+        env.tests["bullet_line"] = lambda s: isinstance(s, str) and bool(re.match(r"^\s*[-*]\s+", s))
+        env.tests["has_emdash"] = lambda s: isinstance(s, str) and (" — " in s or " – " in s)
 
         # --- Copy static assets for the template set (e.g. .cls, .sty) ---
         static_dir = tmpl_dir / "static"

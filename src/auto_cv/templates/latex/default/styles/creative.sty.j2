@@ -129,10 +129,12 @@
 
 \newcommand{\cvservice}[4]{%
   \vspace{<< style.spacing.entry_gap >>}%
-  {\bfseries\color{accent} #1}\ifx&#2&\else{, \color{secondary}#2}\fi%
-  \ifx&#3&\else\hfill{\small\color{secondary} #3}\fi\par%
-  \ifx&#4&\else{\small\color{textcolor} #4}\fi%
-  \vspace{2pt}\par%
+  {\bfseries\color{accent} #1}%
+  \hfill{\small\color{accent} #4}\par%
+  \vspace{1pt}%
+  {\bfseries\color{secondary} #2}%
+  \hfill{\small\color{secondary} #3}%
+  \vspace{3pt}\par%
 }
 
 \newcommand{\cvproject}[3]{%
@@ -167,6 +169,12 @@
 
 \newcommand{\cvsummary}[1]{%
   {\large\color{textcolor} #1}%
+}
+
+% --- \cvref{name}{relationship}{title-and-org}{email} ---
+\newcommand{\cvref}[4]{%
+  \textbf{#1}\ifblank{#2}{}{ \hfill \textit{#2}}\\%
+  \ifblank{#3}{}{{#3}\ifblank{#4}{}{~|~{#4}}\\}%
 }
 
 <% for pkg in style.latex.extra_packages %>

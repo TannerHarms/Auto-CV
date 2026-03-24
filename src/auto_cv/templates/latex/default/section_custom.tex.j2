@@ -1,4 +1,29 @@
-<# Custom / fallback section — renders raw markdown content as-is #>
+<# Custom / fallback section — renders raw markdown content #>
+<# Bullet-only content: if all bullets have em-dash date separators, use two-column #>
+<# layout (name left, date right); otherwise render as compact itemize #>
 \section{<< section.title | escape_latex >>}
 
+<% set lines = section.raw_content.strip().splitlines() | reject('equalto', '') | list %>
+<% set all_bullets = (lines | length > 0) and (lines | reject('bullet_line') | list | length == 0) %>
+<% if all_bullets %>
+<% set clean_lines = lines | map('strip_bullet') | list %>
+<% set without_dash = clean_lines | reject('has_emdash') | list %>
+<% if without_dash | length == 0 %>
+<# All bullets have date separators — two-column layout matching awards compact #>
+\vspace{-1mm}
+<% for clean in clean_lines %>
+<% set parts = clean | split_emdash %>
+\cvawardcompact{<< parts.name | md_latex >>}{<< parts.date | escape_latex >>}
+<% endfor %>
+<% else %>
+<# Regular bullet list #>
+\vspace{-1mm}
+\begin{itemize}
+<% for line in lines %>
+  \item << line | strip_bullet | md_latex >>
+<% endfor %>
+\end{itemize}
+<% endif %>
+<% else %>
 << section.raw_content | md_latex >>
+<% endif %>

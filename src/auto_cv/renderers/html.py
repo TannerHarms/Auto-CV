@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 import shutil
 from pathlib import Path
 
@@ -27,6 +28,10 @@ class HtmlRenderer(BaseRenderer):
         )
         env.filters["markdown"] = _render_markdown
         env.filters["markdown_inline"] = _render_markdown_inline
+        env.filters["strip_bullet"] = lambda s: re.sub(r"^\s*[-*]\s+", "", s)
+        env.filters["split_emdash"] = _split_emdash
+        env.tests["bullet_line"] = lambda s: isinstance(s, str) and bool(re.match(r"^\s*[-*]\s+", s))
+        env.tests["has_emdash"] = lambda s: isinstance(s, str) and (" — " in s or " – " in s)
         env.globals["SectionType"] = SectionType
 
         layout = style.html.layout
@@ -196,3 +201,12 @@ def _render_markdown_inline(text: str) -> str:
     # Strip the wrapping <p>…</p> that markdown adds to single-line content
     html = _re.sub(r"^<p>(.*)</p>$", r"\1", html.strip(), flags=_re.DOTALL)
     return html
+
+
+def _split_emdash(s: str) -> dict[str, str]:
+    """Split a string on em-dash or en-dash separator, returning {name, date}."""
+    for sep in (" — ", " – "):
+        if sep in s:
+            parts = s.split(sep, 1)
+            return {"name": parts[0], "date": parts[1]}
+    return {"name": s, "date": ""}

@@ -351,13 +351,46 @@ function parseProjectHeaderMd(text: string): {
 
   // Parse body for title override (*italic text*)
   if (body) {
-    const titleMatch = body.match(/^\*([^*]+)\*$/m);
-    if (titleMatch) {
-      result.config['title'] = titleMatch[1].trim();
+    const italicTitleMatch = body.match(/^\*([^*]+)\*$/m);
+    if (italicTitleMatch) {
+      result.config['title'] = italicTitleMatch[1].trim();
+    } else {
+      const headingTitleMatch = body.match(/^##\s+(.+)$/m);
+      if (headingTitleMatch) {
+        result.config['title'] = headingTitleMatch[1].trim();
+      }
     }
   }
 
   return result;
+}
+
+function extractProjectHeaderBody(text: string): string {
+  const fmMatch = text.match(/^---\s*\n([\s\S]*?)\n---\s*\n?([\s\S]*)$/);
+  if (!fmMatch) return '';
+  return fmMatch[2].replace(/\r\n/g, '\n').trim();
+}
+
+function updateProjectHeaderBody(existingBody: string, titleOverride: string): string {
+  const normalizedBody = existingBody.replace(/\r\n/g, '\n').trim();
+  const lines = normalizedBody ? normalizedBody.split('\n') : [];
+  const titleLineIndex = lines.findIndex(line => {
+    const trimmed = line.trim();
+    return (/^\*[^*].*\*$/.test(trimmed) && !/^\*\*.*\*\*$/.test(trimmed)) || /^##\s+.+$/.test(trimmed);
+  });
+
+  if (titleOverride) {
+    const nextTitleLine = `*${titleOverride}*`;
+    if (titleLineIndex >= 0) {
+      lines[titleLineIndex] = nextTitleLine;
+    } else {
+      lines.push(nextTitleLine);
+    }
+  } else if (titleLineIndex >= 0) {
+    lines.splice(titleLineIndex, 1);
+  }
+
+  return lines.join('\n').trim();
 }
 
 /**
@@ -456,6 +489,7 @@ export function saveProjectFiles(
   },
 ): void {
   const projectDir = join(vaultPath, 'projects', project);
+  const headerPath = join(projectDir, 'header.md');
   mkdirSync(join(projectDir, 'sections'), { recursive: true });
   mkdirSync(join(projectDir, 'output'), { recursive: true });
 
@@ -472,10 +506,15 @@ export function saveProjectFiles(
     }
   }
   headerMd += '---\n';
-  if (data.titleOverride) {
-    headerMd += `*${data.titleOverride}*\n`;
+
+  const existingBody = existsSync(headerPath)
+    ? extractProjectHeaderBody(readFileSync(headerPath, 'utf-8'))
+    : '';
+  const nextBody = updateProjectHeaderBody(existingBody, data.titleOverride);
+  if (nextBody) {
+    headerMd += `${nextBody}\n`;
   }
-  writeFileSync(join(projectDir, 'header.md'), headerMd, 'utf-8');
+  writeFileSync(headerPath, headerMd, 'utf-8');
 
   let styleYml = `preset: ${data.preset}\n`;
   const { colors, fonts, spacing, htmlLayout } = data.styleOverrides;

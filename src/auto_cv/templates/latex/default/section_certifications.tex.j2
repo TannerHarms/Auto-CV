@@ -2,6 +2,7 @@
 \section{<< section.title | escape_latex >>}
 
 <% for entry in section.certification_entries %>
+<% if not loop.first %>\vspace{<< style.spacing.entry_gap >>}<% endif %>
 \cvcert{<< entry.name | escape_latex >>}{<< entry.issuer | escape_latex if entry.issuer else '' >>}{<< entry.date | escape_latex if entry.date else '' >>}
 <% if entry.url %>
 \href{<< entry.url >>}{View credential}

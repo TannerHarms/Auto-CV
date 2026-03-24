@@ -54,6 +54,7 @@ class ContactInfo(BaseModel):
     linkedin: str | None = None
     github: str | None = None
     website: str | None = None
+    extras: list[str] = Field(default_factory=list)
     extra: dict[str, str] = Field(default_factory=dict)
 
 

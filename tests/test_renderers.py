@@ -2,8 +2,11 @@
 
 import pytest
 from pathlib import Path
+from docx import Document
 
 from auto_cv.parser.vault_reader import load_vault
+from auto_cv.models.resume import ContactInfo, ProjectEntry, PublicationEntry, Resume, ResumeConfig, Section, SectionType, VaultOverrides
+from auto_cv.models.style import StyleConfig
 from auto_cv.renderers.latex import LatexRenderer
 from auto_cv.renderers.docx import DocxRenderer
 from auto_cv.renderers.html import HtmlRenderer
@@ -45,6 +48,12 @@ class TestLatexRenderer:
     def test_main_tex_includes_sections(self):
         main = (self.output / "latex" / "main.tex").read_text(encoding="utf-8")
         assert r"\input{sections/" in main
+
+    def test_main_tex_inlines_location_in_contact(self):
+        main = (self.output / "latex" / "main.tex").read_text(encoding="utf-8")
+        assert r"\cvaddress{" not in main
+        assert "Austin, TX" in main
+        assert r"\cvcontact{" in main
 
     def test_no_unescaped_ampersand(self):
         """Ensure & in user data is escaped."""
@@ -201,6 +210,72 @@ class TestHtmlRenderer:
 
         assert result == target / "index.html"
         assert (target / "portfolio.html").exists()
+
+
+class TestPublicationMarkdownAuthors:
+    def _make_resume(self):
+        style = StyleConfig()
+        style.html.layout = "top-header"
+        section = Section(
+            id="publications",
+            title="Publications",
+            section_type=SectionType.PUBLICATIONS,
+            publication_entries=[
+                PublicationEntry(
+                    title="A Paper",
+                    authors=["**Jane Doe**", "John Roe"],
+                    venue="Journal",
+                    date="2025",
+                )
+            ],
+        )
+        resume = Resume(
+            config=ResumeConfig(name="Test Person", contact=ContactInfo(location="Austin, TX")),
+            sections=[section],
+            overrides=VaultOverrides(),
+        )
+        return resume, style
+
+    def test_docx_publication_authors_support_markdown(self, tmp_path):
+        resume, style = self._make_resume()
+        result = DocxRenderer().render(resume, style, tmp_path)
+        doc = Document(str(result))
+        author_paragraph = next(
+            p for p in doc.paragraphs if "Jane Doe" in p.text and "John Roe" in p.text
+        )
+        assert any(r.text == "Jane Doe" and r.bold for r in author_paragraph.runs)
+
+    def test_html_publication_authors_support_markdown(self, tmp_path):
+        resume, style = self._make_resume()
+        result = HtmlRenderer().render(resume, style, tmp_path)
+        html = result.read_text(encoding="utf-8")
+        assert "<strong>Jane Doe</strong>" in html
+
+
+class TestDescriptionMarkdownLinks:
+    def test_docx_project_description_supports_markdown_links(self, tmp_path):
+        style = StyleConfig()
+        section = Section(
+            id="projects",
+            title="Projects",
+            section_type=SectionType.PROJECTS,
+            project_entries=[
+                ProjectEntry(
+                    name="Link Project",
+                    description="See [demo](https://example.com) for details.",
+                )
+            ],
+        )
+        resume = Resume(
+            config=ResumeConfig(name="Test Person", contact=ContactInfo()),
+            sections=[section],
+            overrides=VaultOverrides(),
+        )
+
+        result = DocxRenderer().render(resume, style, tmp_path)
+        doc = Document(str(result))
+        full_text = "\n".join(p.text for p in doc.paragraphs)
+        assert "See demo for details." in full_text
 
 
 # ---------------------------------------------------------------------------
@@ -360,6 +435,24 @@ class TestLatexFormatRegression:
                 break
         assert pub_tex is not None
         assert "Gandalf the Grey" in pub_tex, "Author names should appear in publications .tex"
+
+    def test_publications_render_markdown_in_authors(self, tmp_path):
+        resume = self.resume.model_copy(deep=True)
+        pubs = next(s for s in resume.sections if s.section_type == SectionType.PUBLICATIONS)
+        pubs.publication_entries[0].authors = ["**Gandalf the Grey**", "Bilbo Baggins"]
+
+        output = tmp_path / "latex_md_authors"
+        LatexRenderer().render(resume, self.style, output)
+
+        pub_tex = None
+        for f in (output / "latex" / "sections").glob("*.tex"):
+            content = f.read_text(encoding="utf-8")
+            if r"\cvpub{" in content or r"\cventryshort" in content:
+                pub_tex = content
+                break
+
+        assert pub_tex is not None
+        assert r"\textbf{Gandalf the Grey}" in pub_tex
 
     def test_skills_have_category_spacing(self):
         """Skills should have vertical space between different categories."""

@@ -3,21 +3,17 @@
 
 <% if section.reference_entries %>
 <% for entry in section.reference_entries %>
-\textbf{<< entry.name | escape_latex >>}<%- if entry.relationship %> \hfill \textit{<< entry.relationship | escape_latex >>}<% endif %>\\
+<% if not loop.first %>\vspace{<< style.spacing.entry_gap >>}<% endif %>
+<% set title_org %>
 <% if entry.title and entry.organization -%>
-<< entry.title | escape_latex >> at << entry.organization | escape_latex >>\\
-<% elif entry.title -%>
-<< entry.title | escape_latex >>\\
-<% elif entry.organization -%>
-<< entry.organization | escape_latex >>\\
-<% endif -%>
-<% if entry.email -%>
-<< entry.email | escape_latex >><%- if entry.phone %> ~|~ << entry.phone | escape_latex >><% endif %>\\
-<% elif entry.phone -%>
-<< entry.phone | escape_latex >>\\
-<% endif -%>
-<% if not loop.last %>\vspace{2mm}<% endif %>
-
+<< entry.title | escape_latex >> at << entry.organization | escape_latex >>
+<%- elif entry.title -%>
+<< entry.title | escape_latex >>
+<%- elif entry.organization -%>
+<< entry.organization | escape_latex >>
+<%- endif -%>
+<% endset %>
+\cvref{<< entry.name | escape_latex >>}{<< entry.relationship | escape_latex if entry.relationship else '' >>}{<< title_org | trim >>}{<< entry.email | escape_latex if entry.email else '' >>}
 <% endfor %>
 <% else %>
 << section.raw_content | md_latex >>

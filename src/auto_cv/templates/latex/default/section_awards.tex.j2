@@ -9,6 +9,7 @@
 <% elif section.display == 'expressive' %>
 <# Expressive: full cventry layout with title, issuer, date, location + bullets #>
 <% for entry in section.award_entries %>
+<% if not loop.first %>\vspace{<< style.spacing.entry_gap >>}<% endif %>
 \cvawardexpressive{<< entry.title | escape_latex >>}{<< entry.issuer | escape_latex if entry.issuer else '' >>}{<< entry.date | escape_latex if entry.date else '' >>}{<< entry.location | escape_latex if entry.location else '' >>}
 <% if entry.description or entry.highlights %>
 \begin{itemize}

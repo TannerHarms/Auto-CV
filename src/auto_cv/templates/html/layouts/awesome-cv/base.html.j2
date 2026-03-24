@@ -363,9 +363,6 @@
       {% if resume.config.title %}
       <p class="resume-title">{{ resume.config.title }}</p>
       {% endif %}
-      {% if resume.config.contact.location %}
-      <p class="resume-address">{{ resume.config.contact.location }}</p>
-      {% endif %}
       <div class="resume-contact">
         {%- set items = [] -%}
         {%- if resume.config.contact.email -%}
@@ -374,6 +371,12 @@
         {%- if resume.config.contact.phone -%}
           {%- set _ = items.append(resume.config.contact.phone) -%}
         {%- endif -%}
+        {%- if resume.config.contact.location -%}
+          {%- set _ = items.append(resume.config.contact.location) -%}
+        {%- endif -%}
+        {%- for item in resume.config.contact.extras -%}
+          {%- set _ = items.append(item) -%}
+        {%- endfor -%}
         {%- if resume.config.contact.linkedin -%}
           {%- set _ = items.append('<a href="https://linkedin.com/in/' + resume.config.contact.linkedin + '">linkedin.com/in/' + resume.config.contact.linkedin + '</a>') -%}
         {%- endif -%}

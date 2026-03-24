@@ -252,6 +252,15 @@ export class BuildWizard extends Modal {
     const data = this.config.projectConfigs[name];
     if (!data) return;
 
+    this.selectedSections = new Set(this.config.sections.map(sec => sec.filename));
+    this.sectionOrder = this.config.sections.map(sec => sec.filename);
+    this.titleOverride = '';
+    this.presetName = 'classic';
+    this.colorOverrides = {};
+    this.fontOverrides = {};
+    this.spacingOverrides = {};
+    this.htmlLayout = '';
+
     if (data.include.length > 0) {
       this.selectedSections = new Set(data.include);
       this.sectionOrder = data.include.filter(s =>
@@ -266,14 +275,14 @@ export class BuildWizard extends Modal {
     if (data.section_order.length > 0) {
       // section_order uses type names; we keep it as-is for output
     }
-    if (data.config.title) this.titleOverride = data.config.title;
+    this.titleOverride = data.config.title || '';
 
     // Style
-    if (data.style.preset) this.presetName = data.style.preset;
-    if (Object.keys(data.style.colors).length > 0) this.colorOverrides = { ...data.style.colors };
-    if (Object.keys(data.style.fonts).length > 0) this.fontOverrides = { ...data.style.fonts };
-    if (Object.keys(data.style.spacing).length > 0) this.spacingOverrides = { ...data.style.spacing };
-    if (data.style.htmlLayout) this.htmlLayout = data.style.htmlLayout;
+    this.presetName = data.style.preset || 'classic';
+    this.colorOverrides = { ...data.style.colors };
+    this.fontOverrides = { ...data.style.fonts };
+    this.spacingOverrides = { ...data.style.spacing };
+    this.htmlLayout = data.style.htmlLayout || '';
   }
 
   // -------------------------------------------------------------------------

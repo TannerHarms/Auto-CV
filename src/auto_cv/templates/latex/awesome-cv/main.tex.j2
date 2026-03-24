@@ -35,14 +35,21 @@
 % --- Personal Information ---
 <% set name_parts = resume.config.name.rsplit(' ', 1) %>
 \name{<< name_parts[0] | escape_latex >>}{<< name_parts[-1] | escape_latex if name_parts | length > 1 else '' >>}
-<% if resume.config.contact.location %>
-\address{<< resume.config.contact.location | escape_latex >>}
-<% endif %>
 <% if resume.config.contact.phone %>
 \mobile{<< resume.config.contact.phone | escape_latex >>}
 <% endif %>
 <% if resume.config.contact.email %>
 \email{<< resume.config.contact.email >>}
+<% endif %>
+<% set extra_items = [] %>
+<% if resume.config.contact.location %>
+<% set _ = extra_items.append(resume.config.contact.location | escape_latex) %>
+<% endif %>
+<% for item in resume.config.contact.extras %>
+<% set _ = extra_items.append(item | escape_latex) %>
+<% endfor %>
+<% if extra_items %>
+\extrainfo{<< extra_items | join(' \acvHeaderSocialSep ') >>}
 <% endif %>
 <% if resume.config.contact.website %>
 \homepage{<< resume.config.contact.website | replace('https://', '') | replace('http://', '') >>}

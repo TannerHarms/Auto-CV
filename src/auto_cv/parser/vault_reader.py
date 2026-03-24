@@ -318,7 +318,7 @@ _MD_LINK_RE = re.compile(r"\[([^\]]+)\]\(([^)]+)\)")
 
 def _parse_contact_items(items: list[str]) -> dict[str, str]:
     """Classify pipe-separated contact fragments into ContactInfo fields."""
-    contact: dict[str, str] = {}
+    contact: dict[str, Any] = {}
     for item in items:
         item = item.strip()
         if not item:
@@ -356,8 +356,11 @@ def _parse_contact_items(items: list[str]) -> dict[str, str]:
                 contact["website"] = item
             continue
 
-        # Default: location
-        contact["location"] = item
+        # First plain-text fragment is location; later ones are extra inline items.
+        if "location" not in contact:
+            contact["location"] = item
+        else:
+            contact.setdefault("extras", []).append(item)
 
     return contact
 
@@ -451,6 +454,7 @@ def _load_project_config_from_header(path: Path) -> ProjectConfig:
 
     # Parse body for config overrides
     config_overrides: dict[str, Any] = {}
+    contact_items: list[str] = []
     for line in body.split("\n"):
         stripped = line.strip()
         if not stripped:
@@ -466,8 +470,16 @@ def _load_project_config_from_header(path: Path) -> ProjectConfig:
         elif stripped.startswith("## "):
             config_overrides["title"] = stripped[3:].strip()
         elif "|" in stripped:
-            items = [i.strip() for i in stripped.split("|")]
-            config_overrides["contact"] = _parse_contact_items(items)
+            contact_items.extend(i.strip() for i in stripped.split("|"))
+        elif _EMAIL_RE.match(stripped) or _PHONE_RE.match(stripped):
+            contact_items.append(stripped)
+        elif _MD_LINK_RE.match(stripped):
+            contact_items.append(stripped)
+        elif stripped.startswith("http://") or stripped.startswith("https://"):
+            contact_items.append(stripped)
+
+    if contact_items:
+        config_overrides["contact"] = _parse_contact_items(contact_items)
 
     return ProjectConfig(
         include=include,

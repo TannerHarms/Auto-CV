@@ -22,11 +22,13 @@
   {% elif section.section_type.value == "volunteer" %}
     {{ render_experience(section) }}
   {% elif section.section_type.value == "service" %}
-    {{ render_experience(section) }}
+    {{ render_service(section) }}
   {% elif section.section_type.value == "languages" %}
     {{ render_languages(section) }}
   {% elif section.section_type.value == "interests" %}
     {{ render_skills(section) }}
+  {% elif section.section_type.value == "references" %}
+    {{ render_references(section) }}
   {% else %}
     {{ render_custom(section) }}
   {% endif %}
@@ -112,7 +114,7 @@
   {% for cat in section.skill_categories %}
   <div class="skill-category">
     <strong>{{ cat.name }}</strong>
-    <span class="skill-list">{% for skill in cat.skills %}{{ skill | markdown_inline | safe }}{% if not loop.last %}<br>{% endif %}{% endfor %}</span>
+    <span class="skill-list">{% for skill in cat.skills %}{{ skill | markdown_inline | safe }}{% if not loop.last %}, {% endif %}{% endfor %}</span>
   </div>
   {% endfor %}
 </div>
@@ -170,10 +172,90 @@
 </div>
 {% endmacro %}
 
+{% macro render_references(section) %}
+{% for entry in section.reference_entries %}
+<div class="entry reference-entry">
+  <div class="entry-header">
+    <div class="entry-title-line">
+      <h3 class="entry-title">{{ entry.name }}{% if entry.relationship %} <span class="entry-relationship">&mdash; {{ entry.relationship }}</span>{% endif %}</h3>
+    </div>
+    {% if entry.title or entry.organization %}
+    <div class="entry-subtitle-line">
+      <span class="entry-position">{% if entry.title %}{{ entry.title }}{% endif %}{% if entry.title and entry.organization %} at {% endif %}{% if entry.organization %}{{ entry.organization }}{% endif %}</span>
+    </div>
+    {% endif %}
+  </div>
+  {% if entry.email or entry.phone %}
+  <div class="entry-contact">
+    {% if entry.email %}<span>{{ entry.email }}</span>{% endif %}
+    {% if entry.email and entry.phone %} <span>|</span> {% endif %}
+    {% if entry.phone %}<span>{{ entry.phone }}</span>{% endif %}
+  </div>
+  {% endif %}
+</div>
+{% endfor %}
+{% endmacro %}
+
+{% macro render_service(section) %}
+{% for entry in section.experience_entries %}
+<div class="entry service-entry">
+  <div class="entry-header">
+    <div class="entry-title-line">
+      <h3 class="entry-title">{{ entry.title }}</h3>
+      {% if entry.location %}
+      <span class="entry-location">{{ entry.location }}</span>
+      {% endif %}
+    </div>
+    <div class="entry-subtitle-line">
+      {% if entry.organization %}<span class="entry-org">{{ entry.organization }}</span>{% endif %}
+      {% if entry.dates %}
+      <span class="entry-dates">{{ entry.dates.display }}</span>
+      {% endif %}
+    </div>
+  </div>
+  {% if entry.description %}
+  <p class="entry-description">{{ entry.description | markdown_inline | safe }}</p>
+  {% endif %}
+  {% if entry.highlights %}
+  <ul class="entry-highlights">
+    {% for h in entry.highlights %}
+    <li>{{ h | markdown_inline | safe }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+</div>
+{% endfor %}
+{% endmacro %}
+
 {% macro render_custom(section) %}
+{% set lines = section.raw_content.strip().splitlines() | reject('equalto', '') | list %}
+{% set all_bullets = (lines | length > 0) and (lines | reject('bullet_line') | list | length == 0) %}
+{% if all_bullets %}
+  {% set clean_lines = lines | map('strip_bullet') | list %}
+  {% set without_dash = clean_lines | reject('has_emdash') | list %}
+  {% if without_dash | length == 0 %}
+  {# All bullets have date separators — entry-style two-column rows #}
+  {% for clean in clean_lines %}
+  {% set parts = clean | split_emdash %}
+  <div class="entry award-entry award-compact">
+    <div class="entry-header">
+      <div class="entry-title-line">
+        <h3 class="entry-title">{{ parts.name | markdown_inline | safe }}</h3>
+        <span class="entry-dates">{{ parts.date }}</span>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+  {% else %}
+  <div class="custom-content">
+    {{ section.raw_content | markdown | safe }}
+  </div>
+  {% endif %}
+{% else %}
 <div class="custom-content">
   {{ section.raw_content | markdown | safe }}
 </div>
+{% endif %}
 {% endmacro %}
 
 {% macro render_publications(section) %}
@@ -184,11 +266,11 @@
       <h3 class="entry-title">{% if entry.url %}<a href="{{ entry.url }}">{{ entry.title }}</a>{% else %}{{ entry.title }}{% endif %}</h3>
       {% if entry.date %}<span class="entry-dates">{{ entry.date }}</span>{% endif %}
     </div>
-    {% if entry.authors %}
-    <div class="entry-authors">{{ entry.authors | join(', ') }}</div>
-    {% endif %}
-    {% if entry.venue %}
-    <div class="entry-venue"><em>{{ entry.venue }}</em></div>
+    {% if entry.authors or entry.venue %}
+    <div class="entry-subtitle-line">
+      {% if entry.authors %}<span class="entry-authors">{{ entry.authors | join(', ') | markdown_inline | safe }}</span>{% endif %}
+      {% if entry.venue %}<span class="entry-venue">{{ entry.venue }}</span>{% endif %}
+    </div>
     {% endif %}
     {% if entry.description %}
     <p class="entry-description">{{ entry.description | markdown_inline | safe }}</p>

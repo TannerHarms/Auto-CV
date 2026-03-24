@@ -6,7 +6,7 @@
 % ==========================================================================
 %  Packages (mirrors awesome-cv.cls §3rd party packages)
 % ==========================================================================
-\RequirePackage[<< style.latex.paper_size >>, left=2.0cm, top=1.5cm, right=2.0cm, bottom=2.0cm, footskip=.5cm]{geometry}
+\RequirePackage[<< style.latex.paper_size >>, margin=<< style.spacing.page_margin >>, footskip=.5cm]{geometry}
 \RequirePackage{array}
 \RequirePackage{enumitem}
 \RequirePackage{ragged2e}
@@ -306,7 +306,7 @@
   \setlength\tabcolsep{0pt}%
   \setlength{\extrarowheight}{0pt}%
   \begin{tabular*}{\textwidth}{@{\extracolsep{\fill}} L{\textwidth - 4.5cm} R{4.5cm}}%
-    \entrytitlestyle{#1} & \entrydatestyle{#3} \\%
+    \entrytitlestyle{#1} & \entrylocationstyle{#3} \\%
     \ifblank{#2}{}{\entrypositionstyle{#2} & \\}%
   \end{tabular*}%
 }
@@ -322,40 +322,43 @@
   \end{tabular*}%
 }
 
-% --- \cvservice{title}{organization}{dates}{description} ---
-% Single-row layout: title + org on left, date accented on right, description as tight second row
+% --- \cvservice{title}{organization}{dates}{location} ---
+% Two-row layout matching \cventry: title/location top, org/dates bottom
 \newcommand{\cvservice}[4]{%
   \vspace{-2.0mm}%
   \setlength\tabcolsep{0pt}%
   \setlength{\extrarowheight}{0pt}%
   \begin{tabular*}{\textwidth}{@{\extracolsep{\fill}} L{\textwidth - 4.5cm} R{4.5cm}}%
-    \entrytitlestyle{#1}\ifblank{#2}{}{, \entrypositionstyle{#2}} & \entrylocationstyle{#3} \\[-2ex]%
-    \ifblank{#4}{}{\multicolumn{2}{@{}p{\textwidth}@{}}{\descriptionstyle{#4}} \\}%
+    \entrytitlestyle{#1} & \entrylocationstyle{#4} \\%
+    \ifblank{#2}{}{\entrypositionstyle{#2}} & \entrydatestyle{#3} \\%
   \end{tabular*}%
 }
 
 % --- \cvpub{title}{venue}{authors}{date} ---
-% Uses cventryshort layout
+% Layout: title left / date right (accent), authors subtitle left / venue right
 \newcommand{\cvpub}[4]{%
   \vspace{-2.0mm}%
   \setlength\tabcolsep{0pt}%
   \setlength{\extrarowheight}{0pt}%
   \begin{tabular*}{\textwidth}{@{\extracolsep{\fill}} L{\textwidth - 4.5cm} R{4.5cm}}%
     \entrytitlestyle{#1} & \entrylocationstyle{#4} \\%
-    \entrypositionstyle{#3} & \entrydatestyle{#2} \\%
+    \ifblank{#3}{\ifblank{#2}{}{%
+      \entrypositionstyle{#2} & \\%
+    }}{%
+      \entrypositionstyle{#3} & \entrydatestyle{#2} \\%
+    }%
   \end{tabular*}%
-  \vspace{1.5mm}%
 }
 
 % --- \cvaward{title}{issuer}{date}{description} ---
-% Title and issuer on left, date accented on right, description as tight second row
+% Two-row layout: Row 1 = title | date (accent), Row 2 = issuer (gray) | description
 \newcommand{\cvaward}[4]{%
   \vspace{-2.0mm}%
   \setlength\tabcolsep{0pt}%
   \setlength{\extrarowheight}{0pt}%
   \begin{tabular*}{\textwidth}{@{\extracolsep{\fill}} L{\textwidth - 4.5cm} R{4.5cm}}%
-    \entrytitlestyle{#1}\ifblank{#2}{}{, \honortitlestyle{#2}} & \entrylocationstyle{#3} \\[-2ex]%
-    \ifblank{#4}{}{\multicolumn{2}{@{}p{\textwidth}@{}}{\descriptionstyle{#4}} \\}%
+    \entrytitlestyle{#1} & \entrylocationstyle{#3} \\%
+    \ifblank{#2}{}{\entrypositionstyle{#2}} & \ifblank{#4}{}{\entrydatestyle{#4}} \\%
   \end{tabular*}%
 }
 
@@ -370,14 +373,14 @@
 }
 
 % --- \cvawardexpressive{title}{issuer}{dates}{location} ---
-% Full cventry-style layout with 2 rows (like experience entries)
+% Full cventry-style layout with 2 rows: title|date(accent), issuer|location(gray)
 \newcommand{\cvawardexpressive}[4]{%
   \vspace{-2.0mm}%
   \setlength\tabcolsep{0pt}%
   \setlength{\extrarowheight}{0pt}%
   \begin{tabular*}{\textwidth}{@{\extracolsep{\fill}} L{\textwidth - 4.5cm} R{4.5cm}}%
-    \entrytitlestyle{#1} & \entrylocationstyle{#4} \\%
-    \entrypositionstyle{#2} & \entrydatestyle{#3} \\%
+    \entrytitlestyle{#1} & \entrylocationstyle{#3} \\%
+    \ifblank{#2}{}{\entrypositionstyle{#2}} & \ifblank{#4}{}{\entrydatestyle{#4}} \\%
   \end{tabular*}%
 }
 
@@ -388,6 +391,18 @@
   \paragraphstyle%
   #1%
   \par\vspace{2mm}%
+}
+
+% --- \cvref{name}{relationship}{title-and-org}{email} ---
+% Tabular layout matching cventry style
+\newcommand{\cvref}[4]{%
+  \vspace{-2.0mm}%
+  \setlength\tabcolsep{0pt}%
+  \setlength{\extrarowheight}{0pt}%
+  \begin{tabular*}{\textwidth}{@{\extracolsep{\fill}} L{\textwidth - 4.5cm} R{4.5cm}}%
+    \entrytitlestyle{#1} & \entrylocationstyle{#2} \\%
+    \ifblank{#3}{}{\entrypositionstyle{#3} & \ifblank{#4}{}{\entrydatestyle{#4}} \\}%
+  \end{tabular*}%
 }
 
 % ==========================================================================

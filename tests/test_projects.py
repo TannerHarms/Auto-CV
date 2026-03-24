@@ -304,6 +304,56 @@ def test_header_md_project_override(header_md_vault):
     assert len(resume.sections) == 1
 
 
+def test_header_md_contact_extras_and_multiline_override(tmp_path):
+    """Multiple contact lines should merge, preserving location and inline extras."""
+    master = tmp_path / "_master"
+    master.mkdir()
+    (master / "header.md").write_text(
+        "---\n"
+        "section_order:\n"
+        "  - summary\n"
+        "---\n"
+        "# Header Person\n"
+        "*Lead Engineer*\n"
+        "\n"
+        "hdr@example.com | +1-555-1234 | Portland, OR | Active Q Clearance\n"
+        "[Website](https://example.com) | [GitHub](https://github.com/hdrp)\n",
+        encoding="utf-8",
+    )
+    (master / "_style.yml").write_text("preset: classic\n", encoding="utf-8")
+    sections = master / "sections"
+    sections.mkdir()
+    (sections / "01-summary.md").write_text(
+        "---\ntype: summary\n---\n# Summary\n\nHeader vault summary.\n",
+        encoding="utf-8",
+    )
+
+    proj = tmp_path / "projects" / "hdr-proj"
+    proj.mkdir(parents=True)
+    (proj / "header.md").write_text(
+        "---\n"
+        "include:\n"
+        "  - 01-summary\n"
+        "section_order:\n"
+        "  - summary\n"
+        "---\n"
+        "*Backend Specialist*\n"
+        "\n"
+        "hdr@example.com | +1-555-1234 | Portland, OR | Active Q Clearance\n"
+        "[Website](https://example.com) | [GitHub](https://github.com/hdrp)\n",
+        encoding="utf-8",
+    )
+
+    resume, _ = load_vault(tmp_path, project="hdr-proj")
+
+    assert resume.config.contact.email == "hdr@example.com"
+    assert resume.config.contact.phone == "+1-555-1234"
+    assert resume.config.contact.location == "Portland, OR"
+    assert resume.config.contact.extras == ["Active Q Clearance"]
+    assert resume.config.contact.website == "https://example.com"
+    assert resume.config.contact.github == "hdrp"
+
+
 # ---------------------------------------------------------------------------
 # CLI integration
 # ---------------------------------------------------------------------------
