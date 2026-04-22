@@ -1,19 +1,53 @@
-# Technical preset — dark slate, green accents, sidebar layout
 preset: technical
-
-# Customise to a data-science-friendly blue-green palette
 colors:
-  primary: "#0A2342"
-  secondary: "#2CA58D"
-  accent: "#84BC9C"
-  link: "#2CA58D"
-
+  primary: '#0A2342'
+  secondary: '#2CA58D'
+  accent: '#84BC9C'
+  text: '#1B1B1B'
+  heading: '#0D1B2A'
+  background: '#F8F9FA'
+  link: '#2CA58D'
+  border: '#415A77'
 fonts:
   heading: Helvetica
-  body: "Segoe UI"
-  mono: "Fira Code"
-
+  body: Segoe UI
+  mono: Fira Code
+  size_base: 10pt
+  size_heading: 12pt
+  size_name: 24pt
+  size_small: 8pt
+  size_bullet: 9pt
+spacing:
+  page_margin: 0.6in
+  section_gap: 10pt
+  entry_gap: 6pt
+  line_height: '1.25'
+  header_to_content: 1mm
+  skill_label_width: 4.5cm
+  bullet_before: -4.0mm
+  bullet_list_topsep: -1.5mm
+  bullet_after: -4.0mm
+  bullet_marker: bullet
+latex:
+  template_set: default
+  engine: pdflatex
+  document_class: article
+  paper_size: letterpaper
+  font_package: helvet
+  font_dir: ''
+  latex_style: ''
+  use_icons: true
+  extra_packages: []
+  extra_preamble: ''
+docx:
+  page_width_inches: 8.5
+  page_height_inches: 11.0
+  use_columns: false
 html:
   layout: sidebar
   include_photo: true
+  responsive: true
+  print_friendly: true
+  custom_css_file: null
+  custom_js_file: null
   include_nav: false

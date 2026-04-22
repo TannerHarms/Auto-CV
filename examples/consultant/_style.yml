@@ -1,14 +1,53 @@
-# Minimal preset — maximum whitespace, clean black/gray, understated
 preset: minimal
-
 colors:
-  primary: "#2E3440"
-  accent: "#4C566A"
-  heading: "#2E3440"
-
+  primary: '#2E3440'
+  secondary: '#666666'
+  accent: '#4C566A'
+  text: '#222222'
+  heading: '#2E3440'
+  background: '#FFFFFF'
+  link: '#444444'
+  border: '#DDDDDD'
 fonts:
-  body: "Helvetica Neue"
-
+  heading: Helvetica
+  body: Helvetica Neue
+  mono: Menlo
+  size_base: 10pt
+  size_heading: 12pt
+  size_name: 20pt
+  size_small: 8pt
+  size_bullet: 9pt
+spacing:
+  page_margin: 1in
+  section_gap: 14pt
+  entry_gap: 10pt
+  line_height: '1.4'
+  header_to_content: 1mm
+  skill_label_width: 4.5cm
+  bullet_before: -4.0mm
+  bullet_list_topsep: -1.5mm
+  bullet_after: -4.0mm
+  bullet_marker: bullet
+latex:
+  template_set: default
+  engine: pdflatex
+  document_class: article
+  paper_size: letterpaper
+  font_package: helvet
+  font_dir: ''
+  latex_style: ''
+  use_icons: false
+  extra_packages: []
+  extra_preamble: ''
+docx:
+  page_width_inches: 8.5
+  page_height_inches: 11.0
+  use_columns: false
 html:
   layout: top-header
   include_photo: false
+  responsive: true
+  print_friendly: true
+  custom_css_file: null
+  custom_js_file: null
+  include_nav: false

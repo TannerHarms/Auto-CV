@@ -1,244 +1,239 @@
 # Auto CV
 
-Build polished resumes from an **Obsidian-style markdown vault**. One command produces three outputs:
+Auto CV generates a resume website, a Word document, and LaTeX/PDF output from a single markdown-based source.
+
+It is intended for people who want to maintain resume content once and publish it consistently across web, DOCX, and PDF formats without managing separate files for each output.
+
+## Overview
+
+- Single-source resume authoring with HTML, DOCX, and LaTeX/PDF output.
+- Built-in presets for technical, executive, academic, creative, and general-purpose resume styles.
+- Markdown-first workflow that works well in Obsidian or a standard folder-based project.
+- Support for shared master vaults with multiple project-specific resume variants.
+- Complete example vaults included in [examples/](examples/).
+
+## Output Formats
 
 | Format | Description |
 | --- | --- |
-| **LaTeX → PDF** | Structured LaTeX repo (`main.tex` + `resume.sty` + `sections/*.tex`), auto-compiled with `latexmk` |
-| **DOCX** | Word document built from scratch via `python-docx` — open and edit in Word/Google Docs |
-| **HTML** | Styled, multi-page website with six layout options, print stylesheet, and custom CSS/JS support |
+| **HTML** | A responsive resume site with six layouts, print styling, support for extra pages, and optional custom CSS/JS |
+| **DOCX** | A Word document generated with `python-docx`, suitable for further editing in Word or Google Docs |
+| **LaTeX/PDF** | A structured LaTeX project (`main.tex`, `resume.sty`, `sections/*.tex`) with optional `latexmk` compilation |
 
-## Preview
+## Recommended Starting Point
 
-Nine built-in style presets — each produces matching output across all three formats:
+The most direct way to evaluate the project is to build one of the included example vaults.
 
-| ![Software Engineer (Modern)](examples/previews/software-engineer.png) | ![Executive](examples/previews/executive.png) | ![Creative Designer](examples/previews/creative-designer.png) |
+```bash
+pip install -e .
+
+auto-cv build examples/software-engineer
+auto-cv preview examples/software-engineer
+```
+
+By default, generated files are written to `output/html/`, `output/docx/`, and `output/latex/`.
+
+## Example Vaults
+
+The repository includes eight complete example vaults in [examples/](examples/). Each example uses a different preset and content profile.
+
+| Example | Sample Profile | Preset | Layout | Build |
+| --- | --- | --- | --- | --- |
+| [software-engineer](examples/software-engineer) | Gimli son of Glóin, Senior Structural & Mining Engineer | `modern` | `sidebar` | `auto-cv build examples/software-engineer` |
+| [executive](examples/executive) | Aragorn II Elessar, Chieftain of the Dúnedain & Heir of Isildur | `executive` | `top-header` | `auto-cv build examples/executive` |
+| [creative-designer](examples/creative-designer) | Legolas Greenleaf, Master Bowyer & Elven Artisan | `creative` | `cards` | `auto-cv build examples/creative-designer` |
+| [academic-researcher](examples/academic-researcher) | Gandalf the Grey, Istari Scholar & Loremaster of the Free Peoples | `awesome-cv` | `top-header` | `auto-cv build examples/academic-researcher` |
+| [new-graduate](examples/new-graduate) | Frodo Baggins, Aspiring Adventurer — Recent Graduate | `elegant` | `top-header` | `auto-cv build examples/new-graduate` |
+| [data-scientist](examples/data-scientist) | Samwise Gamgee, Agricultural Data Analyst & Provisions Specialist | `technical` | `sidebar` | `auto-cv build examples/data-scientist` |
+| [project-manager](examples/project-manager) | Meriadoc Brandybuck, Tactical Operations Coordinator & Esquire of Rohan | `classic` | `top-header` | `auto-cv build examples/project-manager` |
+| [consultant](examples/consultant) | Peregrin Took, Diplomatic Liaison & Guard of the Citadel | `minimal` | `top-header` | `auto-cv build examples/consultant` |
+
+### Selected Previews
+
+| ![Software Engineer Preview](examples/previews/software-engineer.png) | ![Executive Preview](examples/previews/executive.png) | ![Creative Designer Preview](examples/previews/creative-designer.png) |
 |:---:|:---:|:---:|
-| **Modern** | **Executive** | **Creative** |
-| ![Academic Researcher](examples/previews/academic-researcher.png) | ![New Graduate (Elegant)](examples/previews/new-graduate.png) | ![Data Scientist (Technical)](examples/previews/data-scientist.png) |
-| **Academic (Awesome-CV)** | **Elegant** | **Technical** |
+| **Gimli son of Glóin**<br>Senior Structural & Mining Engineer | **Aragorn II Elessar**<br>Chieftain of the Dúnedain & Heir of Isildur | **Legolas Greenleaf**<br>Master Bowyer & Elven Artisan |
+| ![Academic Researcher Preview](examples/previews/academic-researcher.png) | ![New Graduate Preview](examples/previews/new-graduate.png) | ![Data Scientist Preview](examples/previews/data-scientist.png) |
+| **Gandalf the Grey**<br>Istari Scholar & Loremaster of the Free Peoples | **Frodo Baggins**<br>Aspiring Adventurer — Recent Graduate | **Samwise Gamgee**<br>Agricultural Data Analyst & Provisions Specialist |
 
-> See [examples/](examples/) for full example vaults you can build yourself.
+### Example Content Excerpts
+
+The following excerpts are copied from the example vaults in this repository.
+
+**Software Engineer** (`examples/software-engineer/sections/02-experience.md`)
+
+```markdown
+## 1. Senior Structural Engineer
+
+**Company:** Erebor Royal Works
+**Location:** Erebor, Lonely Mountain
+**Dates:** 2941 T.A. – present
+
+- Led reconstruction of the Front Gate and Great Hall following the Battle of Five Armies
+- Designed earthquake-resistant vault system protecting 40,000+ tonnes of treasury assets
+- Built real-time structural monitoring network using resonance crystals, reducing collapse risk by 85%
+```
+
+**Creative Designer** (`examples/creative-designer/sections/03-projects.md`)
+
+```markdown
+## Galadhrim Longbow System
+
+End-to-end weapon system serving 6 Elven garrison companies with shared components, string types, and field documentation.
+**Technologies:** Mallorn Wood, Mithril Inlay, Spider Silk, Enchantment Binding
+
+- Reduced restring time by 50%
+- Achieved 100% accuracy at 300 metres in field trials
+```
+
+**Academic Researcher** (`examples/academic-researcher/sections/04-publications.md`)
+
+```markdown
+## On the Rings of Power: Binding Mechanics and Corruption Dynamics
+
+**Authors:** Gandalf the Grey, Elrond Half-elven
+**Venue:** Proceedings of the White Council, Vol. XII
+**Date:** 2951 T.A.
+```
+
+**Consultant** (`examples/consultant/sections/01-summary.md`)
+
+```markdown
+# Summary
+
+Energetic diplomatic liaison and social strategist with a natural talent for building rapport across cultures and hierarchies. Son of the Thain of the Shire with firsthand exposure to governance, inter-family diplomacy, and public affairs.
+```
+
+For the complete gallery and notes on each example, see [examples/README.md](examples/README.md).
 
 ## Quick Start
 
-### As a Python CLI
+### Python CLI
 
 ```bash
-# Install
 pip install -e .
 
-# Scaffold a new vault
 auto-cv init my_cv
-
-# Edit your sections in my_cv/sections/*.md, then build:
 auto-cv build my_cv
-
-# Outputs land in ./output/{latex,docx,html}/
+auto-cv build my_cv -f html
 ```
 
-### As an Obsidian Plugin
+### Obsidian Plugin
 
-1. Install the **Auto CV** plugin from Obsidian Community Plugins
-2. Install the Python backend: `pip install auto-cv`
-3. Open a vault with `header.md` + `sections/` folder
-4. Run **Auto CV: Build Resume** from the command palette
+1. Install the **Auto CV** plugin in Obsidian.
+2. Install the Python backend with `pip install auto-cv`.
+3. Open a vault containing `header.md` and a `sections/` directory.
+4. Run **Auto CV: Build Resume** from the command palette.
 
 ## Vault Structure
 
-A vault is a directory with a header file + markdown section files:
+An Auto CV vault is a folder containing markdown content plus optional styling and asset overrides.
 
 ```text
 my_cv/
-├── header.md             # Name, contact, section ordering (YAML frontmatter + markdown)
-├── _style.yml            # Style preset + overrides (optional)
+├── header.md
+├── _style.yml
 ├── sections/
 │   ├── 01-summary.md
 │   ├── 02-experience.md
 │   ├── 03-education.md
 │   ├── 04-skills.md
 │   └── 05-projects.md
-├── pages/                # Extra HTML pages (portfolio, about, etc.)
+├── pages/
 │   └── portfolio.md
-├── assets/               # Photos, images
+├── assets/
 │   └── headshot.jpg
-├── custom.css            # Auto-included in HTML output (optional)
-├── custom.js             # Auto-included in HTML output (optional)
-└── resume.sty            # Overrides generated LaTeX style (optional)
+├── custom.css
+├── custom.js
+└── resume.sty
 ```
 
-### `header.md`
+- `header.md`: resume identity, contact details, section order, and optional metadata.
+- `_style.yml`: preset selection plus project-specific visual overrides.
+- `sections/`: resume sections authored in markdown with frontmatter and/or natural markdown body content.
+- `pages/`: additional HTML-only pages such as a portfolio or profile page.
+- `custom.css` and `custom.js`: automatically injected into HTML output when present.
+- `resume.sty`: replaces the generated LaTeX style when full custom control is required.
 
-Your name, title, and contact information live in `header.md` — YAML frontmatter for metadata, markdown body for the header content:
+### Example `header.md`
+
+The following is the `header.md` file used in [examples/software-engineer](examples/software-engineer):
 
 ```markdown
 ---
 section_order:
   - summary
   - experience
-  - education
   - skills
   - projects
+  - education
+  - certifications
 html_meta:
-  title: "Jane Doe — Resume"
-  description: "Full-stack software engineer."
-photo: headshot.jpg
+  title: "Gimli son of Glóin — Senior Structural Engineer"
+  description: "Dwarven engineer with decades of experience in subterranean infrastructure and mithril systems."
+photo: headshot.svg
 ---
-# Jane Doe
-*Software Engineer*
+# Gimli son of Glóin
+*Senior Structural & Mining Engineer*
 
-jane@example.com | +1-555-000-0000 | Austin, TX
-[LinkedIn](https://linkedin.com/in/janedoe) | [GitHub](https://github.com/janedoe) | [janedoe.dev](https://janedoe.dev)
+gimli@erebor.dw | Erebor, Lonely Mountain
+[StoneCraft](https://linkedin.com/in/gimli-axebearer) | [ForgeHub](https://github.com/gimli-stonecraft) | [gimli.erebor.dw](https://gimli.erebor.dw)
 ```
 
-### Section Files
+### Example `_style.yml`
 
-Each section is a markdown file with YAML frontmatter and/or natural markdown body content. The filename prefix (`01-`, `02-`, etc.) controls default ordering.
-
-**Experience** (`sections/02-experience.md`):
-
-```yaml
----
-title: Experience
-type: experience
-order: 2
-entries:
-  - role: Senior Software Engineer
-    company: Acme Corp
-    location: San Francisco, CA
-    start: "2021-01"
-    end: present
-    highlights:
-      - Led migration of monolith to microservices, reducing deploy time by 60%
-      - Mentored 3 junior engineers through structured code review programme
----
-```
-
-**Skills** (`sections/04-skills.md`):
-
-```yaml
----
-title: Skills
-type: skills
-order: 4
-categories:
-  - name: Languages
-    skills: [Python, TypeScript, Go, SQL]
-  - name: Frameworks
-    skills: [FastAPI, React, Django]
----
-```
-
-**Supported section types**: `summary`, `experience`, `education`, `skills`, `projects`, `certifications`, `publications`, `awards`, `volunteer`, `service`, `languages`, `interests`, `references`, `custom`
-
-> **📖 See [docs/sections.md](docs/sections.md) for the complete section authoring guide** — all field names, markdown formats, display variants, and examples.
-
-## Style Customisation
-
-### Presets
-
-Nine built-in presets are included:
-
-| Preset | Description |
-| --- | --- |
-| `classic` | Georgia serif, conservative navy palette, single-column |
-| `modern` | Helvetica sans-serif, blue accents, sidebar HTML layout, icons |
-| `minimal` | Near-black, maximum whitespace, quiet typography |
-| `academic` | Traditional academic CV style |
-| `awesome-cv` | Faithful reproduction of the Awesome-CV LaTeX class (Roboto + Source Sans Pro via XeLaTeX) |
-| `creative` | Bold colours and layout for creative professionals |
-| `elegant` | Refined serif typography with subtle accents |
-| `executive` | Professional executive-level resume style |
-| `technical` | Clean technical resume with monospace accents |
-
-List available presets:
-
-```bash
-auto-cv list-presets
-```
-
-### `_style.yml`
-
-Override any preset value:
+The following `_style.yml` file is used in [examples/software-engineer](examples/software-engineer):
 
 ```yaml
 preset: modern
 
 colors:
-  primary: "#1B3A4B"
-  accent: "#3D85C6"
+  primary: "#1565C0"
+  accent: "#00BCD4"
 
 fonts:
   heading: Helvetica
-  body: "Source Sans Pro"
-  size_base: "11pt"
-
-spacing:
-  page_margin: "0.75in"
-  section_gap: "12pt"
-
-latex:
-  font_package: helvet
-  use_icons: false
-
-docx:
-  page_width_inches: 8.5
+  body: "Segoe UI"
 
 html:
-  layout: sidebar        # top-header | sidebar | cards | multi-page | awesome-cv | latex-mirror
+  layout: sidebar
   include_photo: true
-  include_nav: true
+  include_nav: false
 ```
 
-### Vault-Local Presets
+### Section Authoring
 
-Create your own preset YAML file and reference it:
+Sections may be authored as structured YAML, natural markdown, or a combination of both. Supported section types are:
 
-```yaml
-preset: ./presets/my_theme.yml
-```
+`summary`, `experience`, `education`, `skills`, `projects`, `certifications`, `publications`, `awards`, `volunteer`, `service`, `languages`, `interests`, `references`, `custom`
 
-### Full Schema
+See [docs/sections.md](docs/sections.md) for the full authoring reference.
 
-Dump the complete `StyleConfig` JSON schema for reference:
+## Presets And Layouts
+
+### Built-in Presets
+
+The project includes nine presets:
+
+`classic`, `modern`, `minimal`, `academic`, `awesome-cv`, `creative`, `elegant`, `executive`, `technical`
 
 ```bash
-auto-cv style-schema
+auto-cv list-presets
+auto-cv list-presets --json
 ```
 
-## HTML Layouts
+### HTML Layouts
 
-Six built-in layouts are available via `html.layout` in `_style.yml`:
+The following HTML layouts are currently available through `html.layout`:
 
-- **`top-header`** (default) — Traditional single-column with name/contact at top
-- **`sidebar`** — Two-column: photo/contact/skills in colored sidebar, main content on right
-- **`cards`** — Grid of section cards with portfolio-style visual treatment
-- **`multi-page`** — One section per page with shared navigation
-- **`awesome-cv`** — HTML layout styled to mirror the Awesome-CV look
-- **`latex-mirror`** — HTML layout tuned to visually match LaTeX output
+- `top-header`
+- `sidebar`
+- `cards`
+- `multi-page`
+- `awesome-cv`
+- `latex-mirror`
 
-All layouts include:
-
-- CSS variables generated from your `StyleConfig` (no framework dependency)
-- Responsive design (mobile collapse)
-- Print stylesheet (`@media print`) — "Print to PDF" from browser looks professional
-- Navigation bar for multi-page resumes
-- `custom.css` / `custom.js` auto-injection
-
-### Extra Pages
-
-Add markdown files to `pages/` for additional HTML pages (portfolio, about, etc.):
-
-```yaml
----
-title: Portfolio
-id: portfolio
-order: 1
----
-Your portfolio content in markdown...
-```
-
-These are rendered as separate HTML pages with navigation. Ignored by LaTeX/DOCX.
+All layouts support responsive rendering, print-friendly styling, preset-derived CSS variables, and optional `custom.css` and `custom.js` injection.
 
 ## CLI Reference
 
@@ -248,27 +243,28 @@ auto-cv build <vault> [OPTIONS]
 
 | Option | Description |
 | --- | --- |
-| `--format`, `-f` | Output formats: `latex`, `docx`, `html` (repeatable, default: all three) |
-| `--output`, `-o` | Output directory (default: `./output`) |
-| `--project`, `-p` | Project name when building from a master vault (`projects/<name>/`) |
-| `--polish` | Use LLM to rewrite bullet points for impact |
-| `--tailor-to <file>` | Tailor resume to a job description `.txt` file |
-| `--suggest-layout` | Use LLM to optimise section ordering |
-| `--model` | LLM model name (default: `gpt-4o` or `AUTO_CV_MODEL` env) |
+| `--format`, `-f` | Output formats: `latex`, `docx`, `html` |
+| `--output`, `-o` | Output directory |
+| `--project`, `-p` | Project name when building from a master vault |
+| `--polish` | Apply the LLM-based bullet polishing pass |
+| `--tailor-to <file>` | Tailor the resume to a job description text file |
+| `--suggest-layout` | Ask the LLM to optimize section ordering |
+| `--model` | Override the LLM model name |
 
+Additional commands:
+
+```bash
+auto-cv init <path>
+auto-cv preview <vault>
+auto-cv list-projects <vault>
+auto-cv new-project <vault> <name>
+auto-cv list-presets
+auto-cv style-schema
 ```
-auto-cv init <path>          # Scaffold a new vault with example content
-auto-cv preview <vault>      # Quick HTML render + open in browser
-auto-cv list-projects <vault> # List projects in a master vault
-auto-cv new-project <vault> <name> # Create a project in a master vault
-auto-cv list-presets          # Show available style presets
-auto-cv list-presets --json   # Show full preset config JSON
-auto-cv style-schema          # Print StyleConfig JSON schema
-```
 
-### Master Vault Workflow
+## Master Vault Workflow
 
-Auto CV supports a reusable master vault structure for role-specific builds:
+For teams or individuals maintaining multiple role-specific resumes, Auto CV supports a master vault with shared content and project-specific variants.
 
 ```text
 my_cv/
@@ -278,14 +274,12 @@ my_cv/
 │   ├── sections/
 │   └── pages/
 └── projects/
-  ├── backend-engineer/
-  │   ├── header.md        # include + section_order in frontmatter
-  │   ├── _style.yml       # optional project-level style overrides
-  │   └── sections/        # optional per-project section overrides
-  └── ml-engineer/
+    ├── backend-engineer/
+    │   ├── header.md
+    │   ├── _style.yml
+    │   └── sections/
+    └── ml-engineer/
 ```
-
-Example commands:
 
 ```bash
 auto-cv list-projects my_cv
@@ -293,53 +287,26 @@ auto-cv new-project my_cv backend-engineer
 auto-cv build my_cv --project backend-engineer
 ```
 
-## LLM Agents (Optional) — Under Construction
+## Optional LLM Features
 
-> **Note:** The agents feature is functional but still under active development. APIs and behaviour may change in future releases.
-
-Agents modify the resume model *before* rendering — the pipeline stays deterministic.
+LLM-assisted features are available through the `agents` extra and run before rendering.
 
 ```bash
-# Install the agents extra
 pip install -e ".[agents]"
 
-# Polish bullet points
 auto-cv build my_cv --polish
-
-# Tailor to a job description
 auto-cv build my_cv --tailor-to job_posting.txt
-
-# Suggest optimal section layout
 auto-cv build my_cv --suggest-layout
-
-# Combine them
 auto-cv build my_cv --polish --tailor-to job_posting.txt --suggest-layout
 ```
 
-**Requirements**: Set `OPENAI_API_KEY` environment variable. Optionally set `AUTO_CV_MODEL` to change the default model from `gpt-4o`.
-
-### Agent Details
-
-| Agent | What it does |
-| --- | --- |
-| **PolishAgent** | Rewrites experience & project bullet points — stronger action verbs, quantified results, concise phrasing |
-| **TailorAgent** | Adjusts summary, reorders highlights, injects keywords to match a target job description |
-| **LayoutAgent** | Suggests section ordering and hides irrelevant sections for a target role |
-
-## LaTeX Override
-
-Drop a `resume.sty` file in your vault root to fully replace the generated LaTeX style. This lets power users hand-craft their LaTeX style once and reuse it across builds.
+Set `OPENAI_API_KEY` to enable these features. You may also set `AUTO_CV_MODEL` or pass `--model` explicitly.
 
 ## Development
 
 ```bash
-# Install with dev dependencies
 pip install -e ".[dev]"
-
-# Run tests
 pytest
-
-# Lint
 ruff check src/ tests/
 ```
 
@@ -347,13 +314,13 @@ ruff check src/ tests/
 
 ```text
 src/auto_cv/
-├── models/          # Pydantic data models (Resume, Section, StyleConfig)
-├── parser/          # Vault reader (YAML/frontmatter → models)
-├── renderers/       # LaTeX, DOCX, HTML renderers
-├── styles/          # Preset loader + built-in YAML presets
-├── agents/          # Optional LLM agents (polish, tailor, layout)
-├── templates/       # Jinja2 templates (LaTeX + HTML layouts/partials)
-└── cli.py           # Typer CLI
+├── models/
+├── parser/
+├── renderers/
+├── styles/
+├── agents/
+├── templates/
+└── cli.py
 ```
 
 ## License

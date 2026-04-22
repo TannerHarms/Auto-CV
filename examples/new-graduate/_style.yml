@@ -1,16 +1,53 @@
-# Elegant preset — refined Palatino type, warm burgundy tones
 preset: elegant
-
-# Soften the burgundy to a deep plum for a youthful-yet-polished look
 colors:
-  primary: "#5C3D6E"
-  accent: "#8E6DAF"
-  heading: "#5C3D6E"
-  link: "#5C3D6E"
-
+  primary: '#5C3D6E'
+  secondary: '#8C7B6B'
+  accent: '#8E6DAF'
+  text: '#3C3C3C'
+  heading: '#5C3D6E'
+  background: '#FDF8F4'
+  link: '#5C3D6E'
+  border: '#D4C5B9'
 fonts:
-  body: "Palatino Linotype"
-
+  heading: Palatino Linotype
+  body: Palatino Linotype
+  mono: Courier New
+  size_base: 11pt
+  size_heading: 13pt
+  size_name: 24pt
+  size_small: 9pt
+  size_bullet: 9pt
+spacing:
+  page_margin: 0.8in
+  section_gap: 12pt
+  entry_gap: 8pt
+  line_height: '1.35'
+  header_to_content: 1mm
+  skill_label_width: 4.5cm
+  bullet_before: -4.0mm
+  bullet_list_topsep: -1.5mm
+  bullet_after: -4.0mm
+  bullet_marker: bullet
+latex:
+  template_set: default
+  engine: pdflatex
+  document_class: article
+  paper_size: letterpaper
+  font_package: mathpazo
+  font_dir: ''
+  latex_style: ''
+  use_icons: false
+  extra_packages: []
+  extra_preamble: ''
+docx:
+  page_width_inches: 8.5
+  page_height_inches: 11.0
+  use_columns: false
 html:
   layout: top-header
   include_photo: false
+  responsive: true
+  print_friendly: true
+  custom_css_file: null
+  custom_js_file: null
+  include_nav: false
