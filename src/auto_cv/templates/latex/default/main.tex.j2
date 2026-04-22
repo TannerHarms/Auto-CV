@@ -16,7 +16,8 @@
 <% endif -%>
 \begin{center}
   \cvname{<< first_name | escape_latex >>}{<< last_name | escape_latex >>}<% if resume.config.title %>\\[\acvHeaderAfterNameSkip]
-  \cvtitle{<< resume.config.title | escape_latex >>}<% endif %>\\[\acvHeaderAfterAddressSkip]
+  \cvtitle{<< resume.config.title | escape_latex >>}<% endif %><% if resume.config.contact.location %>\\[\acvHeaderAfterPositionSkip]
+  \cvaddress{<< resume.config.contact.location | escape_latex >>}<% endif %>\\[\acvHeaderAfterAddressSkip]
   \cvcontact{%
 <% set contact_parts = [] -%>
 <% if resume.config.contact.email -%>
@@ -25,12 +26,6 @@
 <% if resume.config.contact.phone -%>
 <% set _ = contact_parts.append(resume.config.contact.phone) -%>
 <% endif -%>
-<% if resume.config.contact.location -%>
-<% set _ = contact_parts.append(resume.config.contact.location | escape_latex) -%>
-<% endif -%>
-<% for item in resume.config.contact.extras -%>
-<% set _ = contact_parts.append(item | escape_latex) -%>
-<% endfor -%>
 <% if resume.config.contact.linkedin -%>
 <% set _ = contact_parts.append("\\href{https://linkedin.com/in/" + resume.config.contact.linkedin + "}{linkedin.com/in/" + resume.config.contact.linkedin + "}") -%>
 <% endif -%>
@@ -51,15 +46,5 @@
 <% for fname in section_filenames %>
 \input{sections/<< fname | replace('.tex', '') >>}
 <% endfor %>
-
-%% Auto CV attribution — remove this block to hide
-\newpage
-\pagestyle{empty}
-\vspace*{\fill}
-\begin{center}
-  {\small\color{gray} Resume formatted and compiled by
-  \href{https://github.com/TannerHarms/Auto-CV}{Auto CV}}
-\end{center}
-\vspace*{\fill}
 
 \end{document}

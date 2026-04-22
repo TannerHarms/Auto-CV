@@ -73,7 +73,14 @@
 
 \begin{document}
 
+<% if header_markdown_latex %>
+\begin{center}
+<< header_markdown_latex >>
+\end{center}
+\vspace{4pt}
+<% else %>
 \makecvheader
+<% endif %>
 
 <% for fname in section_filenames %>
 \input{sections/<< fname | replace('.tex', '') >>}

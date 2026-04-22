@@ -265,6 +265,86 @@ def test_load_project_master_name_preserved(master_vault):
     assert resume.config.name == "Test Person"
 
 
+def test_load_project_local_section_id_without_numeric_prefix(tmp_path):
+    """Project include should resolve project-local section ids like 'experience-b'."""
+    master = tmp_path / "_master"
+    master.mkdir()
+    (master / "_config.yml").write_text(
+        "name: Test Person\n"
+        "title: Software Engineer\n"
+        "contact:\n"
+        "  email: test@example.com\n",
+        encoding="utf-8",
+    )
+    (master / "_style.yml").write_text("preset: classic\n", encoding="utf-8")
+    (master / "sections").mkdir()
+
+    project = tmp_path / "projects" / "local-only"
+    project.mkdir(parents=True)
+    (project / "_project.yml").write_text(
+        "include:\n"
+        "  - experience-b\n"
+        "section_order:\n"
+        "  - experience-b\n",
+        encoding="utf-8",
+    )
+    proj_sections = project / "sections"
+    proj_sections.mkdir()
+    (proj_sections / "03-experience-b.md").write_text(
+        "---\n"
+        "type: experience\n"
+        "---\n"
+        "# Experience\n\n"
+        "## Role\n"
+        "**Org** | Remote | 2022-01 – present\n\n"
+        "- Did project-local work\n",
+        encoding="utf-8",
+    )
+
+    resume, _ = load_vault(tmp_path, project="local-only")
+    assert len(resume.sections) == 1
+    assert resume.sections[0].id == "experience-b"
+
+
+def test_load_project_no_include_prefers_project_sections(tmp_path):
+    """Project with no include should load all project sections before master."""
+    master = tmp_path / "_master"
+    master.mkdir()
+    (master / "_config.yml").write_text(
+        "name: Test Person\n"
+        "title: Software Engineer\n"
+        "contact:\n"
+        "  email: test@example.com\n",
+        encoding="utf-8",
+    )
+    (master / "_style.yml").write_text("preset: classic\n", encoding="utf-8")
+    master_sections = master / "sections"
+    master_sections.mkdir()
+    (master_sections / "01-summary.md").write_text(
+        "---\ntype: summary\n---\n# Summary\n\nMaster summary.\n",
+        encoding="utf-8",
+    )
+
+    project = tmp_path / "projects" / "project-first"
+    project.mkdir(parents=True)
+    (project / "_project.yml").write_text("# no include\n", encoding="utf-8")
+    proj_sections = project / "sections"
+    proj_sections.mkdir()
+    (proj_sections / "01-summary.md").write_text(
+        "---\ntype: summary\n---\n# Summary\n\nProject summary.\n",
+        encoding="utf-8",
+    )
+    (proj_sections / "03-experience-b.md").write_text(
+        "---\ntype: experience\n---\n# Experience\n\n"
+        "## Role\n**Org** | Remote | 2022-01 – present\n",
+        encoding="utf-8",
+    )
+
+    resume, _ = load_vault(tmp_path, project="project-first")
+    ids = {s.id for s in resume.sections}
+    assert ids == {"summary", "experience-b"}
+
+
 def test_load_project_not_found(master_vault):
     with pytest.raises(FileNotFoundError, match="Project not found"):
         load_project(master_vault, "nonexistent")
@@ -284,6 +364,8 @@ def test_header_md_loads_config(header_md_vault):
     resume, _ = load_vault(header_md_vault)
     assert resume.config.name == "Header Person"
     assert resume.config.title == "Lead Engineer"
+    assert "# Header Person" in (resume.config.header_markdown or "")
+    assert "*Lead Engineer*" in (resume.config.header_markdown or "")
     assert resume.config.contact.email == "hdr@example.com"
     assert resume.config.contact.phone == "+1-555-1234"
     assert resume.config.contact.location == "Portland, OR"
@@ -301,6 +383,7 @@ def test_header_md_project_override(header_md_vault):
     resume, _ = load_vault(header_md_vault, project="hdr-proj")
     assert resume.config.title == "Backend Specialist"
     assert resume.config.name == "Header Person"  # inherited
+    assert resume.config.header_markdown == "*Backend Specialist*"
     assert len(resume.sections) == 1
 
 
@@ -352,6 +435,102 @@ def test_header_md_contact_extras_and_multiline_override(tmp_path):
     assert resume.config.contact.extras == ["Active Q Clearance"]
     assert resume.config.contact.website == "https://example.com"
     assert resume.config.contact.github == "hdrp"
+
+
+def test_sparse_project_style_is_expanded_on_load(tmp_path):
+    """Loading a project should expand sparse _style.yml to full configurable schema."""
+    master = tmp_path / "_master"
+    master.mkdir()
+    (master / "_config.yml").write_text(
+        "name: Test Person\n"
+        "title: Engineer\n"
+        "contact:\n"
+        "  email: test@example.com\n",
+        encoding="utf-8",
+    )
+    (master / "_style.yml").write_text("preset: classic\n", encoding="utf-8")
+
+    sections = master / "sections"
+    sections.mkdir()
+    (sections / "01-summary.md").write_text(
+        "---\ntype: summary\n---\n# Summary\n\nHello\n",
+        encoding="utf-8",
+    )
+
+    proj = tmp_path / "projects" / "ai-research"
+    proj.mkdir(parents=True)
+    (proj / "_project.yml").write_text(
+        "include:\n"
+        "  - 01-summary\n"
+        "section_order:\n"
+        "  - summary\n",
+        encoding="utf-8",
+    )
+    sparse_style = (
+        'preset: awesome-cv\n\n'
+        'spacing:\n'
+        '  page_margin: "0.6in"\n'
+        '  section_gap: "6pt"\n'
+    )
+    style_path = proj / "_style.yml"
+    style_path.write_text(sparse_style, encoding="utf-8")
+
+    # Trigger project style load/merge path
+    load_vault(tmp_path, project="ai-research")
+
+    expanded = style_path.read_text(encoding="utf-8")
+    assert 'preset: awesome-cv' in expanded
+    assert 'page_margin: 0.6in' in expanded
+    assert 'section_gap: 6pt' in expanded
+    assert 'fonts:' in expanded
+    assert 'size_base:' in expanded
+    assert 'latex:' in expanded
+    assert 'docx:' in expanded
+    assert 'html:' in expanded
+
+
+def test_invalid_project_style_color_is_sanitized_on_load(tmp_path):
+    """Malformed color values in _style.yml should be repaired to preset defaults."""
+    master = tmp_path / "_master"
+    master.mkdir()
+    (master / "_config.yml").write_text(
+        "name: Test Person\n"
+        "title: Engineer\n"
+        "contact:\n"
+        "  email: test@example.com\n",
+        encoding="utf-8",
+    )
+    (master / "_style.yml").write_text("preset: classic\n", encoding="utf-8")
+
+    sections = master / "sections"
+    sections.mkdir()
+    (sections / "01-summary.md").write_text(
+        "---\ntype: summary\n---\n# Summary\n\nHello\n",
+        encoding="utf-8",
+    )
+
+    proj = tmp_path / "projects" / "bad-color"
+    proj.mkdir(parents=True)
+    (proj / "_project.yml").write_text(
+        "include:\n"
+        "  - 01-summary\n"
+        "section_order:\n"
+        "  - summary\n",
+        encoding="utf-8",
+    )
+    (proj / "_style.yml").write_text(
+        "preset: awesome-cv\n"
+        "colors:\n"
+        "  primary: \"''\"\n",
+        encoding="utf-8",
+    )
+
+    _, style = load_vault(tmp_path, project="bad-color")
+    assert style.colors.primary.startswith("#")
+    assert len(style.colors.primary) == 7
+
+    expanded = (proj / "_style.yml").read_text(encoding="utf-8")
+    assert "primary: '#CC5500'" in expanded or 'primary: "#CC5500"' in expanded or "primary: '#cc5500'" in expanded
 
 
 # ---------------------------------------------------------------------------

@@ -44,7 +44,7 @@
       padding: 1.5cm 2.0cm 2.0cm;
     }
 
-    a { color: var(--color-primary, #CC5500); text-decoration: none; }
+    a { color: var(--color-link, #0395DE); text-decoration: none; }
     a:hover { text-decoration: underline; }
 
     /* =====================================================================
@@ -112,7 +112,7 @@
       padding-bottom: 0;
       margin-bottom: 2.5mm;
       display: flex;
-      align-items: flex-end;
+      align-items: center;
       gap: 0;
     }
     .section-title::after {
@@ -121,7 +121,6 @@
       height: 1px;
       background: var(--acv-graytext);
       margin-left: 6px;
-      margin-bottom: 0.15em;
     }
 
     /* =====================================================================
@@ -212,12 +211,13 @@
        Skills — label | value layout matching \cvskillcat
        ===================================================================== */
     .skills-grid {
-      display: grid;
-      grid-template-columns: auto 1fr;
-      gap: 1px 1em;
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
     }
     .skill-category {
-      display: contents;
+      display: flex;
+      gap: 1em;
       font-size: 9pt;
       line-height: 1.6;
     }
@@ -226,13 +226,12 @@
       font-size: 10pt;
       font-weight: 700;
       color: var(--acv-darktext);
+      min-width: var(--spacing-skill-label-width, 4.5cm);
       text-align: right;
-      white-space: nowrap;
+      flex-shrink: 0;
     }
     .skill-category .skill-list {
       color: var(--acv-text);
-      font-size: 9pt;
-      line-height: 1.6;
     }
 
     /* =====================================================================
@@ -363,6 +362,9 @@
       {% if resume.config.title %}
       <p class="resume-title">{{ resume.config.title }}</p>
       {% endif %}
+      {% if resume.config.contact.location %}
+      <p class="resume-address">{{ resume.config.contact.location }}</p>
+      {% endif %}
       <div class="resume-contact">
         {%- set items = [] -%}
         {%- if resume.config.contact.email -%}
@@ -371,12 +373,6 @@
         {%- if resume.config.contact.phone -%}
           {%- set _ = items.append(resume.config.contact.phone) -%}
         {%- endif -%}
-        {%- if resume.config.contact.location -%}
-          {%- set _ = items.append(resume.config.contact.location) -%}
-        {%- endif -%}
-        {%- for item in resume.config.contact.extras -%}
-          {%- set _ = items.append(item) -%}
-        {%- endfor -%}
         {%- if resume.config.contact.linkedin -%}
           {%- set _ = items.append('<a href="https://linkedin.com/in/' + resume.config.contact.linkedin + '">linkedin.com/in/' + resume.config.contact.linkedin + '</a>') -%}
         {%- endif -%}
@@ -402,11 +398,6 @@
       <span></span>
     </footer>
   </div>
-
-  <!-- Auto CV attribution — remove this block to hide -->
-  <footer class="auto-cv-attribution" style="text-align:center;padding:1.5rem 0 0.75rem;margin-top:2rem;font-size:0.75rem;color:#999;border-top:1px solid #eee;">
-    Resume formatted and compiled by <a href="https://github.com/TannerHarms/Auto-CV" style="color:#999;text-decoration:underline;">Auto CV</a>
-  </footer>
 
   {% if custom_js %}
   <script>{{ custom_js | safe }}</script>

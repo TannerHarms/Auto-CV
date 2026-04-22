@@ -222,6 +222,9 @@ export class BuildWizard extends Modal {
   private selectedFormats: string[];
   private outputPath: string;
 
+  // Active project section info (for labelling project-only sections)
+  private activeProjectSections: SectionInfo[] = [];
+
   constructor(app: App, config: WizardConfig, onResult: (r: WizardResult) => void) {
     super(app);
     this.config = config;
@@ -252,6 +255,7 @@ export class BuildWizard extends Modal {
     const data = this.config.projectConfigs[name];
     if (!data) return;
 
+    this.activeProjectSections = data.projectSections || [];
     this.selectedSections = new Set(this.config.sections.map(sec => sec.filename));
     this.sectionOrder = this.config.sections.map(sec => sec.filename);
     this.titleOverride = '';
@@ -263,12 +267,20 @@ export class BuildWizard extends Modal {
 
     if (data.include.length > 0) {
       this.selectedSections = new Set(data.include);
-      this.sectionOrder = data.include.filter(s =>
-        this.config.sections.some(sec => sec.filename === s));
-      // Append any unselected sections at end for ordering
+      this.sectionOrder = [...data.include];
+      // Append any unselected master sections at end for ordering
       for (const sec of this.config.sections) {
         if (!this.sectionOrder.includes(sec.filename)) {
           this.sectionOrder.push(sec.filename);
+        }
+      }
+      // Append any project-local sections not yet in the list so users can
+      // toggle between section variants (e.g. 03-experience vs 03-experience-a)
+      if (data.projectSections) {
+        for (const sec of data.projectSections) {
+          if (!this.sectionOrder.includes(sec.filename)) {
+            this.sectionOrder.push(sec.filename);
+          }
         }
       }
     }
@@ -423,8 +435,17 @@ export class BuildWizard extends Modal {
     }
 
     for (const filename of orderedSections) {
-      const info = this.config.sections.find(s => s.filename === filename);
-      if (!info) continue;
+      const masterInfo = this.config.sections.find(s => s.filename === filename);
+      const projectInfo = this.activeProjectSections.find(s => s.filename === filename);
+      const isProjectOnly = !masterInfo && !!projectInfo;
+      const label = masterInfo
+        ? masterInfo.label
+        : projectInfo
+          ? projectInfo.label
+          : filename
+              .replace(/^\d+\w?-/, '')
+              .replace(/-/g, ' ')
+              .replace(/\b\w/g, c => c.toUpperCase());
 
       const row = listEl.createDiv({ cls: 'wizard-section-row' });
       row.setAttribute('draggable', 'true');
@@ -440,8 +461,11 @@ export class BuildWizard extends Modal {
         else this.selectedSections.delete(filename);
       };
 
-      row.createSpan({ cls: 'wizard-section-name', text: info.label });
+      row.createSpan({ cls: 'wizard-section-name', text: label });
       row.createSpan({ cls: 'wizard-section-file', text: filename });
+      if (isProjectOnly) {
+        row.createSpan({ cls: 'wizard-section-file', text: '(project)' });
+      }
 
       // Drag events for reordering
       row.ondragstart = (e) => {
@@ -735,7 +759,7 @@ export class BuildWizard extends Modal {
 
     // Derive section_order (type names) from the include list
     const sectionOrder = include.map(filename =>
-      filename.replace(/^\d+-/, ''));
+      filename.replace(/^\d+[a-zA-Z]?-/, ''));
 
     // Build style overrides — only include changed values
     const preset = this.config.presets[this.presetName] || {};

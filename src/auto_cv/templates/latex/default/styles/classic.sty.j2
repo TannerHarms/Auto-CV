@@ -26,7 +26,6 @@
 % --- Spacing ---
 \RequirePackage{enumitem}
 \setlist[itemize]{nosep, left=0pt .. 1.5em, label=\textbullet}
-\RequirePackage{array}
 \RequirePackage{parskip}
 \RequirePackage{titlesec}
 
@@ -42,21 +41,13 @@
 % ====================== STANDARD COMMAND INTERFACE ======================
 
 % --- Header commands ---
-\newcommand{\acvHeaderAfterNameSkip}{2pt}
-\newcommand{\acvHeaderAfterPositionSkip}{2pt}
-\newcommand{\acvHeaderAfterAddressSkip}{2pt}
-\newcommand{\acvHeaderSocialSep}{\quad\textbar\quad}
-
-\newcommand{\cvname}[2]{%
-  {\fontsize{24}{28}\selectfont\bfseries\color{primary} #1 #2}%
+\newcommand{\cvname}[1]{%
+  {\fontsize{24}{28}\selectfont\bfseries\color{primary} #1}%
   \vspace{2pt}%
 }
 \newcommand{\cvtitle}[1]{%
   {\large\color{secondary}\textit{#1}}%
   \vspace{4pt}%
-}
-\newcommand{\cvaddress}[1]{%
-  {\small\color{secondary} #1}%
 }
 \newcommand{\cvcontact}[1]{%
   {\small\color{textcolor} #1}%
@@ -86,54 +77,6 @@
 % --- Skills ---
 \newcommand{\cvskillcat}[2]{%
   {\bfseries #1:} #2\\[2pt]%
-}
-
-\newcommand*{\skilltypestyle}[1]{{\bfseries\color{headingcolor} #1}}
-\newcommand*{\skillsetstyle}[1]{{\color{textcolor} #1}}
-\newlength{\skillcatlabelwidth}
-\setlength{\skillcatlabelwidth}{<< style.spacing.skill_label_width >>}
-
-\newcommand{\cvskill}[3]{%
-  \vspace{-2.0mm}%
-  \setlength\tabcolsep{0pt}%
-  \setlength{\extrarowheight}{0pt}%
-  \def\arraystretch{0.6}%
-  \begin{tabular*}{\textwidth}{@{} >{\raggedleft\arraybackslash}p{#1} @{\hspace{2ex}} >{\raggedright\arraybackslash}p{\dimexpr\textwidth-#1-2ex\relax} @{}}%
-    \skilltypestyle{#2} & \skillsetstyle{#3} \\%
-  \end{tabular*}%
-  \def\arraystretch{1}%
-}
-
-\newcommand{\cvlang}[3]{%
-  \vspace{-2.0mm}%
-  \setlength\tabcolsep{0pt}%
-  \setlength{\extrarowheight}{0pt}%
-  \def\arraystretch{0.6}%
-  \begin{tabular*}{\textwidth}{@{} >{\raggedleft\arraybackslash}p{#1} @{\hspace{2ex}} >{\raggedright\arraybackslash}p{\dimexpr\textwidth-#1-2ex\relax} @{}}%
-    \skilltypestyle{#2} & \skillsetstyle{#3} \\%
-  \end{tabular*}%
-  \def\arraystretch{1}%
-}
-
-\newcommand{\cvawardcompact}[2]{%
-  {\bfseries\color{headingcolor} #1}\hfill{\small\color{secondary} #2}\par%
-}
-
-\newcommand{\cvawardexpressive}[4]{%
-  \vspace{<< style.spacing.entry_gap >>}%
-  {\bfseries\color{headingcolor} #1}\ifx&#4&\else\hfill{\small\color{secondary} #4}\fi\par%
-  \ifx&#2&\else{\itshape\color{accent} #2}\fi%
-  \ifx&#3&\else\hfill{\small\color{secondary} #3}\fi%
-  \vspace{2pt}\par%
-}
-
-\newcommand{\cvservice}[4]{%
-  \vspace{<< style.spacing.entry_gap >>}%
-  {\bfseries\color{headingcolor} #1}%
-  \hfill{\small\color{accent} #4}\\%
-  {\itshape\color{secondary} #2}%
-  \hfill{\small\color{secondary} #3}%
-  \vspace{2pt}%
 }
 
 % --- Projects ---
@@ -173,12 +116,6 @@
 % --- Summary ---
 \newcommand{\cvsummary}[1]{%
   \textit{#1}%
-}
-
-% --- \cvref{name}{relationship}{title-and-org}{email} ---
-\newcommand{\cvref}[4]{%
-  \textbf{#1}\ifblank{#2}{}{ \hfill \textit{#2}}\\%
-  \ifblank{#3}{}{{#3}\ifblank{#4}{}{~|~{#4}}\\}%
 }
 
 <% for pkg in style.latex.extra_packages %>

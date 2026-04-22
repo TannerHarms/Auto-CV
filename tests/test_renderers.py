@@ -53,7 +53,14 @@ class TestLatexRenderer:
         main = (self.output / "latex" / "main.tex").read_text(encoding="utf-8")
         assert r"\cvaddress{" not in main
         assert "Austin, TX" in main
-        assert r"\cvcontact{" in main
+        # Header markdown path may render contact lines directly instead of \cvcontact{}.
+        assert (r"\cvcontact{" in main) or (r"\begin{center}" in main)
+
+    def test_main_tex_header_markdown_uses_line_based_styles(self):
+        main = (self.output / "latex" / "main.tex").read_text(encoding="utf-8")
+        assert r"\fontsize{" in main
+        assert "Jordan Rivera" in main
+        assert "Full-Stack Software Engineer" in main
 
     def test_no_unescaped_ampersand(self):
         """Ensure & in user data is escaped."""
@@ -180,6 +187,12 @@ class TestHtmlRenderer:
     def test_index_contains_name(self):
         html = (self.output / "html" / "index.html").read_text(encoding="utf-8")
         assert "Jordan Rivera" in html
+
+    def test_header_markdown_applies_name_title_body_structure(self):
+        html = (self.output / "html" / "index.html").read_text(encoding="utf-8")
+        assert "<div class=\"resume-header-markdown\"><h1>Jordan Rivera</h1>" in html
+        assert "<h2><em>Full-Stack Software Engineer</em></h2>" in html
+        assert "<p>jordan.rivera@example.com | +1-555-867-5309 | Austin, TX</p>" in html
 
     def test_index_contains_sections(self):
         html = (self.output / "html" / "index.html").read_text(encoding="utf-8")

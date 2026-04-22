@@ -1,5 +1,5 @@
 # Awesome-CV preset — replicates Awesome-CV look using the default template framework.
-# Uses pdflatex with Roboto / Source Sans Pro / Source Code Pro packages (bundled in TeX Live).
+# Uses pdflatex with Roboto + Source Code Pro packages (bundled in TeX Live).
 # To use custom .ttf/.otf fonts instead, set engine: xelatex and latex.font_dir.
 preset: awesome-cv
 
@@ -14,8 +14,8 @@ colors:
   border: "#999999"       # lightgray
 
 fonts:
-  heading: "Roboto"
-  body: "Source Sans Pro"
+  heading: "Source Sans Pro"
+  body: "Roboto Light"
   mono: "Source Code Pro"
   size_base: "11pt"
   size_heading: "16pt"

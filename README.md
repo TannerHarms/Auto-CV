@@ -93,7 +93,7 @@ jane@example.com | +1-555-000-0000 | Austin, TX
 
 ### Section Files
 
-Each section is a markdown file with YAML frontmatter. The filename prefix (`01-`, `02-`, etc.) controls default ordering.
+Each section is a markdown file with YAML frontmatter and/or natural markdown body content. The filename prefix (`01-`, `02-`, etc.) controls default ordering.
 
 **Experience** (`sections/02-experience.md`):
 
@@ -129,7 +129,7 @@ categories:
 ---
 ```
 
-**Supported section types**: `summary`, `experience`, `education`, `skills`, `projects`, `certifications`, `publications`, `awards`, `volunteer`, `languages`, `interests`, `references`, `custom`
+**Supported section types**: `summary`, `experience`, `education`, `skills`, `projects`, `certifications`, `publications`, `awards`, `volunteer`, `service`, `languages`, `interests`, `references`, `custom`
 
 > **📖 See [docs/sections.md](docs/sections.md) for the complete section authoring guide** — all field names, markdown formats, display variants, and examples.
 
@@ -185,7 +185,7 @@ docx:
   page_width_inches: 8.5
 
 html:
-  layout: sidebar        # top-header | sidebar | cards
+  layout: sidebar        # top-header | sidebar | cards | multi-page | awesome-cv | latex-mirror
   include_photo: true
   include_nav: true
 ```
@@ -208,11 +208,14 @@ auto-cv style-schema
 
 ## HTML Layouts
 
-Three built-in layouts, selectable via `html.layout` in `_style.yml`:
+Six built-in layouts are available via `html.layout` in `_style.yml`:
 
 - **`top-header`** (default) — Traditional single-column with name/contact at top
 - **`sidebar`** — Two-column: photo/contact/skills in colored sidebar, main content on right
-- **`cards`** — Grid of cards per section with hover effects, modern portfolio feel
+- **`cards`** — Grid of section cards with portfolio-style visual treatment
+- **`multi-page`** — One section per page with shared navigation
+- **`awesome-cv`** — HTML layout styled to mirror the Awesome-CV look
+- **`latex-mirror`** — HTML layout tuned to visually match LaTeX output
 
 All layouts include:
 
@@ -247,6 +250,7 @@ auto-cv build <vault> [OPTIONS]
 | --- | --- |
 | `--format`, `-f` | Output formats: `latex`, `docx`, `html` (repeatable, default: all three) |
 | `--output`, `-o` | Output directory (default: `./output`) |
+| `--project`, `-p` | Project name when building from a master vault (`projects/<name>/`) |
 | `--polish` | Use LLM to rewrite bullet points for impact |
 | `--tailor-to <file>` | Tailor resume to a job description `.txt` file |
 | `--suggest-layout` | Use LLM to optimise section ordering |
@@ -255,8 +259,38 @@ auto-cv build <vault> [OPTIONS]
 ```
 auto-cv init <path>          # Scaffold a new vault with example content
 auto-cv preview <vault>      # Quick HTML render + open in browser
+auto-cv list-projects <vault> # List projects in a master vault
+auto-cv new-project <vault> <name> # Create a project in a master vault
 auto-cv list-presets          # Show available style presets
+auto-cv list-presets --json   # Show full preset config JSON
 auto-cv style-schema          # Print StyleConfig JSON schema
+```
+
+### Master Vault Workflow
+
+Auto CV supports a reusable master vault structure for role-specific builds:
+
+```text
+my_cv/
+├── _master/
+│   ├── header.md
+│   ├── _style.yml
+│   ├── sections/
+│   └── pages/
+└── projects/
+  ├── backend-engineer/
+  │   ├── header.md        # include + section_order in frontmatter
+  │   ├── _style.yml       # optional project-level style overrides
+  │   └── sections/        # optional per-project section overrides
+  └── ml-engineer/
+```
+
+Example commands:
+
+```bash
+auto-cv list-projects my_cv
+auto-cv new-project my_cv backend-engineer
+auto-cv build my_cv --project backend-engineer
 ```
 
 ## LLM Agents (Optional) — Under Construction
@@ -319,8 +353,7 @@ src/auto_cv/
 ├── styles/          # Preset loader + built-in YAML presets
 ├── agents/          # Optional LLM agents (polish, tailor, layout)
 ├── templates/       # Jinja2 templates (LaTeX + HTML layouts/partials)
-├── cli.py           # Typer CLI
-└── web/             # FastAPI web app (future)
+└── cli.py           # Typer CLI
 ```
 
 ## License

@@ -55,6 +55,26 @@
       font-size: var(--font-size-small);
       color: var(--color-text);
     }
+    .resume-header-markdown {
+      text-align: center;
+    }
+    .resume-header-markdown h1 {
+      font-family: var(--font-heading);
+      font-size: var(--font-size-name);
+      color: var(--color-primary);
+      margin: 0 0 0.25rem;
+    }
+    .resume-header-markdown h2 {
+      font-size: 1.1rem;
+      color: var(--color-secondary);
+      margin: 0 0 0.5rem;
+      font-weight: 500;
+    }
+    .resume-header-markdown p {
+      margin: 0.15rem 0;
+      font-size: var(--font-size-small);
+      text-align: center;
+    }
     .resume-contact span + span::before {
       content: " | ";
       color: var(--color-border);
@@ -127,9 +147,6 @@
     .entry-highlights { margin: 0.25rem 0 0 1.5rem; padding: 0; }
     .entry-highlights li { margin-bottom: 2px; }
     .skills-grid { display: flex; flex-direction: column; gap: 0.25rem; }
-    .skill-category { display: flex; gap: 0.5rem; }
-    .skill-category strong::after { content: ':'; }
-    .skill-list { color: var(--color-text); }
     .entry-authors { font-size: 0.9rem; color: var(--color-secondary); }
     .entry-venue { font-size: 0.9rem; color: var(--color-accent); font-style: italic; }
 
@@ -146,6 +163,9 @@
 </head>
 <body>
   <header class="resume-header">
+    {% if header_markdown_html %}
+    <div class="resume-header-markdown">{{ header_markdown_html | safe }}</div>
+    {% else %}
     <h1 class="resume-name">{{ resume.config.name }}</h1>
     {% if resume.config.title %}
     <p class="resume-title">{{ resume.config.title }}</p>
@@ -158,6 +178,7 @@
       {% if resume.config.contact.github %}<span><a href="https://github.com/{{ resume.config.contact.github }}">GitHub</a></span>{% endif %}
       {% if resume.config.contact.website %}<span><a href="{{ resume.config.contact.website }}">Website</a></span>{% endif %}
     </div>
+    {% endif %}
   </header>
 
   {# Section navigation tabs #}

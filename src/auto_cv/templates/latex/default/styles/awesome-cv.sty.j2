@@ -19,7 +19,7 @@
 \RequirePackage[unicode]{hyperref}
 
 <% if style.latex.engine == 'xelatex' %>
-% --- XeLaTeX: use fontspec with the original Awesome-CV fonts ---
+% --- XeLaTeX: use fontspec with Roboto for both header and body ---
 \RequirePackage[quiet]{fontspec}
 \RequirePackage{unicode-math}
 <% if style.latex.font_dir %>
@@ -37,49 +37,59 @@
   UprightFont=*-Thin,
   ItalicFont=*-ThinItalic,
 ]{Roboto}
-\newfontfamily\bodyfont[
+\newfontfamily\headingfont[
   Path=fonts/,
   UprightFont=*-Regular,
-  ItalicFont=*-It,
+  ItalicFont=*-Italic,
   BoldFont=*-Bold,
-  BoldItalicFont=*-BoldIt,
+  BoldItalicFont=*-BoldItalic,
 ]{SourceSansPro}
-\newfontfamily\bodyfontlight[
+\newfontfamily\bodyfont[
   Path=fonts/,
   UprightFont=*-Light,
-  ItalicFont=*-LightIt,
-]{SourceSansPro}
+  ItalicFont=*-LightItalic,
+  BoldFont=*-Bold,
+  BoldItalicFont=*-BoldItalic,
+]{Roboto}
+\newfontfamily\bodyfontlight[
+  Path=fonts/,
+  UprightFont=*-Thin,
+  ItalicFont=*-ThinItalic,
+]{Roboto}
 \newcommand*{\footerfont}{\bodyfont}
 \defaultfontfeatures{Ligatures=TeX}
 \setmainfont[
   Path=fonts/,
-  UprightFont=*-Regular,
-  ItalicFont=*-It,
+  UprightFont=*-Light,
+  ItalicFont=*-LightItalic,
   BoldFont=*-Bold,
-  BoldItalicFont=*-BoldIt,
-]{SourceSansPro}
+  BoldItalicFont=*-BoldItalic,
+]{Roboto}
 <% else %>
 % No font_dir configured — use system defaults
 \defaultfontfeatures{Ligatures=TeX}
 \setmainfont{Latin Modern Sans}
 \newcommand*{\headerfont}{\sffamily}
 \newcommand*{\headerfontlight}{\sffamily}
+\newcommand*{\headingfont}{\sffamily}
 \newcommand*{\bodyfont}{\sffamily}
 \newcommand*{\bodyfontlight}{\sffamily}
 \newcommand*{\footerfont}{\sffamily}
 <% endif %>
 <% else %>
-% --- pdflatex: use the real Roboto / Source Sans Pro / Source Code Pro packages ---
+% --- pdflatex: use Roboto + Source Code Pro packages ---
 \RequirePackage[T1]{fontenc}
 \RequirePackage[utf8]{inputenc}
 \RequirePackage[sfdefault]{roboto}           % Roboto (sets \sfdefault)
+\RequirePackage{sourcesanspro}               % Source Sans Pro for headings
 \RequirePackage[scale=0.85]{sourcecodepro}   % Source Code Pro for monospace
 \renewcommand{\familydefault}{\sfdefault}
 \newcommand*{\headerfont}{\fontseries{c}\selectfont}   % Roboto Condensed
 \newcommand*{\headerfontlight}{\fontseries{el}\selectfont} % Roboto Thin
-\newcommand*{\bodyfont}{\fontseries{m}\selectfont}     % Roboto Regular
-\newcommand*{\bodyfontlight}{\fontseries{l}\selectfont}% Roboto Light
-\newcommand*{\footerfont}{\fontseries{m}\selectfont}   % Roboto Regular
+\newcommand*{\headingfont}{\fontfamily{SourceSansPro-TLF}\selectfont}
+\newcommand*{\bodyfont}{\fontseries{l}\selectfont}     % Roboto Light
+\newcommand*{\bodyfontlight}{\fontseries{el}\selectfont}% Roboto Thin
+\newcommand*{\footerfont}{\fontseries{l}\selectfont}   % Roboto Light
 <% endif %>
 \RequirePackage{microtype}
 
@@ -146,37 +156,37 @@
 %  Style commands — exact font sizes from awesome-cv.cls
 % ==========================================================================
 % Header styles
-\newcommand*{\headerfirstnamestyle}[1]{{\fontsize{32pt}{1em}\headerfontlight\color{text} #1}}
-\newcommand*{\headerlastnamestyle}[1]{{\fontsize{32pt}{1em}\headerfont\bfseries\color{text} #1}}
+\newcommand*{\headerfirstnamestyle}[1]{{\fontsize{<< style.fonts.size_name >>}{1em}\headerfontlight\color{text} #1}}
+\newcommand*{\headerlastnamestyle}[1]{{\fontsize{<< style.fonts.size_name >>}{1em}\headerfont\bfseries\color{text} #1}}
 <% if style.latex.engine == 'xelatex' %>
-\newcommand*{\headerpositionstyle}[1]{{\fontsize{7.6pt}{1em}\bodyfont\scshape\addfontfeatures{LetterSpace=7}\color{awesome} #1}}
+\newcommand*{\headerpositionstyle}[1]{{\fontsize{<< style.fonts.size_small >>}{1em}\bodyfont\scshape\addfontfeatures{LetterSpace=7}\color{awesome} #1}}
 <% else %>
-\newcommand*{\headerpositionstyle}[1]{{\fontsize{7.6pt}{1em}\bodyfont\scshape\color{awesome}\textls[70]{#1}}}
+\newcommand*{\headerpositionstyle}[1]{{\fontsize{<< style.fonts.size_small >>}{1em}\bodyfont\scshape\color{awesome}\textls[70]{#1}}}
 <% endif %>
-\newcommand*{\headeraddressstyle}[1]{{\fontsize{8pt}{1em}\headerfont\itshape\color{lighttext} #1}}
-\newcommand*{\headersocialstyle}[1]{{\fontsize{6.8pt}{1em}\headerfont\color{text} #1}}
-\newcommand*{\headerquotestyle}[1]{{\fontsize{9pt}{1em}\bodyfont\itshape\color{darktext} #1}}
-\newcommand*{\footerstyle}[1]{{\fontsize{8pt}{1em}\footerfont\scshape\color{lighttext} #1}}
+\newcommand*{\headeraddressstyle}[1]{{\fontsize{<< style.fonts.size_small >>}{1em}\headerfont\itshape\color{lighttext} #1}}
+\newcommand*{\headersocialstyle}[1]{{\fontsize{<< style.fonts.size_small >>}{1em}\headerfont\color{text} #1}}
+\newcommand*{\headerquotestyle}[1]{{\fontsize{<< style.fonts.size_small >>}{1em}\bodyfont\itshape\color{darktext} #1}}
+\newcommand*{\footerstyle}[1]{{\fontsize{<< style.fonts.size_small >>}{1em}\footerfont\scshape\color{lighttext} #1}}
 
 % Section style
-\newcommand*{\sectionstyle}[1]{{\fontsize{16pt}{1em}\bodyfont\bfseries\color{awesome} #1}}
+\newcommand*{\sectionstyle}[1]{{\fontsize{<< style.fonts.size_heading >>}{1em}\headingfont\bfseries\color{awesome} #1}}
 
 % Entry styles
-\newcommand*{\entrytitlestyle}[1]{{\fontsize{10pt}{1em}\bodyfont\bfseries\color{darktext} #1}}
-\newcommand*{\entrypositionstyle}[1]{{\fontsize{8pt}{1em}\bodyfont\scshape\color{graytext} #1}}
-\newcommand*{\entrydatestyle}[1]{{\fontsize{8pt}{1em}\bodyfontlight\slshape\color{graytext} #1}}
-\newcommand*{\entrylocationstyle}[1]{{\fontsize{9pt}{1em}\bodyfontlight\slshape\color{awesome} #1}}
+\newcommand*{\entrytitlestyle}[1]{{\fontsize{<< style.fonts.size_base >>}{1em}\headingfont\bfseries\color{darktext} #1}}
+\newcommand*{\entrypositionstyle}[1]{{\fontsize{<< style.fonts.size_small >>}{1em}\headingfont\scshape\color{graytext} #1}}
+\newcommand*{\entrydatestyle}[1]{{\fontsize{<< style.fonts.size_small >>}{1em}\headingfont\slshape\color{graytext} #1}}
+\newcommand*{\entrylocationstyle}[1]{{\fontsize{<< style.fonts.size_small >>}{1em}\headingfont\slshape\color{awesome} #1}}
 \newcommand*{\descriptionstyle}[1]{{\fontsize{<< style.fonts.size_bullet >>}{1em}\bodyfontlight\upshape\color{text} #1}}
 
 % Honor styles
-\newcommand*{\honortitlestyle}[1]{{\fontsize{9pt}{1em}\bodyfont\color{graytext} #1}}
-\newcommand*{\honorpositionstyle}[1]{{\fontsize{9pt}{1em}\bodyfont\bfseries\color{darktext} #1}}
-\newcommand*{\honordatestyle}[1]{{\fontsize{8pt}{1em}\bodyfontlight\slshape\color{graytext} #1}}
-\newcommand*{\honorlocationstyle}[1]{{\fontsize{9pt}{1em}\bodyfontlight\slshape\color{awesome} #1}}
+\newcommand*{\honortitlestyle}[1]{{\fontsize{<< style.fonts.size_small >>}{1em}\headingfont\color{graytext} #1}}
+\newcommand*{\honorpositionstyle}[1]{{\fontsize{<< style.fonts.size_small >>}{1em}\headingfont\bfseries\color{darktext} #1}}
+\newcommand*{\honordatestyle}[1]{{\fontsize{<< style.fonts.size_bullet >>}{1em}\headingfont\slshape\color{graytext} #1}}
+\newcommand*{\honorlocationstyle}[1]{{\fontsize{<< style.fonts.size_small >>}{1em}\headingfont\slshape\color{awesome} #1}}
 
 % Skill styles
-\newcommand*{\skilltypestyle}[1]{{\fontsize{10pt}{1em}\bodyfont\bfseries\color{darktext} #1}}
-\newcommand*{\skillsetstyle}[1]{{\fontsize{9pt}{1em}\bodyfont\color{text} #1}}
+\newcommand*{\skilltypestyle}[1]{{\fontsize{<< style.fonts.size_base >>}{1em}\headingfont\bfseries\color{darktext} #1}}
+\newcommand*{\skillsetstyle}[1]{{\fontsize{<< style.fonts.size_small >>}{1em}\bodyfont\color{text} #1}}
 
 % --- \cvskill{labelwidth}{label}{skills} ---
 % Single-row skill entry: label top-right, skills top-left no indent
@@ -205,7 +215,7 @@
 }
 
 % Paragraph style
-\newcommand*{\paragraphstyle}{{\fontsize{9pt}{1em}\bodyfontlight\upshape\color{text}}}
+\newcommand*{\paragraphstyle}{{\fontsize{<< style.fonts.size_base >>}{1em}\bodyfontlight\upshape\color{text}}}
 
 % ==========================================================================
 %  \section — awesome-cv style: colored title + gray rule filling the line

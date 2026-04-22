@@ -28,37 +28,25 @@
 % --- Spacing ---
 \RequirePackage{enumitem}
 \setlist[itemize]{nosep, left=0pt .. 1.5em, label={\color{accent}\textbullet}}
-\RequirePackage{array}
 \RequirePackage{parskip}
 \RequirePackage{titlesec}
 
 % --- Section: colored banner box across full width ---
-\newcommand{\cvSectionBanner}[1]{%
-  \colorbox{primary}{\parbox{\dimexpr\textwidth-2\fboxsep\relax}{\strut\color{white}\MakeUppercase{#1}}}%
-  \vspace{2pt}%
-}
 \titleformat{\section}
   {\large\bfseries\sffamily}
   {}
   {0pt}
-  {\cvSectionBanner}
+  {\colorbox{primary}{\parbox{\dimexpr\textwidth-2\fboxsep\relax}{\strut\color{white}\MakeUppercase{#1}}}\vspace{2pt}}
+  []
 \titlespacing{\section}{0pt}{<< style.spacing.section_gap >>}{6pt}
 
 % ====================== STANDARD COMMAND INTERFACE ======================
 
-\newcommand{\acvHeaderAfterNameSkip}{2pt}
-\newcommand{\acvHeaderAfterPositionSkip}{2pt}
-\newcommand{\acvHeaderAfterAddressSkip}{2pt}
-\newcommand{\acvHeaderSocialSep}{\quad\textbar\quad}
-
-\newcommand{\cvname}[2]{%
-  {\fontsize{36}{40}\selectfont\bfseries\sffamily\color{primary} #1 #2}%
+\newcommand{\cvname}[1]{%
+  {\fontsize{36}{40}\selectfont\bfseries\sffamily\color{primary} #1}%
 }
 \newcommand{\cvtitle}[1]{%
   {\Large\sffamily\color{accent} #1}%
-}
-\newcommand{\cvaddress}[1]{%
-  {\small\sffamily\color{secondary} #1}%
 }
 \newcommand{\cvcontact}[1]{%
   {\small\sffamily\color{secondary} #1}%
@@ -86,55 +74,6 @@
 
 \newcommand{\cvskillcat}[2]{%
   \textcolor{accent}{\bfseries #1}\hspace{6pt}{#2}\\[4pt]%
-}
-
-\newcommand*{\skilltypestyle}[1]{{\bfseries\sffamily\color{accent} #1}}
-\newcommand*{\skillsetstyle}[1]{{\sffamily\color{textcolor} #1}}
-\newlength{\skillcatlabelwidth}
-\setlength{\skillcatlabelwidth}{<< style.spacing.skill_label_width >>}
-
-\newcommand{\cvskill}[3]{%
-  \vspace{-2.0mm}%
-  \setlength\tabcolsep{0pt}%
-  \setlength{\extrarowheight}{0pt}%
-  \def\arraystretch{0.6}%
-  \begin{tabular*}{\textwidth}{@{} >{\raggedleft\arraybackslash}p{#1} @{\hspace{2ex}} >{\raggedright\arraybackslash}p{\dimexpr\textwidth-#1-2ex\relax} @{}}%
-    \skilltypestyle{#2} & \skillsetstyle{#3} \\%
-  \end{tabular*}%
-  \def\arraystretch{1}%
-}
-
-\newcommand{\cvlang}[3]{%
-  \vspace{-2.0mm}%
-  \setlength\tabcolsep{0pt}%
-  \setlength{\extrarowheight}{0pt}%
-  \def\arraystretch{0.6}%
-  \begin{tabular*}{\textwidth}{@{} >{\raggedleft\arraybackslash}p{#1} @{\hspace{2ex}} >{\raggedright\arraybackslash}p{\dimexpr\textwidth-#1-2ex\relax} @{}}%
-    \skilltypestyle{#2} & \skillsetstyle{#3} \\%
-  \end{tabular*}%
-  \def\arraystretch{1}%
-}
-
-\newcommand{\cvawardcompact}[2]{%
-  {\bfseries\color{accent} #1}\hfill{\small\color{secondary} #2}\par%
-}
-
-\newcommand{\cvawardexpressive}[4]{%
-  \vspace{<< style.spacing.entry_gap >>}%
-  {\bfseries\color{accent} #1}\ifx&#4&\else\hfill{\small\color{secondary} #4}\fi\par%
-  \ifx&#2&\else{\bfseries\color{headingcolor} #2}\fi%
-  \ifx&#3&\else\hfill{\small\color{secondary} #3}\fi%
-  \vspace{2pt}\par%
-}
-
-\newcommand{\cvservice}[4]{%
-  \vspace{<< style.spacing.entry_gap >>}%
-  {\bfseries\color{accent} #1}%
-  \hfill{\small\color{accent} #4}\par%
-  \vspace{1pt}%
-  {\bfseries\color{secondary} #2}%
-  \hfill{\small\color{secondary} #3}%
-  \vspace{3pt}\par%
 }
 
 \newcommand{\cvproject}[3]{%
@@ -169,12 +108,6 @@
 
 \newcommand{\cvsummary}[1]{%
   {\large\color{textcolor} #1}%
-}
-
-% --- \cvref{name}{relationship}{title-and-org}{email} ---
-\newcommand{\cvref}[4]{%
-  \textbf{#1}\ifblank{#2}{}{ \hfill \textit{#2}}\\%
-  \ifblank{#3}{}{{#3}\ifblank{#4}{}{~|~{#4}}\\}%
 }
 
 <% for pkg in style.latex.extra_packages %>
