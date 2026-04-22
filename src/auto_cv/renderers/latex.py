@@ -117,7 +117,17 @@ class LatexRenderer(BaseRenderer):
         )
         env.filters["escape_latex"] = _escape_latex
         env.filters["md_latex"] = _md_to_latex
+        env.filters["strip_bullet"] = lambda s: re.sub(r"^\s*[-*]\s+", "", s)
+        env.filters["split_emdash"] = lambda s: (
+            {"name": s.split(" — ", 1)[0], "date": s.split(" — ", 1)[1]}
+            if " — " in s
+            else {"name": s.split(" – ", 1)[0], "date": s.split(" – ", 1)[1]}
+            if " – " in s
+            else {"name": s, "date": ""}
+        )
         env.tests["starts_with_bold"] = lambda s: isinstance(s, str) and s.strip().startswith("**")
+        env.tests["bullet_line"] = lambda s: isinstance(s, str) and bool(re.match(r"^\s*[-*]\s+", s))
+        env.tests["has_emdash"] = lambda s: isinstance(s, str) and (" — " in s or " – " in s)
 
         # --- Copy static assets for the template set (e.g. .cls, .sty) ---
         static_dir = tmpl_dir / "static"
@@ -175,12 +185,14 @@ class LatexRenderer(BaseRenderer):
 
         # --- main.tex ---
         main_tmpl = env.get_template("main.tex.j2")
+        header_markdown_latex = _header_markdown_to_latex(resume.config.header_markdown, style)
         (latex_dir / "main.tex").write_text(
             main_tmpl.render(
                 resume=resume,
                 style=style,
                 section_filenames=section_filenames,
                 escape_latex=_escape_latex,
+                header_markdown_latex=header_markdown_latex,
                 font_dir=None,  # Uses template default (fonts/)
             ),
             encoding="utf-8",
@@ -228,3 +240,32 @@ def _compile_latex(latex_dir: Path, *, engine: str = "pdflatex") -> None:
         )
     except (subprocess.TimeoutExpired, OSError):
         pass
+
+
+def _header_markdown_to_latex(header_markdown: str | None, style: StyleConfig) -> str:
+    """Convert header markdown lines to a centered LaTeX header block.
+
+    First non-empty line -> name styling, second -> title styling,
+    remaining lines -> body styling.
+    """
+    if not header_markdown:
+        return ""
+
+    lines = [line.strip() for line in header_markdown.splitlines() if line.strip()]
+    rendered: list[str] = []
+    name_size = style.fonts.size_name
+    heading_size = style.fonts.size_heading
+    body_size = style.fonts.size_base
+
+    for idx, line in enumerate(lines):
+        stripped = re.sub(r"^#{1,6}\s+", "", line).strip()
+        if not stripped:
+            continue
+        if idx == 0:
+            rendered.append(r"{\fontsize{" + name_size + r"}{1em}\selectfont \textbf{" + _md_to_latex(stripped) + r"}}\\[2pt]")
+        elif idx == 1:
+            rendered.append(r"{\fontsize{" + heading_size + r"}{1em}\selectfont " + _md_to_latex(stripped) + r"}\\[2pt]")
+        else:
+            rendered.append(r"{\fontsize{" + body_size + r"}{1em}\selectfont " + _md_to_latex(stripped) + r"}\\[1pt]")
+
+    return "\n".join(rendered)

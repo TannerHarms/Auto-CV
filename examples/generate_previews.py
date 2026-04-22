@@ -11,6 +11,8 @@ EXAMPLES = [
     "academic-researcher",
     "new-graduate",
     "data-scientist",
+    "project-manager",
+    "consultant",
 ]
 
 async def capture_screenshots():

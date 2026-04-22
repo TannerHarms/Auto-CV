@@ -54,6 +54,7 @@ class ContactInfo(BaseModel):
     linkedin: str | None = None
     github: str | None = None
     website: str | None = None
+    extras: list[str] = Field(default_factory=list)
     extra: dict[str, str] = Field(default_factory=dict)
 
 
@@ -187,6 +188,7 @@ class ResumeConfig(BaseModel):
     """Global resume configuration from _config.yml."""
     name: str
     title: str | None = None
+    header_markdown: str | None = None
     photo: str | None = None  # Path relative to vault
     contact: ContactInfo = Field(default_factory=ContactInfo)
     section_order: list[str] = Field(default_factory=list)
@@ -223,11 +225,30 @@ class Resume(BaseModel):
     overrides: VaultOverrides = Field(default_factory=VaultOverrides)
 
     def ordered_sections(self) -> list[Section]:
-        """Return visible sections, respecting config section_order then order field."""
+        """Return visible sections, respecting config section_order then order field.
+
+        When a section id like ``experience-a`` doesn't exactly match the
+        section_order list, we fall back to matching by section type name so
+        that variant section files sort correctly.
+        """
         visible = [s for s in self.sections if s.visible]
         if self.config.section_order:
             order_map = {sid: i for i, sid in enumerate(self.config.section_order)}
-            return sorted(visible, key=lambda s: order_map.get(s.id, s.order + 1000))
+
+            def _sort_key(s: "Section") -> int:
+                # Exact id match
+                if s.id in order_map:
+                    return order_map[s.id]
+                # Variant fallback: match by section type value (e.g.
+                # section_order has "experience" and section id is
+                # "experience-a" with section_type EXPERIENCE).
+                type_val = s.section_type.value
+                if type_val in order_map:
+                    return order_map[type_val]
+                # Final fallback: use include-list index
+                return s.order + 1000
+
+            return sorted(visible, key=_sort_key)
         return sorted(visible, key=lambda s: s.order)
 
     def ordered_pages(self) -> list[Page]:

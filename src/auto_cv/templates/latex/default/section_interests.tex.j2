@@ -13,6 +13,6 @@
 \setlength{\extrarowheight}{0pt}%
 \begin{tabular*}{\textwidth}{@{\extracolsep{\fill}} >{\raggedleft\arraybackslash}p{\intmaxw} p{\dimexpr\textwidth-\intmaxw-4ex\relax}}%
 <% for cat in section.skill_categories -%>
-  \skilltypestyle{<< cat.name | escape_latex >>} & \skillsetstyle{<< cat.skills | join(', ') | escape_latex >>} \\
+  \skilltypestyle{<< cat.name | escape_latex >>} & \skillsetstyle{<< cat.skills | join(', ') | md_latex >>} \\
 <% endfor -%>
 \end{tabular*}%

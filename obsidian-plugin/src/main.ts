@@ -34,6 +34,7 @@ import {
 export default class AutoResumePlugin extends Plugin {
   settings!: AutoResumeSettings;
   isBuilding = false;
+  private latestWizardPresets: Record<string, WizardPreset> = {};
 
   private getPreferredPythonCandidates(): string[] {
     const adapterWithBasePath = this.app.vault.adapter as unknown as { basePath?: string };
@@ -142,6 +143,7 @@ export default class AutoResumePlugin extends Plugin {
     try {
       presets = await fetchPresets(this.settings.pythonExecutable);
     } catch { /* fall through with empty presets */ }
+    this.latestWizardPresets = presets;
 
     // Load existing project configs
     const projectConfigs: Record<string, ProjectData> = {};
@@ -167,12 +169,15 @@ export default class AutoResumePlugin extends Plugin {
   }
 
   private async handleWizardResult(vaultRoot: string, result: WizardResult) {
-    // Save project files
+    // Persist project metadata for both new and existing projects.
+    // saveProjectFiles updates header include/order while preserving existing body
+    // content and keeping existing _style.yml non-destructive.
     saveProjectFiles(vaultRoot, result.projectName, {
       include: result.include,
       sectionOrder: result.sectionOrder,
       titleOverride: result.titleOverride,
       preset: result.presetName,
+      presetConfig: this.latestWizardPresets[result.presetName] as Record<string, unknown>,
       styleOverrides: result.styleOverrides,
     });
 

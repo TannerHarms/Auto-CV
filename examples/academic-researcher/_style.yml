@@ -1,37 +1,53 @@
-# Awesome-CV preset — XeLaTeX with awesome-cv visual style and emerald accent
 preset: awesome-cv
-
-# Switch to emerald accent for a more academic feel
 colors:
-  primary: "#00A388"
-  accent: "#00A388"
-  heading: "#00A388"
-
+  primary: '#00A388'
+  secondary: '#5D5D5D'
+  accent: '#00A388'
+  text: '#333333'
+  heading: '#00A388'
+  background: '#FFFFFF'
+  link: '#0395DE'
+  border: '#999999'
 fonts:
-  heading: "Roboto"
-  body: "Source Sans Pro"
-  mono: "Source Code Pro"
-  size_base: "11pt"
-  size_heading: "16pt"
-  size_name: "32pt"
-  size_small: "10pt"
-  size_bullet: "10pt"
-
+  heading: Roboto
+  body: Source Sans Pro
+  mono: Source Code Pro
+  size_base: 11pt
+  size_heading: 16pt
+  size_name: 32pt
+  size_small: 10pt
+  size_bullet: 10pt
 spacing:
-  page_margin: "0.65in"
-  section_gap: "10pt"
-  entry_gap: "6pt"
-  line_height: "1.1"
-  header_to_content: "3pt"
-  skill_label_width: "4.5cm"
-  bullet_list_topsep: "-1.5mm"
-  bullet_after: "1.5mm"
-  bullet_marker: "dash"
-
-# Point to a local font directory containing Roboto + Source Sans Pro (uncomment and set your path)
-# latex:
-#   font_dir: "/path/to/fonts"
-
+  page_margin: 0.65in
+  section_gap: 10pt
+  entry_gap: 6pt
+  line_height: '1.1'
+  header_to_content: 3pt
+  skill_label_width: 4.5cm
+  bullet_before: -2.0mm
+  bullet_list_topsep: -1.5mm
+  bullet_after: 1.5mm
+  bullet_marker: dash
+latex:
+  template_set: default
+  engine: pdflatex
+  document_class: article
+  paper_size: letterpaper
+  font_package: roboto
+  font_dir: ''
+  latex_style: ''
+  use_icons: false
+  extra_packages: []
+  extra_preamble: ''
+docx:
+  page_width_inches: 8.5
+  page_height_inches: 11.0
+  use_columns: false
 html:
   layout: awesome-cv
   include_photo: false
+  responsive: true
+  print_friendly: true
+  custom_css_file: null
+  custom_js_file: null
+  include_nav: false

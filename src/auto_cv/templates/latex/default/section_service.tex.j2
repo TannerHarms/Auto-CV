@@ -1,9 +1,12 @@
-<# Service section — compact single-row layout with inline date #>
+<# Service section — two-row layout matching experience #>
 \section{<< section.title | escape_latex >>}
 
 <% for entry in section.experience_entries %>
 <% if not loop.first %>\vspace{<< style.spacing.entry_gap >>}<% endif %>
-\cvservice{<< entry.title | escape_latex >>}{<< entry.organization | escape_latex >>}{<< entry.dates.display | escape_latex if entry.dates else '' >>}{<< entry.description | md_latex if entry.description else '' >>}
+\cvservice{<< entry.title | escape_latex >>}{<< entry.organization | escape_latex >>}{<< entry.dates.display | escape_latex if entry.dates else '' >>}{<< entry.location | escape_latex if entry.location else '' >>}
+<% if entry.description %>
+<< entry.description | md_latex >>
+<% endif %>
 <% if entry.highlights %>
 \begin{itemize}
 <% for h in entry.highlights %>

@@ -137,8 +137,10 @@ def load_project(
             master, project_dir, project_cfg.include
         )
     else:
-        # No include list — use all master sections
-        sections = _load_sections(master)
+        # No include list — prefer all project-local sections; fall back to master.
+        sections = _load_sections(project_dir)
+        if not sections:
+            sections = _load_sections(master)
 
     # --- Style: project-local > master ---
     if (project_dir / "_style.yml").exists():
@@ -229,7 +231,12 @@ def _resolve_one_include(
     include_path: str,
     order_idx: int,
 ) -> list[Section]:
-    """Resolve a single include entry to one or more Section objects."""
+    """Resolve a single include entry to one or more Section objects.
+
+    Resolution order favors project-local sections and supports either filename
+    stems (e.g. ``03-experience-b``) or derived section IDs (e.g.
+    ``experience-b``).
+    """
     # Normalise separators
     include_path = include_path.replace("\\", "/")
 
@@ -241,6 +248,21 @@ def _resolve_one_include(
             s.order = order_idx
             return [s]
 
+    # 1b. Check project-local sections by filename stem or derived section id.
+    # This allows includes like "experience-b" to resolve
+    # "03-experience-b.md" or "03b-experience.md" in project sections.
+    project_sections_dir = project_dir / "sections"
+    if project_sections_dir.is_dir():
+        for md_file in sorted(project_sections_dir.glob("*.md")):
+            stem = md_file.stem
+            _m = re.match(r'^(\d+)[a-zA-Z]?-(.+)$', stem)
+            derived_id = _m.group(2) if _m else stem
+            if include_path == stem or include_path == derived_id:
+                s = _parse_section_file(md_file)
+                if s:
+                    s.order = order_idx
+                    return [s]
+
     # 2. Check for master section file
     master_file = master / "sections" / f"{include_path}.md"
     if master_file.is_file():
@@ -249,7 +271,31 @@ def _resolve_one_include(
             s.order = order_idx
             return [s]
 
-    # 3. Check if include_path refers to a directory of sections
+    # 2b. Check master sections by filename stem or derived section id.
+    master_sections_dir = master / "sections"
+    if master_sections_dir.is_dir():
+        for md_file in sorted(master_sections_dir.glob("*.md")):
+            stem = md_file.stem
+            _m = re.match(r'^(\d+)[a-zA-Z]?-(.+)$', stem)
+            derived_id = _m.group(2) if _m else stem
+            if include_path == stem or include_path == derived_id:
+                s = _parse_section_file(md_file)
+                if s:
+                    s.order = order_idx
+                    return [s]
+
+    # 3. Check if include_path refers to a project-local directory of sections
+    project_dir_sections = project_dir / "sections" / include_path
+    if project_dir_sections.is_dir():
+        results: list[Section] = []
+        for md_file in sorted(project_dir_sections.glob("*.md")):
+            s = _parse_section_file(md_file)
+            if s:
+                s.order = order_idx
+                results.append(s)
+        return results
+
+    # 4. Check if include_path refers to a directory of sections in master
     master_dir = master / "sections" / include_path
     if master_dir.is_dir():
         results: list[Section] = []
@@ -299,6 +345,7 @@ def _load_config(vault: Path) -> ResumeConfig:
     return ResumeConfig(
         name=name,
         title=title,
+        header_markdown=None,
         photo=photo,
         contact=ContactInfo(**contact_data),
         section_order=section_order,
@@ -318,7 +365,7 @@ _MD_LINK_RE = re.compile(r"\[([^\]]+)\]\(([^)]+)\)")
 
 def _parse_contact_items(items: list[str]) -> dict[str, str]:
     """Classify pipe-separated contact fragments into ContactInfo fields."""
-    contact: dict[str, str] = {}
+    contact: dict[str, Any] = {}
     for item in items:
         item = item.strip()
         if not item:
@@ -356,8 +403,11 @@ def _parse_contact_items(items: list[str]) -> dict[str, str]:
                 contact["website"] = item
             continue
 
-        # Default: location
-        contact["location"] = item
+        # First plain-text fragment is location; later ones are extra inline items.
+        if "location" not in contact:
+            contact["location"] = item
+        else:
+            contact.setdefault("extras", []).append(item)
 
     return contact
 
@@ -428,6 +478,7 @@ def _load_config_from_header(path: Path) -> ResumeConfig:
     return ResumeConfig(
         name=name,
         title=title,
+        header_markdown=body,
         photo=photo,
         contact=ContactInfo(**contact_data),
         section_order=section_order,
@@ -451,6 +502,7 @@ def _load_project_config_from_header(path: Path) -> ProjectConfig:
 
     # Parse body for config overrides
     config_overrides: dict[str, Any] = {}
+    contact_items: list[str] = []
     for line in body.split("\n"):
         stripped = line.strip()
         if not stripped:
@@ -466,8 +518,18 @@ def _load_project_config_from_header(path: Path) -> ProjectConfig:
         elif stripped.startswith("## "):
             config_overrides["title"] = stripped[3:].strip()
         elif "|" in stripped:
-            items = [i.strip() for i in stripped.split("|")]
-            config_overrides["contact"] = _parse_contact_items(items)
+            contact_items.extend(i.strip() for i in stripped.split("|"))
+        elif _EMAIL_RE.match(stripped) or _PHONE_RE.match(stripped):
+            contact_items.append(stripped)
+        elif _MD_LINK_RE.match(stripped):
+            contact_items.append(stripped)
+        elif stripped.startswith("http://") or stripped.startswith("https://"):
+            contact_items.append(stripped)
+
+    if contact_items:
+        config_overrides["contact"] = _parse_contact_items(contact_items)
+    if body:
+        config_overrides["header_markdown"] = body
 
     return ProjectConfig(
         include=include,
@@ -496,11 +558,51 @@ def _load_style(vault: Path) -> StyleConfig:
     else:
         style = base
 
+    _sanitize_style_colors(style, base)
+
     # Resolve font_dir relative to vault if it's not absolute
     if style.latex.font_dir and not Path(style.latex.font_dir).is_absolute():
         style.latex.font_dir = str((vault / style.latex.font_dir).resolve())
 
+    _maybe_expand_style_file(style_path, style)
+
     return style
+
+
+def _sanitize_style_colors(style: StyleConfig, base: StyleConfig) -> None:
+    """Normalize/repair malformed hex colors using preset defaults.
+
+    Handles cases like "''", empty strings, and other non-hex values.
+    """
+    hex_re = re.compile(r"^#?[0-9A-Fa-f]{6}$")
+    for key in ("primary", "secondary", "accent", "text", "heading", "background", "link", "border"):
+        raw = getattr(style.colors, key)
+        cleaned = str(raw).strip().strip("\"'")
+        if not hex_re.match(cleaned):
+            setattr(style.colors, key, getattr(base.colors, key))
+        else:
+            setattr(style.colors, key, cleaned if cleaned.startswith("#") else f"#{cleaned}")
+
+
+def _maybe_expand_style_file(style_path: Path, style: StyleConfig) -> None:
+    """Expand sparse style files to full schema while preserving existing values.
+
+    This ensures project/master `_style.yml` files always show every configurable key
+    after a build/load pass, which keeps them editable by end users.
+    """
+    try:
+        current_raw = yaml.safe_load(style_path.read_text(encoding="utf-8")) or {}
+    except Exception:
+        return
+
+    expanded = style.model_dump()
+    if current_raw == expanded:
+        return
+
+    style_path.write_text(
+        yaml.safe_dump(expanded, sort_keys=False, allow_unicode=True),
+        encoding="utf-8",
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -520,27 +622,52 @@ def _load_sections(vault: Path) -> list[Section]:
     return sections
 
 
+def _infer_section_type(section_id: str) -> SectionType:
+    """Infer SectionType from a section id, stripping variant suffixes.
+
+    For example ``experience-a`` tries ``experience-a`` then ``experience``.
+    """
+    candidate = section_id.lower()
+    # Try the full id first, then progressively strip trailing -<suffix>
+    while candidate:
+        try:
+            return SectionType(candidate)
+        except ValueError:
+            pass
+        # Strip the last hyphen-delimited component
+        if "-" in candidate:
+            candidate = candidate.rsplit("-", 1)[0]
+        else:
+            break
+    return SectionType.CUSTOM
+
+
 def _parse_section_file(path: Path) -> Section | None:
     post = frontmatter.load(str(path))
     meta: dict[str, Any] = dict(post.metadata)
     content: str = post.content
 
-    # Derive section id & order from filename (e.g. "02-experience.md")
+    # Derive section id & order from filename (e.g. "02-experience.md",
+    # "03b-experience-ML-forward.md", "03-experience-a.md")
     filename = path.stem
-    parts = filename.split("-", 1)
-    if len(parts) == 2 and parts[0].isdigit():
-        order = int(parts[0])
-        section_id = parts[1]
+    _prefix_re = re.match(r'^(\d+)[a-zA-Z]?-(.+)$', filename)
+    if _prefix_re:
+        order = int(_prefix_re.group(1))
+        section_id = _prefix_re.group(2)
     else:
         order = meta.get("order", 99)
         section_id = filename
 
-    # Resolve section type
-    type_str = meta.get("type", section_id)
-    try:
-        section_type = SectionType(type_str.lower())
-    except ValueError:
-        section_type = SectionType.CUSTOM
+    # Resolve section type — try explicit frontmatter type first, then
+    # progressively strip variant suffixes from section_id to find a match.
+    type_str = meta.get("type", "")
+    if type_str:
+        try:
+            section_type = SectionType(type_str.lower())
+        except ValueError:
+            section_type = SectionType.CUSTOM
+    else:
+        section_type = _infer_section_type(section_id)
 
     visible = meta.get("visible", True)
 

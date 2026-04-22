@@ -19,9 +19,19 @@ env/
 
 # Build outputs
 output/
+output_*/
 test_output/
 examples/*/output/
 example_vault/output/
+
+# Temporary inspection directories
+tmp_docx_*/
+
+# Machine-local editor backup files
+*-DESKTOP-*.j2
+
+# Ad-hoc test scripts
+test_variant.py
 
 # LaTeX intermediates
 *.aux

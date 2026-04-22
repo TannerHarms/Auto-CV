@@ -721,6 +721,18 @@ After a successful build, show a non-intrusive prompt:
 - "Report Issue" → opens bug report template
 - Prompt only shows once per session, can be permanently dismissed
 
+#### 5e. Funding Link (Buy Me a Coffee)
+
+Add `fundingUrl` to `manifest.json` pointing to a Buy Me a Coffee (or GitHub
+Sponsors) page. Obsidian automatically displays a heart/donate icon next to the
+plugin in the Community Plugins browser when this field is present.
+
+```json
+"fundingUrl": "https://buymeacoffee.com/YOUR_USERNAME"
+```
+
+Both `manifest.json` files (root and `obsidian-plugin/`) must be updated.
+
 ### Tasks
 
 - [ ] Create `.github/ISSUE_TEMPLATE/feedback.yml`
@@ -730,6 +742,7 @@ After a successful build, show a non-intrusive prompt:
 - [ ] Implement URL builder with auto-filled context
 - [ ] Ensure no personal data is included in pre-filled content
 - [ ] Test URL generation across platforms (Windows, macOS, Linux)
+- [ ] Set up Buy Me a Coffee account and add `fundingUrl` to both manifest.json files
 
 ### Acceptance Criteria
 
@@ -737,6 +750,7 @@ After a successful build, show a non-intrusive prompt:
 - No personal data (resume content, names, emails) is ever sent
 - User can dismiss the feedback prompt permanently
 - Works on all OSes Obsidian supports
+- `fundingUrl` in manifest.json links to a valid funding service page
 
 ---
 

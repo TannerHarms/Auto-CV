@@ -1,0 +1,21 @@
+name: Priya Nakamura
+title: Senior UX Designer & Brand Strategist
+photo: headshot.svg
+contact:
+  email: priya@nakamuradesign.co
+  location: Los Angeles, CA
+  linkedin: priya-nakamura
+  github: priya-designs
+  website: https://nakamuradesign.co
+
+section_order:
+  - summary
+  - experience
+  - projects
+  - skills
+  - education
+  - certifications
+
+html_meta:
+  title: "Priya Nakamura — UX Designer & Brand Strategist"
+  description: "Award-winning designer crafting digital experiences for 8+ years."

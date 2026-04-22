@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import html
+import re
 import shutil
 from pathlib import Path
 
@@ -27,10 +29,15 @@ class HtmlRenderer(BaseRenderer):
         )
         env.filters["markdown"] = _render_markdown
         env.filters["markdown_inline"] = _render_markdown_inline
+        env.filters["strip_bullet"] = lambda s: re.sub(r"^\s*[-*]\s+", "", s)
+        env.filters["split_emdash"] = _split_emdash
+        env.tests["bullet_line"] = lambda s: isinstance(s, str) and bool(re.match(r"^\s*[-*]\s+", s))
+        env.tests["has_emdash"] = lambda s: isinstance(s, str) and (" — " in s or " – " in s)
         env.globals["SectionType"] = SectionType
 
         layout = style.html.layout
         css_vars = style.to_css_variables()
+        header_markdown_html = _render_header_markdown_html(resume.config.header_markdown)
 
         # --- Copy assets ---
         self._copy_assets(resume, html_dir)
@@ -40,7 +47,13 @@ class HtmlRenderer(BaseRenderer):
         # --- Multi-page layout: one HTML file per section ---
         if layout == "multi-page":
             return self._render_multi_page(
-                env, resume, style, css_vars, ordered_sections, html_dir
+                env,
+                resume,
+                style,
+                css_vars,
+                ordered_sections,
+                html_dir,
+                header_markdown_html,
             )
 
         # --- Main resume page ---
@@ -58,6 +71,7 @@ class HtmlRenderer(BaseRenderer):
             sections=resume.ordered_sections(),
             pages=resume.ordered_pages(),
             has_pages=has_pages,
+            header_markdown_html=header_markdown_html,
             custom_css=self._read_override(resume.overrides.custom_css_path),
             custom_js=self._read_override(resume.overrides.custom_js_path),
         )
@@ -78,6 +92,7 @@ class HtmlRenderer(BaseRenderer):
                 page=page,
                 pages=resume.ordered_pages(),
                 has_pages=has_pages,
+                header_markdown_html=header_markdown_html,
                 custom_css=self._read_override(resume.overrides.custom_css_path),
                 custom_js=self._read_override(resume.overrides.custom_js_path),
             )
@@ -95,6 +110,7 @@ class HtmlRenderer(BaseRenderer):
         css_vars: dict[str, str],
         ordered_sections: list[Section],
         html_dir: Path,
+        header_markdown_html: str,
     ) -> Path:
         """Generate one HTML file per section with shared navigation."""
         try:
@@ -118,6 +134,7 @@ class HtmlRenderer(BaseRenderer):
             active_section_id=first_section.id if first_section else None,
             pages=resume.ordered_pages(),
             has_pages=has_pages,
+            header_markdown_html=header_markdown_html,
             custom_css=custom_css,
             custom_js=custom_js,
         )
@@ -136,6 +153,7 @@ class HtmlRenderer(BaseRenderer):
                 active_section_id=section.id,
                 pages=resume.ordered_pages(),
                 has_pages=has_pages,
+                header_markdown_html=header_markdown_html,
                 custom_css=custom_css,
                 custom_js=custom_js,
             )
@@ -157,6 +175,7 @@ class HtmlRenderer(BaseRenderer):
                 page=page,
                 pages=resume.ordered_pages(),
                 has_pages=has_pages,
+                header_markdown_html=header_markdown_html,
                 custom_css=custom_css,
                 custom_js=custom_js,
             )
@@ -196,3 +215,51 @@ def _render_markdown_inline(text: str) -> str:
     # Strip the wrapping <p>…</p> that markdown adds to single-line content
     html = _re.sub(r"^<p>(.*)</p>$", r"\1", html.strip(), flags=_re.DOTALL)
     return html
+
+
+def _split_emdash(s: str) -> dict[str, str]:
+    """Split a string on em-dash or en-dash separator, returning {name, date}."""
+    for sep in (" — ", " – "):
+        if sep in s:
+            parts = s.split(sep, 1)
+            return {"name": parts[0], "date": parts[1]}
+    return {"name": s, "date": ""}
+
+
+def _render_header_markdown_html(text: str | None) -> str:
+    """Render header markdown as structured name/title/body lines.
+
+    The first non-empty line is treated as the name, the second as title,
+    and remaining lines as centered body text.
+    """
+    if not text:
+        return ""
+
+    def _strip_heading_prefix(line: str) -> str:
+        return re.sub(r"^#{1,6}\s+", "", line).strip()
+
+    def _inline_markdown(line: str) -> str:
+        rendered = md.markdown(line).strip()
+        match = re.fullmatch(r"<p>(.*)</p>", rendered, flags=re.DOTALL)
+        if match:
+            return match.group(1)
+        # Block-level markdown in header lines (lists, tables) is not expected;
+        # fall back to escaped plain text for stable header layout.
+        return html.escape(line)
+
+    lines = [ln.strip() for ln in text.splitlines() if ln.strip()]
+    if not lines:
+        return ""
+
+    rendered_lines: list[str] = []
+    for idx, raw in enumerate(lines):
+        clean = _strip_heading_prefix(raw)
+        inline = _inline_markdown(clean)
+        if idx == 0:
+            rendered_lines.append(f"<h1>{inline}</h1>")
+        elif idx == 1:
+            rendered_lines.append(f"<h2>{inline}</h2>")
+        else:
+            rendered_lines.append(f"<p>{inline}</p>")
+
+    return "\n".join(rendered_lines)

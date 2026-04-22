@@ -223,12 +223,14 @@ export interface SectionInfo {
 }
 
 export interface PresetData {
+  preset?: string;
   colors?: Record<string, string>;
   fonts?: Record<string, string>;
   spacing?: Record<string, string>;
   html?: {
     layout?: string;
   };
+  [key: string]: unknown;
 }
 
 export interface ProjectData {
@@ -242,6 +244,8 @@ export interface ProjectData {
     spacing: Record<string, string>;
     htmlLayout: string;
   };
+  /** All section files found in this project's sections/ directory. */
+  projectSections: SectionInfo[];
 }
 
 /**
@@ -257,7 +261,27 @@ export function listMasterSections(vaultPath: string): SectionInfo[] {
     .map(f => {
       const filename = f.replace(/\.md$/, '');
       const label = filename
-        .replace(/^\d+-/, '')
+        .replace(/^\d+[a-zA-Z]?-/, '')
+        .replace(/-/g, ' ')
+        .replace(/\b\w/g, c => c.toUpperCase());
+      return { filename, label };
+    });
+}
+
+/**
+ * List section files in a project's sections/ directory.
+ */
+export function listProjectSections(vaultPath: string, project: string): SectionInfo[] {
+  const sectionsDir = join(vaultPath, 'projects', project, 'sections');
+  if (!existsSync(sectionsDir)) return [];
+
+  return readdirSync(sectionsDir)
+    .filter(f => f.endsWith('.md'))
+    .sort()
+    .map(f => {
+      const filename = f.replace(/\.md$/, '');
+      const label = filename
+        .replace(/^\d+\w?-/, '')
         .replace(/-/g, ' ')
         .replace(/\b\w/g, c => c.toUpperCase());
       return { filename, label };
@@ -351,13 +375,46 @@ function parseProjectHeaderMd(text: string): {
 
   // Parse body for title override (*italic text*)
   if (body) {
-    const titleMatch = body.match(/^\*([^*]+)\*$/m);
-    if (titleMatch) {
-      result.config['title'] = titleMatch[1].trim();
+    const italicTitleMatch = body.match(/^\*([^*]+)\*$/m);
+    if (italicTitleMatch) {
+      result.config['title'] = italicTitleMatch[1].trim();
+    } else {
+      const headingTitleMatch = body.match(/^##\s+(.+)$/m);
+      if (headingTitleMatch) {
+        result.config['title'] = headingTitleMatch[1].trim();
+      }
     }
   }
 
   return result;
+}
+
+function extractProjectHeaderBody(text: string): string {
+  const fmMatch = text.match(/^---\s*\n([\s\S]*?)\n---\s*\n?([\s\S]*)$/);
+  if (!fmMatch) return '';
+  return fmMatch[2].replace(/\r\n/g, '\n').trim();
+}
+
+function updateProjectHeaderBody(existingBody: string, titleOverride: string): string {
+  const normalizedBody = existingBody.replace(/\r\n/g, '\n').trim();
+  const lines = normalizedBody ? normalizedBody.split('\n') : [];
+  const titleLineIndex = lines.findIndex(line => {
+    const trimmed = line.trim();
+    return (/^\*[^*].*\*$/.test(trimmed) && !/^\*\*.*\*\*$/.test(trimmed)) || /^##\s+.+$/.test(trimmed);
+  });
+
+  if (titleOverride) {
+    const nextTitleLine = `*${titleOverride}*`;
+    if (titleLineIndex >= 0) {
+      lines[titleLineIndex] = nextTitleLine;
+    } else {
+      lines.push(nextTitleLine);
+    }
+  } else if (titleLineIndex >= 0) {
+    lines.splice(titleLineIndex, 1);
+  }
+
+  return lines.join('\n').trim();
 }
 
 /**
@@ -411,6 +468,7 @@ export function loadProjectData(vaultPath: string, project: string): ProjectData
     section_order: [],
     config: {},
     style: { preset: 'classic', colors: {}, fonts: {}, spacing: {}, htmlLayout: '' },
+    projectSections: listProjectSections(vaultPath, project),
   };
 
   // Prefer header.md, fall back to _project.yml
@@ -447,6 +505,7 @@ export function saveProjectFiles(
     sectionOrder: string[];
     titleOverride: string;
     preset: string;
+    presetConfig?: Record<string, unknown>;
     styleOverrides: {
       colors?: Record<string, string>;
       fonts?: Record<string, string>;
@@ -456,6 +515,8 @@ export function saveProjectFiles(
   },
 ): void {
   const projectDir = join(vaultPath, 'projects', project);
+  const headerPath = join(projectDir, 'header.md');
+  const stylePath = join(projectDir, '_style.yml');
   mkdirSync(join(projectDir, 'sections'), { recursive: true });
   mkdirSync(join(projectDir, 'output'), { recursive: true });
 
@@ -472,33 +533,192 @@ export function saveProjectFiles(
     }
   }
   headerMd += '---\n';
-  if (data.titleOverride) {
-    headerMd += `*${data.titleOverride}*\n`;
-  }
-  writeFileSync(join(projectDir, 'header.md'), headerMd, 'utf-8');
 
-  let styleYml = `preset: ${data.preset}\n`;
-  const { colors, fonts, spacing, htmlLayout } = data.styleOverrides;
-  if (colors && Object.keys(colors).length > 0) {
-    styleYml += '\ncolors:\n';
-    for (const [k, v] of Object.entries(colors)) {
-      styleYml += `  ${k}: "${v}"\n`;
+  const headerExists = existsSync(headerPath);
+  const existingBody = headerExists
+    ? extractProjectHeaderBody(readFileSync(headerPath, 'utf-8'))
+    : '';
+  // Preserve existing body content for established projects; only apply title
+  // override when creating a new header file.
+  const nextBody = headerExists
+    ? existingBody
+    : updateProjectHeaderBody(existingBody, data.titleOverride);
+  if (nextBody) {
+    headerMd += `${nextBody}\n`;
+  }
+  writeFileSync(headerPath, headerMd, 'utf-8');
+
+  const styleConfig = buildFullStyleConfig(data.preset, data.presetConfig, data.styleOverrides);
+  let styleYml = '# Auto-CV Style Configuration\n';
+  styleYml += '# All values below are configurable. Edit any value and rebuild.\n';
+  styleYml += `# Preset: ${data.preset}\n\n`;
+  styleYml += dumpYaml(styleConfig);
+  if (!existsSync(stylePath)) {
+    writeFileSync(stylePath, styleYml, 'utf-8');
+  }
+}
+
+function buildFullStyleConfig(
+  preset: string,
+  presetConfig: Record<string, unknown> | undefined,
+  styleOverrides: {
+    colors?: Record<string, string>;
+    fonts?: Record<string, string>;
+    spacing?: Record<string, string>;
+    htmlLayout?: string;
+  },
+): Record<string, unknown> {
+  const base = defaultStyleConfig(preset);
+  const presetBase = deepCloneObject(presetConfig);
+  deepMergeRecord(base, presetBase);
+  base.preset = preset;
+
+  if (styleOverrides.colors && Object.keys(styleOverrides.colors).length > 0) {
+    const existingColors = isRecord(base.colors) ? base.colors : {};
+    base.colors = { ...existingColors, ...styleOverrides.colors };
+  }
+  if (styleOverrides.fonts && Object.keys(styleOverrides.fonts).length > 0) {
+    const existingFonts = isRecord(base.fonts) ? base.fonts : {};
+    base.fonts = { ...existingFonts, ...styleOverrides.fonts };
+  }
+  if (styleOverrides.spacing && Object.keys(styleOverrides.spacing).length > 0) {
+    const existingSpacing = isRecord(base.spacing) ? base.spacing : {};
+    base.spacing = { ...existingSpacing, ...styleOverrides.spacing };
+  }
+  if (styleOverrides.htmlLayout) {
+    const existingHtml = isRecord(base.html) ? base.html : {};
+    base.html = { ...existingHtml, layout: styleOverrides.htmlLayout };
+  }
+
+  return base;
+}
+
+function deepMergeRecord(base: Record<string, unknown>, overrides: Record<string, unknown>): void {
+  for (const [key, value] of Object.entries(overrides)) {
+    if (isRecord(base[key]) && isRecord(value)) {
+      deepMergeRecord(base[key] as Record<string, unknown>, value);
+    } else {
+      base[key] = value;
     }
   }
-  if (fonts && Object.keys(fonts).length > 0) {
-    styleYml += '\nfonts:\n';
-    for (const [k, v] of Object.entries(fonts)) {
-      styleYml += `  ${k}: "${v}"\n`;
+}
+
+function defaultStyleConfig(preset: string): Record<string, unknown> {
+  return {
+    preset,
+    colors: {
+      primary: '#2C3E50',
+      secondary: '#7F8C8D',
+      accent: '#3498DB',
+      text: '#333333',
+      heading: '#2C3E50',
+      background: '#FFFFFF',
+      link: '#3498DB',
+      border: '#BDC3C7',
+    },
+    fonts: {
+      heading: 'Helvetica',
+      body: 'Georgia',
+      mono: 'Courier New',
+      size_base: '11pt',
+      size_heading: '14pt',
+      size_name: '24pt',
+      size_small: '9pt',
+      size_bullet: '9pt',
+    },
+    spacing: {
+      page_margin: '0.75in',
+      section_gap: '12pt',
+      entry_gap: '8pt',
+      line_height: '1.3',
+      header_to_content: '1mm',
+      skill_label_width: '4.5cm',
+      bullet_before: '-4.0mm',
+      bullet_list_topsep: '-1.5mm',
+      bullet_after: '-4.0mm',
+      bullet_marker: 'bullet',
+    },
+    latex: {
+      template_set: 'default',
+      engine: 'pdflatex',
+      document_class: 'article',
+      paper_size: 'letterpaper',
+      font_package: 'helvet',
+      font_dir: '',
+      latex_style: '',
+      use_icons: false,
+      extra_packages: [],
+      extra_preamble: '',
+    },
+    docx: {
+      page_width_inches: 8.5,
+      page_height_inches: 11.0,
+      use_columns: false,
+    },
+    html: {
+      layout: 'top-header',
+      include_photo: false,
+      responsive: true,
+      print_friendly: true,
+      custom_css_file: null,
+      custom_js_file: null,
+      include_nav: false,
+    },
+  };
+}
+
+function deepCloneObject(value: unknown): Record<string, unknown> {
+  if (!isRecord(value)) return {};
+  return JSON.parse(JSON.stringify(value)) as Record<string, unknown>;
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
+}
+
+function dumpYaml(value: unknown, indent = 0): string {
+  if (!isRecord(value)) {
+    return `${formatYamlScalar(value)}\n`;
+  }
+
+  const lines: string[] = [];
+  const pad = ' '.repeat(indent);
+  for (const [key, val] of Object.entries(value)) {
+    if (isRecord(val)) {
+      lines.push(`${pad}${key}:`);
+      lines.push(dumpYaml(val, indent + 2).trimEnd());
+    } else if (Array.isArray(val)) {
+      if (val.length === 0) {
+        lines.push(`${pad}${key}: []`);
+      } else {
+        lines.push(`${pad}${key}:`);
+        for (const item of val) {
+          if (isRecord(item)) {
+            lines.push(`${' '.repeat(indent + 2)}-`);
+            lines.push(dumpYaml(item, indent + 4).trimEnd());
+          } else {
+            lines.push(`${' '.repeat(indent + 2)}- ${formatYamlScalar(item)}`);
+          }
+        }
+      }
+    } else {
+      lines.push(`${pad}${key}: ${formatYamlScalar(val)}`);
     }
   }
-  if (spacing && Object.keys(spacing).length > 0) {
-    styleYml += '\nspacing:\n';
-    for (const [k, v] of Object.entries(spacing)) {
-      styleYml += `  ${k}: "${v}"\n`;
-    }
+
+  return `${lines.join('\n')}\n`;
+}
+
+function formatYamlScalar(value: unknown): string {
+  if (typeof value === 'string') {
+    const escaped = value.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+    return `"${escaped}"`;
   }
-  if (htmlLayout) {
-    styleYml += `\nhtml:\n  layout: "${htmlLayout}"\n`;
+  if (typeof value === 'number' || typeof value === 'boolean') {
+    return String(value);
   }
-  writeFileSync(join(projectDir, '_style.yml'), styleYml, 'utf-8');
+  if (value === null || value === undefined) {
+    return 'null';
+  }
+  return `"${String(value).replace(/"/g, '\\"')}"`;
 }

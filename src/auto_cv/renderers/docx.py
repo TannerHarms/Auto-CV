@@ -22,8 +22,12 @@ from auto_cv.renderers.base import BaseRenderer
 
 
 def _hex_to_rgb(hex_color: str) -> RGBColor:
-    h = hex_color.lstrip("#")
-    return RGBColor(int(h[0:2], 16), int(h[2:4], 16), int(h[4:6], 16))
+    cleaned = str(hex_color).strip().strip('"\'')
+    if cleaned.startswith("#"):
+        cleaned = cleaned[1:]
+    if not re.fullmatch(r"[0-9A-Fa-f]{6}", cleaned):
+        cleaned = "333333"
+    return RGBColor(int(cleaned[0:2], 16), int(cleaned[2:4], 16), int(cleaned[4:6], 16))
 
 
 def _parse_pt(val: str) -> float:
@@ -112,7 +116,10 @@ def _add_run(para, text: str, *, size: float = 10, bold: bool = False,
     if small_caps:
         run.font.small_caps = True
     if font_name:
-        _set_run_font(run, font_name)
+        # Keep regular body text on Roboto Light, but map emphasized text
+        # to the standard Roboto family to match Awesome-CV output.
+        resolved_font = "Roboto" if bold and font_name == "Roboto Light" else font_name
+        _set_run_font(run, resolved_font)
 
 
 # Markdown → DOCX runs
@@ -161,25 +168,45 @@ def _add_hyperlink(para, url: str, text: str, *, size: float = 10,
 
 def _add_md_runs(para, text: str, *, size: float = 10,
                  color: RGBColor | None = None,
-                 font_name: str | None = None) -> None:
+                 font_name: str | None = None,
+                 small_caps: bool = False) -> None:
     """Parse simple markdown (bold, italic, code, links) into Word runs."""
     pos = 0
     for m in _MD_PATTERN.finditer(text):
         # Plain text before this match
         if m.start() > pos:
-            _add_run(para, text[pos:m.start()], size=size, color=color, font_name=font_name)
+            _add_run(para, text[pos:m.start()], size=size, color=color, font_name=font_name,
+                     small_caps=small_caps)
         if m.group(1) is not None:          # **bold**
-            _add_run(para, m.group(1), size=size, bold=True, color=color, font_name=font_name)
+            _add_run(para, m.group(1), size=size, bold=True, color=color, font_name=font_name,
+                     small_caps=small_caps)
         elif m.group(2) is not None:        # *italic*
-            _add_run(para, m.group(2), size=size, italic=True, color=color, font_name=font_name)
+            _add_run(para, m.group(2), size=size, italic=True, color=color, font_name=font_name,
+                     small_caps=small_caps)
         elif m.group(3) is not None:        # `code`
-            _add_run(para, m.group(3), size=size, color=color, font_name=font_name)
+            _add_run(para, m.group(3), size=size, color=color, font_name=font_name,
+                     small_caps=small_caps)
         elif m.group(4) is not None:        # [text](url)
             _add_hyperlink(para, m.group(5), m.group(4), size=size, color=color, font_name=font_name)
         pos = m.end()
     # Trailing plain text
     if pos < len(text):
-        _add_run(para, text[pos:], size=size, color=color, font_name=font_name)
+        _add_run(para, text[pos:], size=size, color=color, font_name=font_name,
+             small_caps=small_caps)
+
+
+def _body_font_for_style(style: StyleConfig) -> str:
+    """Resolve body font, forcing awesome-cv to Roboto Light for parity."""
+    if style.preset == "awesome-cv":
+        return "Roboto Light"
+    return style.fonts.body
+
+
+def _heading_font_for_style(style: StyleConfig) -> str:
+    """Resolve heading font, forcing awesome-cv to Source Sans Pro."""
+    if style.preset == "awesome-cv":
+        return "Source Sans Pro"
+    return style.fonts.heading
 
 
 class DocxRenderer(BaseRenderer):
@@ -218,11 +245,12 @@ class DocxRenderer(BaseRenderer):
 
         para = doc.add_paragraph()
         para.alignment = WD_ALIGN_PARAGRAPH.CENTER
-        font_name = style.fonts.body
+        font_name = _body_font_for_style(style)
         gray = RGBColor(0x99, 0x99, 0x99)
-        _add_run(para, "Resume formatted and compiled by ", size=9, color=gray, font_name=font_name)
+        attr_size = _parse_pt(style.fonts.size_small)
+        _add_run(para, "Resume formatted and compiled by ", size=attr_size, color=gray, font_name=font_name)
         _add_hyperlink(para, "https://github.com/TannerHarms/Auto-CV", "Auto CV",
-                       size=9, color=gray, font_name=font_name)
+                       size=attr_size, color=gray, font_name=font_name)
 
     # ------------------------------------------------------------------
     # Page setup
@@ -244,7 +272,8 @@ class DocxRenderer(BaseRenderer):
         )
 
         doc_style = doc.styles["Normal"]
-        doc_style.font.name = style.fonts.body
+        body_font = _body_font_for_style(style)
+        doc_style.font.name = body_font
         doc_style.font.size = Pt(_parse_pt(style.fonts.size_base))
         doc_style.font.color.rgb = _hex_to_rgb(style.colors.text)
         # Set all four rFonts facets on the Normal style so Word doesn't
@@ -255,7 +284,7 @@ class DocxRenderer(BaseRenderer):
             rFonts = rPr.makeelement(qn("w:rFonts"), {})
             rPr.insert(0, rFonts)
         for attr in ("w:ascii", "w:hAnsi", "w:eastAsia", "w:cs"):
-            rFonts.set(qn(attr), style.fonts.body)
+            rFonts.set(qn(attr), body_font)
         # Remove theme font references that override explicit names
         for attr in ("w:asciiTheme", "w:hAnsiTheme", "w:eastAsiaTheme", "w:cstheme"):
             if rFonts.get(qn(attr)) is not None:
@@ -280,7 +309,8 @@ class DocxRenderer(BaseRenderer):
     # ------------------------------------------------------------------
 
     def _add_two_col_row(self, doc: Document, left_runs, right_runs,
-                         *, right_width_emu: int | None = None):
+                         *, right_width_emu: int | None = None,
+                         default_font_name: str | None = None):
         """Add a two-column line using a right-aligned tab stop.
 
         *left_runs* and *right_runs* are lists of dicts with keys
@@ -295,13 +325,19 @@ class DocxRenderer(BaseRenderer):
 
         # Left side runs
         for run_spec in left_runs:
-            _add_run(p, **run_spec)
+            spec = dict(run_spec)
+            if default_font_name and "font_name" not in spec:
+                spec["font_name"] = default_font_name
+            _add_run(p, **spec)
 
         # Tab + right side runs (only if there's right content)
         if right_runs:
             p.add_run("\t")
             for run_spec in right_runs:
-                _add_run(p, **run_spec)
+                spec = dict(run_spec)
+                if default_font_name and "font_name" not in spec:
+                    spec["font_name"] = default_font_name
+                _add_run(p, **spec)
 
         return p
 
@@ -316,6 +352,13 @@ class DocxRenderer(BaseRenderer):
         text_color = _hex_to_rgb(style.colors.text)
         secondary = _hex_to_rgb(style.colors.secondary)
         heading_color = _hex_to_rgb(style.colors.heading)
+        name_size = _parse_pt(style.fonts.size_name)
+        base_size = _parse_pt(style.fonts.size_base)
+        small_size = _parse_pt(style.fonts.size_small)
+
+        if resume.config.header_markdown:
+            self._render_header_markdown(doc, resume.config.header_markdown, style)
+            return
 
         name_parts = resume.config.name.rsplit(" ", 1)
         first = name_parts[0] if len(name_parts) > 1 else ""
@@ -329,35 +372,35 @@ class DocxRenderer(BaseRenderer):
         if preset == "awesome-cv":
             # First name light, last name bold
             if first:
-                _add_run(p, first + " ", size=32, color=text_color,
-                         font_name=style.fonts.heading)
-            _add_run(p, last, size=32, bold=True, color=text_color,
-                     font_name=style.fonts.heading)
+                _add_run(p, first + " ", size=name_size, color=text_color,
+                         font_name="Roboto Light")
+            _add_run(p, last, size=name_size, bold=True, color=text_color,
+                     font_name="Roboto")
         elif preset == "executive":
-            _add_run(p, resume.config.name, size=26, bold=True,
+            _add_run(p, resume.config.name, size=name_size, bold=True,
                      small_caps=True, color=primary,
                      font_name=style.fonts.heading)
         elif preset == "modern":
-            _add_run(p, resume.config.name, size=28, bold=True,
+            _add_run(p, resume.config.name, size=name_size, bold=True,
                      color=primary, font_name=style.fonts.heading)
         elif preset == "creative":
-            _add_run(p, resume.config.name, size=36, bold=True,
+            _add_run(p, resume.config.name, size=name_size, bold=True,
                      color=primary, font_name=style.fonts.heading)
         elif preset == "elegant":
-            _add_run(p, resume.config.name, size=24, small_caps=True,
+            _add_run(p, resume.config.name, size=name_size, small_caps=True,
                      color=primary, font_name=style.fonts.heading)
         elif preset == "technical":
-            _add_run(p, resume.config.name, size=24, bold=True,
+            _add_run(p, resume.config.name, size=name_size, bold=True,
                      color=primary, font_name=style.fonts.mono or style.fonts.heading)
         elif preset == "academic":
-            _add_run(p, resume.config.name, size=20, bold=True,
+            _add_run(p, resume.config.name, size=name_size, bold=True,
                      color=text_color, font_name=style.fonts.heading)
         elif preset == "minimal":
-            _add_run(p, resume.config.name, size=22, small_caps=True,
+            _add_run(p, resume.config.name, size=name_size, small_caps=True,
                      color=heading_color, font_name=style.fonts.heading)
         else:
             # classic / fallback
-            _add_run(p, resume.config.name, size=24, bold=True,
+            _add_run(p, resume.config.name, size=name_size, bold=True,
                      color=primary, font_name=style.fonts.heading)
 
         # --- Title ---
@@ -366,26 +409,26 @@ class DocxRenderer(BaseRenderer):
             p.alignment = WD_ALIGN_PARAGRAPH.CENTER
             _set_paragraph_spacing(p, before=0, after=40)
             if preset in ("awesome-cv",):
-                _add_run(p, resume.config.title, size=7.6, small_caps=True,
-                         color=accent, font_name=style.fonts.body)
+                _add_run(p, resume.config.title, size=small_size, small_caps=True,
+                         color=accent, font_name=_body_font_for_style(style))
             elif preset == "executive":
-                _add_run(p, resume.config.title, size=12, italic=True,
-                         color=accent, font_name=style.fonts.body)
+                _add_run(p, resume.config.title, size=base_size + 1, italic=True,
+                         color=accent, font_name=_body_font_for_style(style))
             elif preset in ("modern", "creative"):
-                _add_run(p, resume.config.title, size=12,
+                _add_run(p, resume.config.title, size=base_size + 1,
                          color=accent, font_name=style.fonts.heading)
             elif preset == "elegant":
-                _add_run(p, resume.config.title, size=10, italic=True,
-                         color=accent, font_name=style.fonts.body)
+                _add_run(p, resume.config.title, size=base_size, italic=True,
+                         color=accent, font_name=_body_font_for_style(style))
             elif preset == "technical":
-                _add_run(p, resume.config.title, size=10,
+                _add_run(p, resume.config.title, size=base_size,
                          color=accent, font_name=style.fonts.mono or style.fonts.heading)
             elif preset == "academic":
-                _add_run(p, resume.config.title, size=10, italic=True,
-                         color=secondary, font_name=style.fonts.body)
+                _add_run(p, resume.config.title, size=base_size, italic=True,
+                         color=secondary, font_name=_body_font_for_style(style))
             else:
-                _add_run(p, resume.config.title, size=12, italic=True,
-                         color=secondary, font_name=style.fonts.body)
+                _add_run(p, resume.config.title, size=base_size + 1, italic=True,
+                         color=secondary, font_name=_body_font_for_style(style))
 
         # --- Contact ---
         contact = resume.config.contact
@@ -396,6 +439,8 @@ class DocxRenderer(BaseRenderer):
             contact_items.append((contact.phone, None))
         if contact.location:
             contact_items.append((contact.location, None))
+        for item in contact.extras:
+            contact_items.append((item, None))
         if contact.linkedin:
             contact_items.append(
                 (f"linkedin.com/in/{contact.linkedin}",
@@ -414,11 +459,9 @@ class DocxRenderer(BaseRenderer):
             _set_paragraph_spacing(p, before=0, after=60)
             contact_color = secondary if preset in ("executive", "elegant", "academic", "minimal") else text_color
             contact_font = style.fonts.heading
-            contact_size = 6.8
+            contact_size = small_size - 1.5
             if preset == "technical":
                 contact_font = style.fonts.mono or style.fonts.heading
-            elif preset in ("academic", "minimal"):
-                contact_size = 7
             for i, (display, url) in enumerate(contact_items):
                 if i > 0:
                     _add_run(p, " | ", size=contact_size, color=contact_color,
@@ -429,6 +472,50 @@ class DocxRenderer(BaseRenderer):
                 else:
                     _add_run(p, display, size=contact_size, color=contact_color,
                              font_name=contact_font)
+
+    def _render_header_markdown(self, doc: Document, header_markdown: str, style: StyleConfig) -> None:
+        """Render markdown header with stable line-based styling."""
+        heading_font = _heading_font_for_style(style)
+        body_font = _body_font_for_style(style)
+        text_color = _hex_to_rgb(style.colors.text)
+        secondary = _hex_to_rgb(style.colors.secondary)
+
+        lines = [line.strip() for line in header_markdown.splitlines() if line.strip()]
+        for idx, raw in enumerate(lines):
+            stripped = re.sub(r"^#{1,6}\s+", "", raw).strip()
+            if not stripped:
+                continue
+
+            p = doc.add_paragraph()
+            p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+
+            if idx == 0:
+                _set_paragraph_spacing(p, before=0, after=40)
+                _add_md_runs(
+                    p,
+                    stripped,
+                    size=max(24, _parse_pt(style.fonts.size_name) - 2),
+                    color=text_color,
+                    font_name=heading_font,
+                )
+            elif idx == 1:
+                _set_paragraph_spacing(p, before=0, after=40)
+                _add_md_runs(
+                    p,
+                    stripped,
+                    size=max(11, _parse_pt(style.fonts.size_heading) - 1),
+                    color=secondary,
+                    font_name=heading_font,
+                )
+            else:
+                _set_paragraph_spacing(p, before=0, after=20)
+                _add_md_runs(
+                    p,
+                    stripped,
+                    size=max(8.5, _parse_pt(style.fonts.size_small) - 0.2),
+                    color=text_color,
+                    font_name=body_font,
+                )
 
     # ------------------------------------------------------------------
     # Sections
@@ -505,7 +592,7 @@ class DocxRenderer(BaseRenderer):
         p = doc.add_paragraph()
         _set_paragraph_spacing(p, before=before, after=after)
         _add_run(p, title, size=size, bold=True, color=accent,
-                 font_name=style.fonts.body)
+                 font_name=_heading_font_for_style(style))
         _add_tab_stop(p, self._content_width, WD_TAB_ALIGNMENT.RIGHT)
         gray_hex = f"{gray[0]:02X}{gray[1]:02X}{gray[2]:02X}"
         run = p.add_run("\t")
@@ -522,7 +609,7 @@ class DocxRenderer(BaseRenderer):
         _set_paragraph_spacing(p, before=before, after=after)
         text = title.upper() if uppercase else title
         _add_run(p, text, size=size, bold=True, color=heading_color,
-                 font_name=style.fonts.body)
+                 font_name=_heading_font_for_style(style))
         # Full-width rule below
         rule = doc.add_paragraph()
         _set_paragraph_spacing(rule, before=0, after=int(after * 0.5))
@@ -553,7 +640,7 @@ class DocxRenderer(BaseRenderer):
         p = doc.add_paragraph()
         _set_paragraph_spacing(p, before=40, after=40)
         _add_run(p, title, size=size, bold=True, small_caps=True,
-                 color=heading_color, font_name=style.fonts.body)
+                 color=heading_color, font_name=_heading_font_for_style(style))
         # Thick rule below
         rule_bot = doc.add_paragraph()
         _set_paragraph_spacing(rule_bot, before=0, after=after)
@@ -615,7 +702,7 @@ class DocxRenderer(BaseRenderer):
         p.alignment = WD_ALIGN_PARAGRAPH.CENTER
         _set_paragraph_spacing(p, before=60, after=40)
         _add_run(p, title, size=size, bold=True, small_caps=True,
-                 color=heading_color, font_name=style.fonts.body)
+                 color=heading_color, font_name=_heading_font_for_style(style))
         # Thin rule below
         rule_bot = doc.add_paragraph()
         _set_paragraph_spacing(rule_bot, before=0, after=after)
@@ -670,21 +757,24 @@ class DocxRenderer(BaseRenderer):
         dark = _hex_to_rgb(style.colors.text)
         gray = _hex_to_rgb(style.colors.secondary)
         entry_gap = int(_parse_pt(style.spacing.entry_gap) * 20)
+        base_size = _parse_pt(style.fonts.size_base)
+        small_size = _parse_pt(style.fonts.size_small)
 
         for i, entry in enumerate(section.experience_entries):
+            row_font = _heading_font_for_style(style) if style.preset == "awesome-cv" else None
             # Row 1: title (left) | location (right, accent)
-            left = [{"text": entry.title, "size": 10, "bold": True, "color": dark}]
+            left = [{"text": entry.title, "size": base_size, "bold": True, "color": dark}]
             right = []
             if entry.location:
-                right = [{"text": entry.location, "size": 9, "italic": True, "color": accent}]
-            self._add_two_col_row(doc, left, right)
+                right = [{"text": entry.location, "size": base_size - 1, "italic": True, "color": accent}]
+            self._add_two_col_row(doc, left, right, default_font_name=row_font)
 
             # Row 2: organization (left, small-caps gray) | dates (right, gray)
-            left = [{"text": entry.organization, "size": 8, "small_caps": True, "color": gray}]
+            left = [{"text": entry.organization, "size": small_size, "small_caps": True, "color": gray}]
             right = []
             if entry.dates:
-                right = [{"text": entry.dates.display, "size": 8, "italic": True, "color": gray}]
-            last_p = self._add_two_col_row(doc, left, right)
+                right = [{"text": entry.dates.display, "size": small_size, "italic": True, "color": gray}]
+            last_p = self._add_two_col_row(doc, left, right, default_font_name=row_font)
 
             # Bullet highlights
             bullet_size = _parse_pt(style.fonts.size_bullet)
@@ -695,7 +785,8 @@ class DocxRenderer(BaseRenderer):
                 last_p.paragraph_format.first_line_indent = Inches(-0.15)
                 _set_paragraph_spacing(last_p, before=0, after=0)
                 _add_run(last_p, marker, size=bullet_size, color=dark)
-                _add_md_runs(last_p, h, size=bullet_size, color=dark)
+                _add_md_runs(last_p, h, size=bullet_size, color=dark,
+                             font_name=_body_font_for_style(style))
 
             # Entry gap: apply space-after on the last paragraph of this entry
             if i < len(section.experience_entries) - 1:
@@ -710,21 +801,24 @@ class DocxRenderer(BaseRenderer):
         dark = _hex_to_rgb(style.colors.text)
         gray = _hex_to_rgb(style.colors.secondary)
         entry_gap = int(_parse_pt(style.spacing.entry_gap) * 20)
+        base_size = _parse_pt(style.fonts.size_base)
+        small_size = _parse_pt(style.fonts.size_small)
 
         for i, entry in enumerate(section.education_entries):
+            row_font = _heading_font_for_style(style) if style.preset == "awesome-cv" else None
             # Row 1: degree | location
-            left = [{"text": entry.degree, "size": 10, "bold": True, "color": dark}]
+            left = [{"text": entry.degree, "size": base_size, "bold": True, "color": dark}]
             right = []
             if entry.location:
-                right = [{"text": entry.location, "size": 9, "italic": True, "color": accent}]
-            self._add_two_col_row(doc, left, right)
+                right = [{"text": entry.location, "size": base_size - 1, "italic": True, "color": accent}]
+            self._add_two_col_row(doc, left, right, default_font_name=row_font)
 
             # Row 2: institution | dates
-            left = [{"text": entry.institution, "size": 8, "small_caps": True, "color": gray}]
+            left = [{"text": entry.institution, "size": small_size, "small_caps": True, "color": gray}]
             right = []
             if entry.dates:
-                right = [{"text": entry.dates.display, "size": 8, "italic": True, "color": gray}]
-            last_p = self._add_two_col_row(doc, left, right)
+                right = [{"text": entry.dates.display, "size": small_size, "italic": True, "color": gray}]
+            last_p = self._add_two_col_row(doc, left, right, default_font_name=row_font)
 
             # Description (plain text below header)
             bullet_size = _parse_pt(style.fonts.size_bullet)
@@ -732,7 +826,8 @@ class DocxRenderer(BaseRenderer):
                 last_p = doc.add_paragraph()
                 _set_paragraph_spacing(last_p, before=0, after=0)
                 last_p.paragraph_format.left_indent = Inches(0.25)
-                _add_md_runs(last_p, entry.description, size=bullet_size, color=dark)
+                _add_md_runs(last_p, entry.description, size=bullet_size, color=dark,
+                             font_name=_body_font_for_style(style))
 
             # GPA and highlights
             if entry.gpa:
@@ -748,7 +843,8 @@ class DocxRenderer(BaseRenderer):
                 last_p.paragraph_format.first_line_indent = Inches(-0.15)
                 _set_paragraph_spacing(last_p, before=0, after=0)
                 _add_run(last_p, marker, size=bullet_size, color=dark)
-                _add_md_runs(last_p, h, size=bullet_size, color=dark)
+                _add_md_runs(last_p, h, size=bullet_size, color=dark,
+                             font_name=_body_font_for_style(style))
 
             if i < len(section.education_entries) - 1:
                 _set_paragraph_spacing(last_p, before=0, after=entry_gap)
@@ -760,6 +856,8 @@ class DocxRenderer(BaseRenderer):
     def _render_skills(self, doc: Document, section: Section, style: StyleConfig) -> None:
         dark = _hex_to_rgb(style.colors.text)
         text_color = _hex_to_rgb(style.colors.text)
+        base_size = _parse_pt(style.fonts.size_base)
+        sub_size = base_size - 1
 
         for cat in section.skill_categories:
             # Detect if skills are multi-line bold-label entries
@@ -769,14 +867,20 @@ class DocxRenderer(BaseRenderer):
                 for j, skill in enumerate(cat.skills):
                     lbl = cat.name if j == 0 else ""
                     self._add_skill_row(doc, lbl, skill,
-                                        label_color=dark, text_color=text_color)
+                                        label_color=dark, text_color=text_color,
+                                        body_font=_body_font_for_style(style),
+                                        base_size=base_size, sub_size=sub_size)
             else:
                 right_text = ", ".join(cat.skills)
                 self._add_skill_row(doc, cat.name, right_text,
-                                    label_color=dark, text_color=text_color)
+                                    label_color=dark, text_color=text_color,
+                                    body_font=_body_font_for_style(style),
+                                    base_size=base_size, sub_size=sub_size)
 
     def _add_skill_row(self, doc: Document, label: str, skills_text: str,
-                       *, label_color: RGBColor, text_color: RGBColor) -> None:
+                       *, label_color: RGBColor, text_color: RGBColor,
+                       body_font: str, base_size: float = 10,
+                       sub_size: float = 9) -> None:
         """Skill row: right-aligned label, then left-aligned skills text with markdown."""
         label_w = Inches(1.5)
         gap = Inches(0.1)
@@ -800,11 +904,11 @@ class DocxRenderer(BaseRenderer):
 
         # Tab to the right-aligned stop, then the label
         p.add_run("\t")
-        _add_run(p, label, size=10, bold=True, color=label_color)
+        _add_run(p, label, size=base_size, bold=True, color=label_color, font_name=body_font)
 
         # Tab to the left-aligned stop, then skills with markdown
         p.add_run("\t")
-        _add_md_runs(p, skills_text, size=9, color=text_color)
+        _add_md_runs(p, skills_text, size=sub_size, color=text_color, font_name=body_font)
 
     # ------------------------------------------------------------------
     # Projects
@@ -815,28 +919,32 @@ class DocxRenderer(BaseRenderer):
         dark = _hex_to_rgb(style.colors.text)
         gray = _hex_to_rgb(style.colors.secondary)
         entry_gap = int(_parse_pt(style.spacing.entry_gap) * 20)
+        base_size = _parse_pt(style.fonts.size_base)
+        small_size = _parse_pt(style.fonts.size_small)
         bullet_size = _parse_pt(style.fonts.size_bullet)
 
         for i, entry in enumerate(section.project_entries):
+            row_font = _heading_font_for_style(style) if style.preset == "awesome-cv" else None
             # Row 1: name | dates (if any)
-            left = [{"text": entry.name, "size": 10, "bold": True, "color": dark}]
+            left = [{"text": entry.name, "size": base_size, "bold": True, "color": dark}]
             right = []
             if entry.dates:
-                right = [{"text": entry.dates.display, "size": 9, "italic": True, "color": accent}]
-            last_p = self._add_two_col_row(doc, left, right)
+                right = [{"text": entry.dates.display, "size": base_size - 1, "italic": True, "color": accent}]
+            last_p = self._add_two_col_row(doc, left, right, default_font_name=row_font)
 
             # Technologies line
             if entry.technologies:
                 last_p = doc.add_paragraph()
                 _set_paragraph_spacing(last_p, before=0, after=0)
-                _add_run(last_p, ", ".join(entry.technologies), size=8,
+                _add_run(last_p, ", ".join(entry.technologies), size=small_size,
                          small_caps=True, color=gray)
 
             # Description
             if entry.description:
                 last_p = doc.add_paragraph()
                 _set_paragraph_spacing(last_p, before=0, after=0)
-                _add_run(last_p, entry.description, size=bullet_size, color=dark)
+                _add_md_runs(last_p, entry.description, size=bullet_size, color=dark,
+                             font_name=_body_font_for_style(style))
 
             marker = "\u2013 " if style.spacing.bullet_marker == "dash" else "\u2022 "
             for h in entry.highlights:
@@ -845,7 +953,8 @@ class DocxRenderer(BaseRenderer):
                 last_p.paragraph_format.first_line_indent = Inches(-0.15)
                 _set_paragraph_spacing(last_p, before=0, after=0)
                 _add_run(last_p, marker, size=bullet_size, color=dark)
-                _add_md_runs(last_p, h, size=bullet_size, color=dark)
+                _add_md_runs(last_p, h, size=bullet_size, color=dark,
+                             font_name=_body_font_for_style(style))
 
             if i < len(section.project_entries) - 1:
                 _set_paragraph_spacing(last_p, before=0, after=entry_gap)
@@ -857,16 +966,18 @@ class DocxRenderer(BaseRenderer):
     def _render_certifications(self, doc: Document, section: Section, style: StyleConfig) -> None:
         dark = _hex_to_rgb(style.colors.text)
         accent = _hex_to_rgb(style.colors.accent)
+        base_size = _parse_pt(style.fonts.size_base)
 
         for entry in section.certification_entries:
+            row_font = _heading_font_for_style(style) if style.preset == "awesome-cv" else None
             # Single row: name + issuer (left) | date (right, accent)
-            left = [{"text": entry.name, "size": 10, "bold": True, "color": dark}]
+            left = [{"text": entry.name, "size": base_size, "bold": True, "color": dark}]
             if entry.issuer:
-                left.append({"text": f" \u2013 {entry.issuer}", "size": 10, "color": dark})
+                left.append({"text": f" \u2013 {entry.issuer}", "size": base_size, "color": dark})
             right = []
             if entry.date:
-                right = [{"text": entry.date, "size": 9, "italic": True, "color": accent}]
-            self._add_two_col_row(doc, left, right)
+                right = [{"text": entry.date, "size": base_size - 1, "italic": True, "color": accent}]
+            self._add_two_col_row(doc, left, right, default_font_name=row_font)
 
     # ------------------------------------------------------------------
     # Publications
@@ -877,25 +988,29 @@ class DocxRenderer(BaseRenderer):
         accent = _hex_to_rgb(style.colors.accent)
         gray = _hex_to_rgb(style.colors.secondary)
         entry_gap = int(_parse_pt(style.spacing.entry_gap) * 20)
+        base_size = _parse_pt(style.fonts.size_base)
+        small_size = _parse_pt(style.fonts.size_small)
 
         for i, entry in enumerate(section.publication_entries):
+            row_font = _heading_font_for_style(style) if style.preset == "awesome-cv" else None
             # Row 1: title | date
-            left = [{"text": entry.title, "size": 10, "bold": True, "color": dark}]
+            left = [{"text": entry.title, "size": base_size, "bold": True, "color": dark}]
             right = []
             if entry.date:
-                right = [{"text": entry.date, "size": 9, "italic": True, "color": accent}]
-            last_p = self._add_two_col_row(doc, left, right)
+                right = [{"text": entry.date, "size": base_size - 1, "italic": True, "color": accent}]
+            last_p = self._add_two_col_row(doc, left, right, default_font_name=row_font)
 
             # Row 2: authors | venue
-            left = []
-            if entry.authors:
-                left = [{"text": ", ".join(entry.authors), "size": 8,
-                         "small_caps": True, "color": gray}]
-            right = []
-            if entry.venue:
-                right = [{"text": entry.venue, "size": 8, "italic": True, "color": gray}]
-            if left or right:
-                last_p = self._add_two_col_row(doc, left, right)
+            if entry.authors or entry.venue:
+                last_p = doc.add_paragraph()
+                _set_paragraph_spacing(last_p, before=0, after=0)
+                _add_tab_stop(last_p, self._content_width, WD_TAB_ALIGNMENT.RIGHT)
+                if entry.authors:
+                    _add_md_runs(last_p, ", ".join(entry.authors), size=small_size,
+                                 color=gray, small_caps=True, font_name=_body_font_for_style(style))
+                if entry.venue:
+                    last_p.add_run("\t")
+                    _add_run(last_p, entry.venue, size=small_size, italic=True, color=gray)
 
             # Description
             if entry.description:
@@ -903,7 +1018,7 @@ class DocxRenderer(BaseRenderer):
                 _set_paragraph_spacing(last_p, before=0, after=0)
                 last_p.paragraph_format.left_indent = Inches(0.25)
                 _add_md_runs(last_p, entry.description, size=_parse_pt(style.fonts.size_bullet),
-                             color=dark)
+                             color=dark, font_name=_body_font_for_style(style))
 
             if i < len(section.publication_entries) - 1:
                 _set_paragraph_spacing(last_p, before=0, after=entry_gap)
@@ -917,23 +1032,26 @@ class DocxRenderer(BaseRenderer):
         accent = _hex_to_rgb(style.colors.accent)
         gray = _hex_to_rgb(style.colors.secondary)
         entry_gap = int(_parse_pt(style.spacing.entry_gap) * 20)
+        base_size = _parse_pt(style.fonts.size_base)
         bullet_size = _parse_pt(style.fonts.size_bullet)
 
         for i, entry in enumerate(section.award_entries):
+            row_font = _heading_font_for_style(style) if style.preset == "awesome-cv" else None
             # Title + issuer (left) | date (right, accent)
-            left = [{"text": entry.title, "size": 10, "bold": True, "color": dark}]
+            left = [{"text": entry.title, "size": base_size, "bold": True, "color": dark}]
             if entry.issuer:
-                left.append({"text": f", {entry.issuer}", "size": 9, "color": gray})
+                left.append({"text": f", {entry.issuer}", "size": base_size - 1, "color": gray})
             right = []
             if entry.date:
-                right = [{"text": entry.date, "size": 9, "italic": True, "color": accent}]
-            last_p = self._add_two_col_row(doc, left, right)
+                right = [{"text": entry.date, "size": base_size - 1, "italic": True, "color": accent}]
+            last_p = self._add_two_col_row(doc, left, right, default_font_name=row_font)
 
             # Description
             if entry.description:
                 last_p = doc.add_paragraph()
                 _set_paragraph_spacing(last_p, before=0, after=0)
-                _add_run(last_p, entry.description, size=bullet_size, color=dark)
+                _add_md_runs(last_p, entry.description, size=bullet_size, color=dark,
+                             font_name=_body_font_for_style(style))
 
             if i < len(section.award_entries) - 1:
                 _set_paragraph_spacing(last_p, before=0, after=entry_gap)
@@ -947,18 +1065,21 @@ class DocxRenderer(BaseRenderer):
         accent = _hex_to_rgb(style.colors.accent)
         gray = _hex_to_rgb(style.colors.secondary)
         entry_gap = int(_parse_pt(style.spacing.entry_gap) * 20)
+        base_size = _parse_pt(style.fonts.size_base)
+        small_size = _parse_pt(style.fonts.size_small)
         bullet_size = _parse_pt(style.fonts.size_bullet)
 
         for i, entry in enumerate(section.experience_entries):
+            row_font = _heading_font_for_style(style) if style.preset == "awesome-cv" else None
             # Title + org (left) | dates (right, accent)
-            left = [{"text": entry.title, "size": 10, "bold": True, "color": dark}]
+            left = [{"text": entry.title, "size": base_size, "bold": True, "color": dark}]
             if entry.organization:
-                left.append({"text": f", {entry.organization}", "size": 8,
+                left.append({"text": f", {entry.organization}", "size": small_size,
                              "small_caps": True, "color": gray})
             right = []
             if entry.dates:
-                right = [{"text": entry.dates.display, "size": 9, "italic": True, "color": accent}]
-            last_p = self._add_two_col_row(doc, left, right)
+                right = [{"text": entry.dates.display, "size": base_size - 1, "italic": True, "color": accent}]
+            last_p = self._add_two_col_row(doc, left, right, default_font_name=row_font)
 
             # Highlights
             marker = "\u2013 " if style.spacing.bullet_marker == "dash" else "\u2022 "
@@ -968,7 +1089,8 @@ class DocxRenderer(BaseRenderer):
                 last_p.paragraph_format.first_line_indent = Inches(-0.15)
                 _set_paragraph_spacing(last_p, before=0, after=0)
                 _add_run(last_p, marker, size=bullet_size, color=dark)
-                _add_md_runs(last_p, h, size=bullet_size, color=dark)
+                _add_md_runs(last_p, h, size=bullet_size, color=dark,
+                             font_name=_body_font_for_style(style))
 
             if i < len(section.experience_entries) - 1:
                 _set_paragraph_spacing(last_p, before=0, after=entry_gap)
@@ -981,8 +1103,9 @@ class DocxRenderer(BaseRenderer):
         if section.raw_content.strip():
             p = doc.add_paragraph()
             _set_paragraph_spacing(p, before=0, after=0)
-            _add_run(p, section.raw_content.strip(), size=9,
-                     color=_hex_to_rgb(style.colors.text))
+            _add_md_runs(p, section.raw_content.strip(), size=_parse_pt(style.fonts.size_base) - 1,
+                         color=_hex_to_rgb(style.colors.text),
+                         font_name=_body_font_for_style(style))
 
     # ------------------------------------------------------------------
     # Languages
@@ -991,10 +1114,14 @@ class DocxRenderer(BaseRenderer):
     def _render_languages(self, doc: Document, section: Section, style: StyleConfig) -> None:
         dark = _hex_to_rgb(style.colors.text)
         text_color = _hex_to_rgb(style.colors.text)
+        base_size = _parse_pt(style.fonts.size_base)
+        sub_size = base_size - 1
 
         for entry in section.language_entries:
             self._add_skill_row(doc, entry.name, entry.proficiency or '',
-                                label_color=dark, text_color=text_color)
+                                label_color=dark, text_color=text_color,
+                                body_font=_body_font_for_style(style),
+                                base_size=base_size, sub_size=sub_size)
 
     # ------------------------------------------------------------------
     # References
@@ -1005,14 +1132,17 @@ class DocxRenderer(BaseRenderer):
         accent = _hex_to_rgb(style.colors.accent)
         gray = _hex_to_rgb(style.colors.secondary)
         entry_gap = int(_parse_pt(style.spacing.entry_gap) * 20)
+        base_size = _parse_pt(style.fonts.size_base)
+        small_size = _parse_pt(style.fonts.size_small)
 
         for i, entry in enumerate(section.reference_entries):
+            row_font = _heading_font_for_style(style) if style.preset == "awesome-cv" else None
             # Name + relationship
-            left = [{"text": entry.name, "size": 10, "bold": True, "color": dark}]
+            left = [{"text": entry.name, "size": base_size, "bold": True, "color": dark}]
             if entry.relationship:
-                left.append({"text": f" \u2013 {entry.relationship}", "size": 9,
+                left.append({"text": f" \u2013 {entry.relationship}", "size": base_size - 1,
                              "italic": True, "color": gray})
-            last_p = self._add_two_col_row(doc, left, [])
+            last_p = self._add_two_col_row(doc, left, [], default_font_name=row_font)
 
             # Title at Organization
             parts: list[str] = []
@@ -1024,7 +1154,7 @@ class DocxRenderer(BaseRenderer):
                 last_p = doc.add_paragraph()
                 _set_paragraph_spacing(last_p, before=0, after=0)
                 text = " at ".join(parts) if entry.title and entry.organization else parts[0]
-                _add_run(last_p, text, size=8, small_caps=True, color=accent)
+                _add_run(last_p, text, size=small_size, small_caps=True, color=accent)
 
             # Contact info
             contact_parts: list[str] = []
@@ -1035,7 +1165,7 @@ class DocxRenderer(BaseRenderer):
             if contact_parts:
                 last_p = doc.add_paragraph()
                 _set_paragraph_spacing(last_p, before=0, after=0)
-                _add_run(last_p, " | ".join(contact_parts), size=8, color=gray)
+                _add_run(last_p, " | ".join(contact_parts), size=small_size, color=gray)
 
             if i < len(section.reference_entries) - 1:
                 _set_paragraph_spacing(last_p, before=0, after=entry_gap)
@@ -1046,8 +1176,12 @@ class DocxRenderer(BaseRenderer):
 
     def _render_custom(self, doc: Document, section: Section, style: StyleConfig) -> None:
         if section.raw_content.strip():
+            sub_size = _parse_pt(style.fonts.size_base) - 1
+            text_color = _hex_to_rgb(style.colors.text)
+            body_font = _body_font_for_style(style)
             for line in section.raw_content.strip().split("\n"):
                 if line.strip():
                     p = doc.add_paragraph()
                     _set_paragraph_spacing(p, before=0, after=0)
-                    _add_run(p, line, size=9, color=_hex_to_rgb(style.colors.text))
+                    _add_md_runs(p, line, size=sub_size, color=text_color,
+                                 font_name=body_font)
